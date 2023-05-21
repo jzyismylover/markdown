@@ -1,4 +1,4 @@
-年# ubuntu 
+# ubuntu 
 
 > 初始安装 ubuntu 时遇到的一些问题，包括对一些目录、应用安装、环境配置等一些解决方案
 
@@ -86,17 +86,25 @@ $  wget sh -c "$(wget https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/t
 ZSH_THEME='agnoster'
 ```
 
+<<<<<<< HEAD
 > 主题配置后会出现终端无法显示主题图标问题，搜索后发现是字体类型不对，因此需要重新下载 [Ubuntu mono](https://github.com/powerline/fonts/blob/master/UbuntuMono/Ubuntu%20Mono%20derivative%20Powerline%20Bold.ttf) 并完成安装，在 终端`preference/unnamed/text`下面选择该字体并重新启动当前终端，当然下载该字体应用前需要下载 powerline 支持
 ```bash
 $ sudo apt-get install fonts-powerline
 ```
 
+=======
+> 主题配置后会出现终端无法显示主题图标问题，搜索后发现是字体类型不对，因此需要重新下载 [Ubuntu mono](https://github.com/powerline/fonts/blob/master/UbuntuMono/Ubuntu%20Mono%20derivative%20Powerline%20Bold.ttf) 并完成安装，在 终端`preference/unnamed/text`下面选择该字体并重新启动当前终端
+>>>>>>> aa1bb941897fb6d7eff7df67597291be9f73cce6
 
 4. 配置 oh-my-zsh 插件
 
 ```bash
 $ git clone https://github.com/zsh-users/zsh-autosuggestions $ZSH_CUSTOM/plugins/zsh-autosuggestions
+<<<<<<< HEAD
 $ git clone https://github.com/zsh-users/zsh-syntax-highlighting $ZSH_CUSTOM/plugins/zsh-syntax-highlighting
+=======
+$ git clone https://github.com/zsh-users/zsh-syntax-highlighting $ZSH_CUSTOM/plugins/zsh-autosuggestions
+>>>>>>> aa1bb941897fb6d7eff7df67597291be9f73cce6
 $ git clone https://github.com/wting/autojump $ZSH_CUSTOM/plugins/autojump
 $ cd $ZSH_CUSTOM/plugins/autojump
 $ ./install.py # 必须包含 python 环境
@@ -105,7 +113,11 @@ $ ./install.py # 必须包含 python 环境
 ```bash
 # ~/.zshrc
 plugins=(
+<<<<<<< HEAD
     git
+=======
+	git
+>>>>>>> aa1bb941897fb6d7eff7df67597291be9f73cce6
     zsh-syntax-highlighting
     zsh-autosuggestions
     autojump
@@ -122,11 +134,16 @@ $ chsh -s /bin/zsh # 生效需 reboot后
 > :warning: 当我们把默认终端设为 bash 后，我们会发现 .bashrc 不被加载了，所以在 .bashrc 里面安装的一些环境变量在 zsh 也无法使用了。因此如果想在两边的环境变量配置都生效的话，就把这些配置写在 `~/.profile` 里面。
 
 但是 zsh 启动的时候默认也不会加载 ~/.profile，因此需要手动在配置里面加载
+<<<<<<< HEAD
+=======
+
+>>>>>>> aa1bb941897fb6d7eff7df67597291be9f73cce6
 ```bash
 # ~/.zshrc
 + [[ -e ~/.profile ]] && emulate sh -c 'source ~/.profile'
 ```
 
+<<<<<<< HEAD
 
 6. 配置 powerlevel10 主题
 
@@ -152,6 +169,8 @@ cd nerd-fonts
 
 
 
+=======
+>>>>>>> aa1bb941897fb6d7eff7df67597291be9f73cce6
 ### clash
 
 clash 是一个管理代理的工具，在 windows/macos上都有图形化界面，在 linux 上可能更多还是在命令行中配置
@@ -244,6 +263,7 @@ $ source ~/.bashrc # 初始会存在一个 base 环境
 $ conda config --set auto_activate_base false # 配置默认不进入base环境(即不存在python环境)
 ```
 
+<<<<<<< HEAD
 以上是基于 anaconda 的安装过程，但是整体 anaconda 体积比较大，而作为web开发工作者其实并不需要包含这么多机器学习相关依赖，因此可以考虑下载 `miniconda`
 
 ```bash
@@ -254,6 +274,9 @@ $ zsh Miniconda3-latest-Linux-x86_64.sh
 
 
 > 常用命令
+=======
+3. 常用命令
+>>>>>>> aa1bb941897fb6d7eff7df67597291be9f73cce6
 
 ```bash
 #创建虚拟环境
