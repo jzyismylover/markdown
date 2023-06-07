@@ -52,6 +52,48 @@ Categories=AudioVideo;
 
 ## 软件安装
 
+### docker
+
+**[教程](https://phoenixnap.com/kb/install-docker-on-ubuntu-20-04)**
+
+1. 准备工作
+
+```bash
+$ sudo apt update
+$ sudo apt install apt-transport-https ca-certificates curl software-properties-common -y # 下载docker必要包
+$ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - #将Docker存储库GPG密钥添加到您的系统中
+```
+
+2. 添加 docker 仓库到下载源
+
+```bash
+$ sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"	
+$ apt-cache policy docker-ce
+```
+
+3. 下载 docker
+
+```bash
+$ sudo apt install docker-ce -y
+$ sudo systemctl status docker
+```
+
+> 下载完成之后其实每次运行 docker 都需要 sudo，因为默认 docker 属于 docker 组，因此除了 root / docker其他不能进行读写，因此把当前用户加入组即可
+
+```bash
+$ sudo usermod -aG docker ${USER}
+$ sudo systemctl restart docker
+```
+
+4. 安装 docker-compose  [**参考**](https://www.51cto.com/article/715086.html)
+
+```bash
+$ sudo curl -L "https://github.com/docker/compose/releases/download/v2.6.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose # 版本可替换为最新
+$ sudo chmod +x /usr/local/bin/docker-compose
+```
+
+
+
 ### vscode
 
 vscode 的安装总体较为简单，对应在官网下载对应的 deb 包然后安装即可
@@ -86,25 +128,16 @@ $  wget sh -c "$(wget https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/t
 ZSH_THEME='agnoster'
 ```
 
-<<<<<<< HEAD
 > 主题配置后会出现终端无法显示主题图标问题，搜索后发现是字体类型不对，因此需要重新下载 [Ubuntu mono](https://github.com/powerline/fonts/blob/master/UbuntuMono/Ubuntu%20Mono%20derivative%20Powerline%20Bold.ttf) 并完成安装，在 终端`preference/unnamed/text`下面选择该字体并重新启动当前终端，当然下载该字体应用前需要下载 powerline 支持
 ```bash
 $ sudo apt-get install fonts-powerline
 ```
 
-=======
-> 主题配置后会出现终端无法显示主题图标问题，搜索后发现是字体类型不对，因此需要重新下载 [Ubuntu mono](https://github.com/powerline/fonts/blob/master/UbuntuMono/Ubuntu%20Mono%20derivative%20Powerline%20Bold.ttf) 并完成安装，在 终端`preference/unnamed/text`下面选择该字体并重新启动当前终端
->>>>>>> aa1bb941897fb6d7eff7df67597291be9f73cce6
-
 4. 配置 oh-my-zsh 插件
 
 ```bash
 $ git clone https://github.com/zsh-users/zsh-autosuggestions $ZSH_CUSTOM/plugins/zsh-autosuggestions
-<<<<<<< HEAD
 $ git clone https://github.com/zsh-users/zsh-syntax-highlighting $ZSH_CUSTOM/plugins/zsh-syntax-highlighting
-=======
-$ git clone https://github.com/zsh-users/zsh-syntax-highlighting $ZSH_CUSTOM/plugins/zsh-autosuggestions
->>>>>>> aa1bb941897fb6d7eff7df67597291be9f73cce6
 $ git clone https://github.com/wting/autojump $ZSH_CUSTOM/plugins/autojump
 $ cd $ZSH_CUSTOM/plugins/autojump
 $ ./install.py # 必须包含 python 环境
@@ -113,11 +146,7 @@ $ ./install.py # 必须包含 python 环境
 ```bash
 # ~/.zshrc
 plugins=(
-<<<<<<< HEAD
     git
-=======
-	git
->>>>>>> aa1bb941897fb6d7eff7df67597291be9f73cce6
     zsh-syntax-highlighting
     zsh-autosuggestions
     autojump
@@ -134,16 +163,11 @@ $ chsh -s /bin/zsh # 生效需 reboot后
 > :warning: 当我们把默认终端设为 bash 后，我们会发现 .bashrc 不被加载了，所以在 .bashrc 里面安装的一些环境变量在 zsh 也无法使用了。因此如果想在两边的环境变量配置都生效的话，就把这些配置写在 `~/.profile` 里面。
 
 但是 zsh 启动的时候默认也不会加载 ~/.profile，因此需要手动在配置里面加载
-<<<<<<< HEAD
-=======
 
->>>>>>> aa1bb941897fb6d7eff7df67597291be9f73cce6
 ```bash
 # ~/.zshrc
 + [[ -e ~/.profile ]] && emulate sh -c 'source ~/.profile'
 ```
-
-<<<<<<< HEAD
 
 6. 配置 powerlevel10 主题
 
@@ -169,8 +193,6 @@ cd nerd-fonts
 
 
 
-=======
->>>>>>> aa1bb941897fb6d7eff7df67597291be9f73cce6
 ### clash
 
 clash 是一个管理代理的工具，在 windows/macos上都有图形化界面，在 linux 上可能更多还是在命令行中配置
@@ -221,6 +243,172 @@ socks4 	127.0.0.1 7890
 $ proxychains4 sudo apt-get update
 ```
 
+### wechat
+
+1. 基于 `bestwu/wechat` 镜像
+
+```yaml
+version: '3'
+networks:
+  wechat:
+    driver: bridge
+    name: wechat
+
+services:
+  wechat:
+    image: bestwu/wechat
+    container_name: wechat
+    networks:
+      - wechat # 自定义网络
+    devices:
+      - /dev/snd # 声卡
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix 
+      - $HOME/WeChatFiles:/WeChatFiles # 文件存储
+    environment:
+      - DISPLAY=unix$DISPLAY
+      - QT_IM_MODULE=ibus # 基于系统使用的是 ibus
+      - XMODIFIERS=@im=ibus
+      - GTK_IM_MODULE=ibus
+      - AUDIO_GID=63 # 可选 默认63（fedora） 主机audio gid 解决声音设备访问权限问题
+      - GID=1000 # 可选 默认1000 主机当前用户 gid 解决挂载目录访问权限问题
+      - UID=1000 # 可选 默认1000 主机当前用户 uid 解决挂载目录访问权限问题
+```
+
+> 但其实使用的时候会发现有很多问题，包括截图无法正常发送，要拷贝到 wechatFiles/fileStorage/Files 目录下然后在 wechat 上上传才可以。而且凡是涉及到文件传输就会出现闪退，实用性不高！
+
+2. 基于`zixia/wechat` 镜像
+
+```dockerfile
+docker run \
+  --name DoChat \
+  --rm \
+  -i \
+  \
+  -v "$HOME/DoChat/WeChat Files/":'/home/user/WeChat Files/' \
+  -v "$HOME/DoChat/Applcation Data":'/home/user/.wine/drive_c/users/user/Application Data/' \
+  -v /tmp/.X11-unix:/tmp/.X11-unix \
+  \
+  -e DISPLAY \
+  \
+  -e XMODIFIERS=@im=ibus \
+  -e GTK_IM_MODULE=ibus \
+  -e QT_IM_MODULE=ibus \
+  -e GID=1000 \
+  -e UID=1000 \
+  \
+  --ipc=host \
+  --privileged \
+  \
+  zixia/wechat
+```
+
+
+
+### typora
+
+> 非常好用的markdown编辑工具
+
+1. 安装
+
+```bash
+$ sudo snap install typora
+```
+
+可通过命令行安装也可以通过 software 可视化安装，安装完其实激活就可以使用。
+
+使用的时候其实我之前一直觉得比较鸡肋的地方就是里面我放了截图，但实际发给别人的时候就看不到这些截图了。但实际可以通过 **[picgo](https://picgo.github.io/PicGo-Core-Doc/zh/guide/commands.html#config-set)** 来解决这个问题。
+
+```bash 
+$ npm install -g picgo
+```
+
+- 选择图床远程仓库
+
+```bash
+$ picgo use
+```
+
+- 配置模块内容
+
+```bash
+$ picgo set uploader
+```
+
+- 最终配置
+
+```json
+{
+  "picBed": {
+    "uploader": "github",
+    "current": "github",
+    "transformer": "path",
+    "gitee": {
+      "owner": "jzy",
+      "repo": "https://gitee.com/jzyislover/typora-image-store.git",
+      "path": "",
+      "token": "",
+      "message": ""
+    },
+    "github": {
+      "repo": "jzyismylover/picgo-image-store",
+      "branch": "master",
+      "token": "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",
+      "path": "images_", // 指定了图片前缀
+      "customUrl": "n"
+    }
+  },
+  "picgoPlugins": {
+    "picgo-plugin-gitee": false // gitee图床插件
+  }
+}
+
+```
+
+
+
+> :warning: 实际完成上面在 typora 配置的时候就遇到问题了
+
+<img src="https://s2.loli.net/2023/06/07/3jOEDBkP1UuvY5g.png" alt="Screenshot from 2023-06-07 00-21-37"  />
+
+因为是基于 `picgo-core` ，因此只能使用自定义命令（**格式是 [node] [picgo] u**)，但是由于 `typora` 使用 snap 安装，并没有权限读取除了 ~/snap & ~/media 外的其他目录，因此在实际验证图片上传选项会出现 `permission denine`。解决的方案：
+
+```bash 
+# 先使用硬链接保证能访问 node 
+$ ln $(which node) ~/snap/typora/80/node
+```
+
+用同样的方式链接 `picgo` 发现不行，因为啊其实 `$(which picgo)` 其实是一个软链接文件，作为快捷方式访问由于 `snap` 依然无权限
+
+```bash
+$ cd /home/jzy/.nvm/versions/node/v18.16.0/bin/      
+$ ll
+total 87M
+lrwxrwxrwx 1 jzy jzy  45  4月 12 13:31 corepack -> ../lib/node_modules/corepack/dist/corepack.js
+lrwxrwxrwx 1 jzy jzy  43  5月 22 15:48 nest -> ../lib/node_modules/@nestjs/cli/bin/nest.js
+-rwxr-xr-x 2 jzy jzy 87M  4月 12 13:31 node
+lrwxrwxrwx 1 jzy jzy  38  4月 12 13:31 npm -> ../lib/node_modules/npm/bin/npm-cli.js
+lrwxrwxrwx 1 jzy jzy  38  4月 12 13:31 npx -> ../lib/node_modules/npm/bin/npx-cli.js
+*lrwxrwxrwx 1 jzy jzy  35  6月  6 21:08 picgo -> ../lib/node_modules/picgo/bin/picgo
+lrwxrwxrwx 1 jzy jzy  37  6月  6 16:34 pnpm -> ../lib/node_modules/pnpm/bin/pnpm.cjs
+lrwxrwxrwx 1 jzy jzy  37  6月  6 16:34 pnpx -> ../lib/node_modules/pnpm/bin/pnpx.cjs
+lrwxrwxrwx 1 jzy jzy  38  6月  1 18:21 tsc -> ../lib/node_modules/typescript/bin/tsc
+lrwxrwxrwx 1 jzy jzy  43  6月  1 18:21 tsserver -> ../lib/node_modules/typescript/bin/tsserver
+```
+
+因此采取的解决方案就是整体进入到 `../lib/node_modules`
+
+```bash
+$ cp -r picgo ~/snap/typora/80/picgo
+```
+
+然后配置 `command line` ，然后就 ok 了！
+
+```bash
+# ~ 指的是 ~/snap/typora/80
+~/node ~/picgo/bin/picgo u
+```
+
 
 
 
@@ -263,8 +451,9 @@ $ source ~/.bashrc # 初始会存在一个 base 环境
 $ conda config --set auto_activate_base false # 配置默认不进入base环境(即不存在python环境)
 ```
 
-<<<<<<< HEAD
-以上是基于 anaconda 的安装过程，但是整体 anaconda 体积比较大，而作为web开发工作者其实并不需要包含这么多机器学习相关依赖，因此可以考虑下载 `miniconda`
+
+
+> :warning: 以上 是基于 anaconda 的安装过程，但是整体 anaconda 体积比较大，而作为web开发工作者其实并不需要包含这么多机器学习相关依赖，因此可以考虑下载 `miniconda`。`miniconda`体积小，仅仅包含基础的 conda 以及 python 环境。
 
 ```bash
 $ wget -c https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
@@ -272,12 +461,7 @@ $ chmod +x Miniconda3-latest-Linux-x86_64.sh
 $ zsh Miniconda3-latest-Linux-x86_64.sh
 ```
 
-
-> 常用命令
-=======
 3. 常用命令
->>>>>>> aa1bb941897fb6d7eff7df67597291be9f73cce6
-
 ```bash
 #创建虚拟环境
 conda create -n your_env_name python=X.X（3.6、3.7等）
@@ -319,3 +503,4 @@ conda update --all
 conda update python
 ```
 
+![]()
