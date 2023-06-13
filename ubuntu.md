@@ -503,4 +503,75 @@ conda update --all
 conda update python
 ```
 
-![]()
+
+
+## 命令
+
+
+
+### xrandr
+
+`xrandr`可以用于查看当前显示器的信息（包括当前屏幕和外接屏幕）。
+
+> 实际在设置屏幕扩展或者复制的时候不能像 windows 一样通过 UI 进行操作，因此需要基于 `xrandr` 手动操作
+
+- `xrandr` 输出
+
+```bash
+$ xrandr
+Screen 0: minimum 16 x 16, current 1920 x 1080, maximum 32767 x 32767
+XWAYLAND0 connected primary 1920x1080+0+0 (normal left inverted right x axis y axis) 340mm x 190mm
+   1920x1080     59.96*+
+   1440x1080     59.87  
+   1400x1050     59.86  
+   1280x1024     59.89  
+   1280x960      59.94  
+   1152x864      59.78  
+   1024x768      59.92  
+   800x600       59.86  
+   640x480       59.38  
+   320x240       59.52  
+   1680x1050     59.95  
+   1440x900      59.89  
+   1280x800      59.81  
+   720x480       59.71  
+   640x400       59.20  
+   320x200       58.96  
+   1600x900      59.95  
+   1368x768      59.88  
+   1280x720      59.86  
+   1024x576      59.90  
+   864x486       59.92  
+   720x400       59.55  
+   640x350       59.77 
+```
+
+XWAYLAND0 就是目前计算机的显示器别名
+
+- 复制屏幕
+
+```bash
+# HDMI-1-1 为接入显示器后屏幕名
+$ xrandr --output HDMI-1-1 --same-as XWAYLAND0 --auto
+```
+
+- 设置 HDMI 为右扩展屏幕
+
+```bash
+$ xrandr --output HDMI-1-1 --right-of XWAYLAND0 --auto 
+```
+
+### [tmux](https://zhuanlan.zhihu.com/p/98384704)
+
+>  终端切换工具，非常好用！它的作用主要是创建一个脱离于当前终端的窗口使得会话与终端窗口分离，他则作为一个桥梁。
+
+```bash
+$ tmux new -s <name> # 创建一个窗口
+$ tmux detach # 退出当前 tmux 窗口
+$ tmux attach -t <name> # 重新进入 tmux 窗口(记录保留)
+$ tmux kill-session -t <name> # 彻底销毁 tmux 窗口
+$ tmux switch -t <name> # 在一个tmux窗口进入到另外一个tmux窗口
+```
+
+
+
