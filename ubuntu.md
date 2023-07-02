@@ -411,6 +411,71 @@ $ cp -r picgo ~/snap/typora/80/picgo
 
 
 
+### git
+
+1. 安装 `git`
+
+```bash
+$ sudo apt update
+$ sudo apt-get install git
+```
+
+2. 配置 `git`
+
+```bash
+$ git -v # 验证是否安装成功
+$ git config --global user.name "jzyismylover"
+$ git config --global user.email "3011543110@qq.com"
+```
+
+3. 生成密钥（连接 `github` / `gitlab` 仓库）
+
+```bash
+$ sudo apt install ssh
+$ ssh-keygen -t rsa -C "附加信息 一般为邮箱"
+```
+
+> 拓展：如何同时配置 `github` 和 `gitlab` 私钥
+
+1. `ssh-keygen` 先生成一个 `gitlab` 公私钥 `id_rsa`、`id_rsa.pub`
+2. `ssh-keygen` 在生成一个 `github` 公私钥
+
+```bash
+$ ssh-keygen -t rsa -C "3011543110@qq.com" -f ~/.ssh/github_rsa
+```
+
+此时会生成两个文件 `github_rsa` 和 `github_rsa.pub`
+
+3. 配置 `~/.ssh/config`
+
+```bash
+# github账号配置
+Host github.com 
+port 22 
+User git 
+HostName github.com 
+PreferredAuthentications publickey 
+IdentityFile ~/.ssh/github_rsa 
+
+# gitlab账号配置(HostName为公司gitlab地址) Host gitlab.com 
+port 22 
+User git 
+HostName gitlab.xxx.com User git 
+PreferredAuthentications publickey 
+IdentityFile ~/.ssh/id_rsa
+```
+
+对应参数[说明](https://daemon369.github.io/ssh/2015/03/21/using-ssh-config-file)：
+
+- Host：识别的模式，对识别的模式，配置对应的主机名和ssh文件 
+- Port 自定义的端口。默认为22，可不配置 
+- User 自定义的用户名，默认为git，可不配置 
+- HostName 真正连接的服务器地址 
+- PreferredAuthentications 指定优先使用哪种方式验证，支持密码和秘钥验证方式 
+- IdentityFile 指定本次连接使用的密钥文件
+
+
+
 
 
 ## 编程环境
