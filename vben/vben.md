@@ -41,6 +41,135 @@ UnwrapRef<Ref<number>> // number
 
 > 里面比较有意思 hooks 函数
 
+#### useMessage
+
+`useMessage` 主要是配置封装`antd` 消息组件以便在全局引入使用
+
+- `notifycation`
+
+```ts
+import { NotificationArgsProps, ConfigProps } from 'ant-design-vue/lib/notification';
+
+// Notifycation 组件提供的方法列表
+export interface NotifyApi {
+  info(config: NotificationArgsProps): void;
+  success(config: NotificationArgsProps): void;
+  error(config: NotificationArgsProps): void;
+  warn(config: NotificationArgsProps): void;
+  warning(config: NotificationArgsProps): void;
+  open(args: NotificationArgsProps): void;
+  close(key: String): void;
+  config(options: ConfigProps): void;
+  destroy(): void;
+}
+
+// 全局配置 notifycation 选项
+notification.config({
+  placement: 'topRight', // 出现位置
+  duration: 3, // 持续时间
+});
+```
+
+- `model` ：配置较多，主要需要区分 `图标`、`弹出类型`
+
+  - 定义 `model` 调用方法传入的参数类型
+
+    ```ts
+    export interface ModalOptionsEx extends Omit<ModalFuncProps, 'iconType'> {
+      iconType: 'warning' | 'success' | 'error' | 'info';
+    }
+    export type ModalOptionsPartial = Partial<ModalOptionsEx>;
+    ```
+
+  - 定义 `model` 组件 `icon`
+
+    ```ts
+    import { InfoCircleFilled, CheckCircleFilled, CloseCircleFilled } from '@ant-design/icons-vue';
+    
+    function getIcon(iconType: string) {
+      if (iconType === 'warning') {
+        return <InfoCircleFilled class="modal-icon-warning" />;
+      } else if (iconType === 'success') {
+        return <CheckCircleFilled class="modal-icon-success" />;
+      } else if (iconType === 'info') {
+        return <InfoCircleFilled class="modal-icon-info" />;
+      } else {
+        return <CloseCircleFilled class="modal-icon-error" />;
+      }
+    }
+    ```
+
+  - 定义 `model` 内容渲染函数（需要区分是 `组件类型` 还是`普通文本` ） 
+
+    ```ts
+    function renderContent({ content }: Pick<ModalOptionsEx, 'content'>) {
+      if (isString(content)) {
+        return <div innerHTML={`<div>${content as string}</div>`}></div>;
+      } else {
+        return content;
+      }
+    }
+    ```
+
+  - 定义 `model` 基础配置，如 `确认按钮文字` 、`是否垂直居中`，同时提供一个 `options` 创建函数，合并 `baseOptions` 以及外部传入的参数
+
+    ```ts
+    const getBaseOptions = () => {
+      const { t } = useI18n();
+      return {
+        okText: t('common.okText'), // 确认按钮文字
+        centered: true, // 垂直剧中展示 Modal 
+      };
+    };
+    
+    // 初始化配置
+    function createModalOptions(options: ModalOptionsPartial, icon: string): ModalOptionsPartial {
+      return {
+        ...getBaseOptions(),
+        ...options,
+        content: renderContent(options),
+        icon: getIcon(icon),
+      };
+    }
+    ```
+
+  - 有了配置信息，就是去创建对应的实例方法以便直接导出使用
+
+    ```ts
+    function createConfirm(options: ModalOptionsEx) {
+      const iconType = options.iconType || 'warning';
+      Reflect.deleteProperty(options, 'iconType');
+      const opt: ModalFuncProps = {
+        centered: true,
+        icon: getIcon(iconType),
+        ...options,
+        content: renderContent(options),
+      };
+      return Modal.confirm(opt);
+    }
+    
+    function createSuccessModal(options: ModalOptionsPartial) {
+      return Modal.success(createModalOptions(options, 'success'));
+    }
+    
+    function createErrorModal(options: ModalOptionsPartial) {
+      return Modal.error(createModalOptions(options, 'close'));
+    }
+    
+    function createInfoModal(options: ModalOptionsPartial) {
+      return Modal.info(createModalOptions(options, 'info'));
+    }
+    
+    function createWarningModal(options: ModalOptionsPartial) {
+      return Modal.warning(createModalOptions(options, 'warning'));
+    }
+    
+    ```
+
+    
+
+
+
 ### vue-router
 
 > 初始化实例
@@ -395,10 +524,10 @@ export default defineComponent({
 
 ```text
 cache
-├─index.ts
-├─memeory.ts
-├─persistent.ts
-└storageCache.ts
+├─index.ts # 导出创建 storage 方法
+├─memeory.ts # 内存 cache
+├─persistent.ts # 导出实际更新存储的方法
+└storageCache.ts # 浏览器 storage
 ```
 
 ![image-20230630173828177](/home/jzy/Documents/markdown/vben/vben.assets/image-20230630173828177.png)
@@ -420,6 +549,53 @@ padding - 偏移
 - `set`：设置缓存内容，设定缓存的设定时间 `time` 以及可持续时间 `expire`
 - `remove`：根据 `key` 值删除缓存中的内容
 - `clear`：清除缓存的所有内容
+
+
+
+`localStorage` 的存储形式（同时也是需要进行`加密存储` 的数据）
+
+```ts
+// 枚举类型 —— 浏览器缓存 key = VUE_VBEN_ADMIN__DEVELOPMENT__2.8.0__COMMON__LOCAL__KEY__ 的 value键集合
+
+interface BasicStore {
+  [TOKEN_KEY]: string | number | null | undefined; // token
+  [USER_INFO_KEY]: UserInfo; // 用户信息
+  [ROLES_KEY]: string[]; // 用户角色
+  [LOCK_INFO_KEY]: LockInfo; // 🔓
+  [PROJ_CFG_KEY]: ProjectConfig; // 项目配置
+  [MULTIPLE_TABS_KEY]: RouteLocationNormalized[]; // tabs
+}
+```
+
+```json
+{
+    "value":{
+        "TOKEN__":Object{...},
+        "ROLES__KEY__":Object{...},
+        "USER__INFO__":Object{...},
+        "PROJ__CFG__KEY__":Object{...}
+    },
+    "time":1688351157733,
+    "expire":1688955957733
+}
+```
+
+创建 `storage` 可配置传入的参数
+
+```json
+{
+      prefixKey: string; # 存储 key 前缀
+      storage: Storage; # 使用哪种浏览器存储模式
+      hasEncrypt: boolean; # 当前内容是否已经加密
+      timeout?: Nullable<number>; # 内存缓存的持续时间
+      key: string; # 加密密钥
+      iv: string # 初始加密向量
+}
+```
+
+
+
+
 
 🔐 内存存储
 
@@ -449,7 +625,11 @@ export interface Cache<V = any> {
 
    - `reset`：删除过期 `key` 及其对应定时器
 
-2.  `get` 函数返回的是 `Cache<T>` | `undefined`，因此凡是在使用的时候都需要判断返回值是否为 `undefined`
+2. `get` 函数返回的是 `Cache<T>` | `undefined`，因此凡是在使用的时候都需要判断返回值是否为 `undefined`
+
+
+
+
 
 
 
@@ -581,6 +761,84 @@ interface RequestOptions {
 
 
 
+## css attribute
+
+- `vertical-align`: 指定行内元素（inline）或表格单元格（table-cell）元素的垂直对齐方式。
+
+- `currentColor`：代表一个当前元素的颜色变量，若当前元素没有设置 `color` 属性可从父级继承。
+
+  ```css
+  fill: currentColor; /* svg 颜色填充由父级决定，可有效减少代码荣誉 */
+  ```
+
+- `data-*属性`：允许在标准、语义化的 HTML 元素中存储额外的信息 [MDN](https://developer.mozilla.org/zh-CN/docs/Learn/HTML/Howto/Use_data_attributes)
+
+  ```html
+  <article
+    id="electriccars"
+    data-columns="3"
+    data-index-number="12314"
+    data-parent="cars">
+  ...
+  </article>
+  ```
+
+  在 js 中可通过 `dom.dataset` 获取，`article.dataset.columns`、`article.dataset.indexNumber`、`article.dataset.parent`
+
+  在 css 中可通过属性选择器根据 `data` 改变样式
+
+  ```css
+  article[data-columns='3'] {
+    width: 400px;
+  }
+  article[data-columns='4'] {
+    width: 600px;
+  }
+  ```
+
+  而在项目中，则是使用该特性来实现 `暗黑模式` 样式切换
+
+- `will-change`：告知浏览器该元素会有哪些变化的方法，浏览器可以在元素真正发生变化前提前做好对应的优化准备工作
+
+  ```css
+  will-change: transform /* 不应将 will-change 应用与过多元素 */
+  ```
+
+  
+
+
+
+
+
+
+
+## svg
+
+> svg —— 可缩放矢量图形，可渲染不同大小的图形。与 `png`、`jpg` 不同，`svg` 格式提供的是矢量图，图像能够被无限放大而不失真或降低质量，并且可以方便地修改内容。 [svg 元素列表](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element)
+
+### use
+
+`use` 可以复用 `svg` 中定义的节点并覆盖其属性`。x, y, width, height，href` 这几个属性，不管源元素是否有设置，都可以覆盖。 而其他属性，如果源 素已经设置，则无法覆盖，如果没有设置，则可以在 use 上设置。
+
+```html
+    <svg viewBox="0 0 30 10" xmlns="http://www.w3.org/2000/svg">
+      <circle id="myCircle" cx="5" cy="5" r="4" stroke="blue" />
+      <!-- <use href="#myCircle" x="10" fill="blue" /> -->
+      <!-- <use href="#myCircle" x="20" fill="white" stroke="red" /> -->
+    </svg>
+    <svg viewBox="0 0 30 10" xmlns="http://www.w3.org/2000/svg">
+      <!-- <circle id="myCircle" cx="5" cy="5" r="4" stroke="blue" /> -->
+      <use href="#myCircle" x="10" fill="blue" />
+      <use href="#myCircle" x="20" fill="white" stroke="red" />
+    </svg>
+```
+
+上面即使 `use` 和 `circle` 并不在一个 `svg` 标签内部，但仍然可以复用内容，因此可以理解 `use` 的范围是 `html`
+
+
+
+
+
 
 
 ## windi-css
@@ -687,8 +945,6 @@ function createEnterPlugin(maxOutput = 7) {
 ```
 
 上面的配置是 `vben admin` 的配置，具体理解每一项配置得深入学习
-
-
 
 
 
@@ -834,6 +1090,38 @@ hover:<css>
 
 
 
+- 初始化 `vue-ts` 项目
+
+```bash
+$ pnpm create vite vue-ts-project --template vue-ts
+```
+
+- 集成 `typescript` 环境
+
+```bash
+$ pnpm add typescript @typescript-eslint/eslint-plugin @typescript-eslint/parser eslint eslint-plugin-vue -D
+```
+
+配置 `eslintrc`
+
+
+
+
+
+### 插件
+
+> 插件列表主要是拓展项目功能
+
+- `@vitejs/plugin-vue`：支持 `vue` 项目
+
+- `@vitejs/plugin-vue-jsx`：支持 `vue` 使用 `jsx` 或者 `tsx` 语法
+
+  在开发的时候遇到一个问题，经过了漫长的排错最终才发现是项目并不支持使用 `jsx` 语法
+
+  ```js
+  SyntaxError: expected expression, got '<'
+  ```
+
 ### glob
 
 `glob` 在 vite 中用于动态导入，构建时会分离为独立 chunk
@@ -856,6 +1144,10 @@ for (const path in modules) {
   })
 }
 ```
+
+
+
+
 
 
 
@@ -989,7 +1281,14 @@ let value8: Function = value;  // Error
 
 ```
 
-顶层属性有 `compilerOptions`、`include`、`exclude`、`references`、`extends`、`files`
+🔐 顶层属性有 `compilerOptions`、`include`、`exclude`、`references`、`extends`、`files`。其中 `compilerOptions` 为编译选项，后面的都是非编译选项
+
+- 编译选项：编译过程中的行为
+- 非编译选项：控制的是 `typescript` 编译器要编译的项目（文件）信息
+
+[声明文件选项](https://pengfeixc.com/blogs/javascript/tsconfig) —— 这篇文章对于某些选项的讲解我觉得比较好
+
+
 
 - `compilerOptions Language and Enviroment`  
 
@@ -1046,7 +1345,7 @@ let value8: Function = value;  // Error
   ```
 
   - **resolveJsonModule**：允许导入 `json` 文件，`ts` 默认不支持导入 `json` 文件，因此该选项经常需要我们重置为 `true`
-  - **types**：ts 编译器会默认引入 `typeRoot` 下所有的声明文件，`type` 可以通过指定模块名只引入想要的模块
+  - **types**：ts 编译器会默认引入 `typeRoot` 下所有的声明文件，`types` 可以通过指定模块名只引入想要的模块
   - **typeRoots**：指定默认的类型声明文件查找路径，默认为 `node_modules/@types`，指定 `typeRoots` 后，typescript 编译器会从指定路径引入声明路径
 
   :warning: `types` 和 `typeRoots` 只对 npm 安装的声明模块有效
@@ -1228,3 +1527,22 @@ element {
 
 
 
+## eslint / prettier
+
+[宝藏配置](http://www.huhaowb.com/2022/10/11/vite%E5%88%9B%E5%BB%BAVue3%E9%A1%B9%E7%9B%AE%E9%85%8D%E7%BD%AEESLint/)： 覆盖了绝大部分的 `eslint` 、`prettier` 配置，非常好的一篇文章
+
+- 依赖安装
+
+```bash
+$ pnpm install eslint eslint-plugin-vue @typescript-eslint/eslint-plugin @typescript-eslint/parser prettier eslint-config-prettier eslint-plugin-prettier
+-D
+```
+
+- `prettier`：prettier的核心代码 
+- `eslint-config-prettier`：这将禁用 ESLint 中的格式化规则，而 Prettier 将负责处理这些规则
+- `eslint-plugin-prettier` ：把 Prettier 推荐的格式问题的配置以 ESLint rules 的方式写入，统一代码问题的来源。
+-  `eslint`： ESLint的核心代码 
+- `@typescript-eslint/parser` ：SLint的解析器，用于解析typescript，从而检查和规范Typescript代码 
+- `@typescript/eslint/eslint-plugin`：包含了各类定义好的检测Typescript代码的规范 
+- `eslint-plugin-vue `：支持对vue文件检验 [规则集](https://eslint.vuejs.org/rules/max-len.html)
+-  `vite-plugin-eslint`：错误将在浏览器中报告，而不止在终端，按需使用
