@@ -2,6 +2,28 @@
 
 > 初始安装 ubuntu 时遇到的一些问题，包括对一些目录、应用安装、环境配置等一些解决方案
 
+
+
+## 存储库
+
+> ubuntu 软件有多种形式可用 DEB软件包，AppImage，Flatpak Snap…
+
+实际在 `apt install` 的时候 `ubuntu` 会从 `main` 存储库寻找下载内容 —— 通常这些安装包都是 `ubuntu` 社区在维护
+
+对于一些第三方包，可以通过`添加软件仓库`来保证在安装的时候能够检索到对应的包
+
+```bash
+$ sudo add-apt-repository [repository-link]
+```
+
+具体来说：
+
+- 添加新的软件源到系统中。`软件源`是一个网络服务器，存储着一组软件包，用户可以从中下载和安装软件。添加新的软件源可以扩展系统的软件包选择范围。
+- 自动更新系统的软件源列表。这样，系统就知道从哪些软件源获取软件包的更新和安装
+- 在添加新的软件源时自动导入软件源的 `GPG` 密钥。`GPG` 密钥用于验证软件包的完整性和真实性，确保用户安装的软件没有被篡改
+
+
+
 ## 目录
 
 ### /etc/shells
@@ -476,13 +498,38 @@ IdentityFile ~/.ssh/id_rsa
 
 
 
+### ffmpeg
+
+`FFmpeg` 是一个自由的开放源代码工具集，用于处理多媒体文件。它包含一组共享的音频和视频库，例如 `libavcodec`，`libavformat`和`libavutil`。使用`FFmpeg`，您可以在各种视频和音频格式之间转换，设置采样率，捕获流音频/视频以及调整视频大小。 [docs](https://www.ffmpeg.org/ffmpeg.html)
+
+```bash
+$ sudo apt update
+$ sudo apt install ffmpeg
+$ ffmpeg -version
+$ ffmpeg -encoders
+```
+
+- 将 `mp4` 转换为 `webm`
+
+  ```bash
+  $ ffmpeg -i input.mp4 output.webm
+  ```
+
+- 将 `mp3` 转换为 `ogg`
+
+  ```bash
+  $ ffmpeg -i input.mp3 output.ogg
+  ```
+
+  
+
 
 
 ## 编程环境
 
 ### nvm
 
-nvm是一个可以在系统中切换node版本的工具，相比单独安装node.exe更加方便可定制性更高
+nvm 是一个可以在系统中切换node版本的工具，相比单独安装node.exe 更加方便可定制性更高
 
 ```bash
 $ wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | zsh
