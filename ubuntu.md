@@ -244,10 +244,10 @@ proxychains 是一个强大的代理工具(在终端也能进行指定代理服�
 1. 安装 proxychains4
 
 ```bash
-$ sudo apt-get install proxychians4
+$ sudo apt-get install proxychains4
 ```
 
-2. 修改 `/etc/proxychains4.conf`，在 ProxyList 下面修改对应连接协议的端口为 clash代理端口(前提是clash必须得先启动了)
+2. 修改 `/etc/proxychains4.conf`，在 `ProxyList` 下面修改对应连接协议的端口为 clash代理端口(前提是clash必须得先启动了)
 
 ```text
 [ProxyList]
@@ -259,7 +259,7 @@ socks5  127.0.0.1 7890
 socks4 	127.0.0.1 7890
 ```
 
-3. 在每个需要走代理的命令前加上 proxychains4 即可
+3. 在每个需要走代理的命令前加上 `proxychains4` 即可
 
 ```bash
 $ proxychains4 sudo apt-get update
@@ -617,6 +617,134 @@ conda update python
 
 
 
+### compose
+
+> docker-compose 启动应用 mysql、wechat、redis、nginx
+
+- `mysql`
+
+  ```yml
+  version: "3"
+  
+  services:
+    mysql:
+      image: mysql
+      # restart: always
+      container_name: mysql
+      environment:
+        MYSQL_ROOT_PASSWORD: jzy
+        TZ: Asia/Shanghai
+      ports:
+        - 5506:3306
+      volumes:
+        - ~/docker-compose/mysql/data:/var/lib/mysql
+        - ~/docker-compose/mysql/config/my.cnf:/etc/mysql/my.cnf
+      command: 
+        --max_connections=1000
+        --character-set-server=utf8mb4
+        --collation-server=utf8mb4_general_ci
+        --default-authentication-plugin=mysql_native_password
+  ```
+
+- `wechat`
+
+  ```yml
+  version: '2'
+  networks:
+    wechat:
+      driver: bridge
+      name: wechat
+  
+  services:
+    wechat:
+      image: bestwu/wechat
+      container_name: wechat
+      networks:
+        - wechat
+      devices:
+        - /dev/snd
+      volumes:
+        - /tmp/.X11-unix:/tmp/.X11-unix
+        - $HOME/WeChatFiles:/WeChatFiles
+      environment:
+        - DISPLAY=unix$DISPLAY
+        - QT_IM_MODULE=ibus
+        - XMODIFIERS=@im=ibus
+        - GTK_IM_MODULE=ibus
+        - AUDIO_GID=63 # 可选 默认63（fedora） 主机audio gid 解决声音设备访问权限问题
+        - GID=1000 # 可选 默认1000 主机当前用户 gid 解决挂载目录访问权限问题
+        - UID=1000 # 可选 默认1000 主机当前用户 uid 解决挂载目录访问权限问题
+  ```
+
+- `redis`
+
+  - `download` redis [配置文件](https://download.redis.io/releases/) 并修改
+
+  ```yml
+  ### 指定redis绑定的主机地址，注释掉这部分，使redis可以外部访问
+      # bind 127.0.0.1 -::1
+  ### 指定访问redis服务端的端口
+      port 6379
+  ### 指定客户端连接redis服务器时，当闲置的时间为多少（如300）秒时关闭连接（0表示禁用）
+      timeout 0
+  ### 默认情况下，Redis不作为守护进程运行。如果需要，请使用“yes”
+      daemonize no
+  ### 给redis设置密码，不需要密码的话则注释
+      # requirepass foobared
+  ### 开启redis持久化，默认为no
+      appendonly yes
+  ```
+
+  - `compose` 启动文件
+
+  ```yml
+  version: '3.4'
+  
+  services:
+    redis:
+      image: redis:7.0.2-alpine # 指定服务镜像，最好是与之前下载的redis配置文件保持一致
+      container_name: redis # 容器名称
+      restart: on-failure # 重启方式
+      environment:
+        - TZ=Asia/Shanghai # 设置时区
+      volumes: # 配置数据卷
+        - ~/docker-compose/redis/data:/data
+        - ~/Download/software/redis-7.0.2/redis.conf:/etc/redis/redis.conf
+      ports: # 映射端口
+        - "6379:6379"
+      sysctls: # 设置容器中的内核参数
+        - net.core.somaxconn=1024
+      command: redis-server /etc/redis/redis.conf --appendonly yes --requirepass jzyismylover # 指定配置文件并开启持久化
+      privileged: true # 使用该参数，container内的root拥有真正的root权限。否则，container内的root只是外部的一个普通用户权限
+  ```
+
+- `nginx`
+
+  ```yml
+  version: '3'
+  
+  networks:
+    nginx:
+       external: true
+       name: nginx
+          
+  services:
+    nginx:
+      image: nginx:latest
+      ports:
+        - 8088:80
+      volumes:
+        - /home/jzy/nginx:/etc/nginx
+      networks:
+        - nginx
+  ```
+
+  
+
+
+
+
+
 ## 命令
 
 
@@ -686,4 +814,27 @@ $ tmux switch -t <name> # 在一个tmux窗口进入到另外一个tmux窗口
 ```
 
 
+
+## 快捷键
+
+> `super` 其实就是电脑上的 `win`
+
+
+
+- `super` ：打开活动搜索界面
+- `ctrl + alt + t`：打开终端
+- `super + l`：🔓屏
+- `super + d`：显示桌面
+- `super + a`：显示应用菜单
+- `super + tab / alt + tab`：应用切换
+- super + `：相同应用不同窗口切换
+- `super + 箭头`：移动窗口位置
+  - `super + <` 使当前窗口紧贴左边缘
+  - `super + >` 使当前窗口紧贴右边缘
+  - `super + 👆`  使当前窗口全屏
+  - `super + 👇`：使当前窗口缩小
+- `super + m`：切换到通知栏
+- `super + 空格`：切换输入法
+
+​	
 
