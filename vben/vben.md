@@ -942,3 +942,91 @@ module.exports = defineConfig({
 
 ```
 
+
+
+## 🔐 lint
+
+> `husky`、`lint-staged`、`commitlint`
+
+`eslint`、`prettier` 主要在工作区阶段对我们编写的代码进行格式限制，但实际并不影响代码执行，一旦 `git `提交到远程仓库，会混淆仓库内文件格式，导致别人在拉代码后报错（即使不影响执行，但爆红就很不好）。
+
+
+
+- `husky`：监听 `git` 各个钩子周期
+- `lint-staged`：针对暂存区的内容进行代码格式校验
+- `commitlint`：针对 `commit msg` 进行格式校验
+
+### husky
+
+- 依赖安装
+
+```bash
+$ pnpm install -D husky
+```
+
+- 配置 `npm install` 之前执行 `husky install`
+
+```json
+{
+   "script": {
+       "prepare": "husky install" 
+   }
+}
+```
+
+
+
+### lint-staged
+
+- 依赖安装
+
+```bash
+$ pnpm install -D lint-staged
+```
+
+- 配置文件 `lintstagedrc.js`
+
+```js
+module.exports = {
+  '*.{js,jsx,ts,tsx}': ['eslint --fix', 'prettier --write'],
+  '{!(package)*.json,*.code-snippets,.!(browserslist)*rc}': ['prettier --write--parser json'],
+  'package.json': ['prettier --write'],
+  '*.vue': ['eslint --fix', 'prettier --write'],
+  '*.md': ['prettier --write'],
+};
+```
+
+- 配置 `script` 钩子执行
+
+```json
+{
+    "script": {
+        "lint:lint-staged": "lint-staged -c ./.husky/lintstagedrc.js"
+    }
+}
+```
+
+- `pre-commit` 钩子执行 `lint-staged`
+
+```bash
+$ npx husky add .husky/pre-commit 'npm run lint:lint-staged' 
+```
+
+
+
+### commitlint
+
+- 依赖安装
+
+```bash
+$ pnpm install -D @commitlint/cli @commitlint/config-conventional
+```
+
+- `commit-msg` 钩子执行 `lint-staged`
+
+```bash
+$ npx husky add .husky/commit-msg "npx --no -- commitlint --edit $1"
+```
+
+
+
