@@ -281,6 +281,7 @@ export function useRuleFormItem<T extends Recordable>(
 
       innerState.value = value as T[keyof T];
       nextTick(() => {
+        // 保证 ant design 表单的 change 事件能够触发用于规则校验
         emit?.(changeEvent, value, ...(toRaw(unref(emitData)) || []));
       });
     },
@@ -317,7 +318,69 @@ const [state] = useRuleFormItem(props)
   onUpdate:value=((val) => formData.sms = val)
   ```
 
-  上面代码的思路其实就是跳过这个过程。**`props` 本身在子组件是 `readOnly`，但实际上也是在更新的**，而现在将 `state` 定义为 是 `innerState` 的 `computed` 属性， `formData.sms = state`  === `formData.sms = innerState.value`，`innerState` 的更新导致了组件的重渲染，重新触发 `state` 的 `get`方法值就更新了。
+  上面代码的思路其实就是跳过这个过程。**`props` 本身在子组件是 `readOnly`，但实际上也是在更新的**，`innerState`是对于 `props` 的引用 而现在将 `state` 定义为 是 `innerState` 的 `computed` 属性， `formData.sms = state`  === `formData.sms = innerState.value`，`innerState` 的更新导致了组件的重渲染，**重新读取模板数据**触发 `state` 的 `get`方法。
+
+
+
+#### useCountDown
+
+一个用于倒计时的 `hooks`
+
+- `currentCount`：保留给外部的倒计时当前值
+- `methods`：`start`、`reset`、`stop`、`clear` 对于倒计时本身的操作方法
+
+```ts
+export function useCountdown(count: number) {
+  const currentCount = ref(count);
+
+  const isStart = ref(false);
+
+  let timerId: ReturnType<typeof setInterval> | null;
+
+  function clear() {
+    timerId && window.clearInterval(timerId);
+  }
+
+  function stop() {
+    isStart.value = false;
+    clear();
+    timerId = null;
+  }
+
+  function start() {
+    if (unref(isStart) || !!timerId) {
+      return;
+    }
+    isStart.value = true;
+    timerId = setInterval(() => {
+      // 濒临结束
+      if (unref(currentCount) === 1) {
+        stop();
+        currentCount.value = count;
+      } else {
+        currentCount.value -= 1;
+      }
+    }, 1000);
+  }
+
+  function reset() {
+    currentCount.value = count;
+    stop();
+  }
+
+  function restart() {
+    reset();
+    start();
+  }
+
+  // vueuse-core
+  tryOnUnmounted(() => {
+    reset();
+  });
+
+  return { start, reset, restart, clear, stop, currentCount, isStart };
+}
+```
 
 
 
@@ -671,7 +734,7 @@ export default defineComponent({
 
 
 
-## 🔐 组件封装
+## 🔐 components
 
 项目在 `components` 内部封装了若干公共组件，包括 `Dropdown`、`Menu`……，以下主要从封装思路去描述
 
@@ -774,7 +837,7 @@ $ pnpm add typescript @typescript-eslint/eslint-plugin @typescript-eslint/parser
 
 
 
-### 插件
+### plugin
 
 > 插件列表主要是拓展项目功能
 
@@ -815,9 +878,11 @@ for (const path in modules) {
 
 
 
+## 🔐 lint
 
+>  `eslint` 、`prettier`、 `husky`、`lint-staged`、`commitlint`
 
-## 🔐 eslint / prettier
+### eslint
 
 [宝藏配置](http://www.huhaowb.com/2022/10/11/vite%E5%88%9B%E5%BB%BAVue3%E9%A1%B9%E7%9B%AE%E9%85%8D%E7%BD%AEESLint/)： 覆盖了绝大部分的 `eslint` 、`prettier` 配置，非常好的一篇文章
 
@@ -836,24 +901,6 @@ $ pnpm install eslint eslint-plugin-vue @typescript-eslint/eslint-plugin @typesc
 - `@typescript/eslint/eslint-plugin`：包含了各类定义好的检测Typescript代码的规范 
 - `eslint-plugin-vue `：支持对vue文件检验 [规则集](https://eslint.vuejs.org/rules/max-len.html)
 - `vue-eslint-parser`：这个解析器允许我们检测.vue文件的 `<template> `。
-
-
-
-- `prettier.config.js`
-
-```js
-module.exports = {
-  printWidth: 100, // 单行最大长度
-  semi: true, //  句尾默认添加分号
-  vueIndentScriptAndStyle: true, // 缩进Vue文件中脚本和样式
-  singleQuote: true, // 字符串使用单引号 
-  trailingComma: 'all', // 尾逗号
-  proseWrap: 'never', // 对于 markdown 文件来说不强制换行 https://github.com/prettier/prettier/issues/6766
-  htmlWhitespaceSensitivity: 'strict', 
-  endOfLine: 'auto', // 换行符跟随像
-};
-
-```
 
 
 
@@ -944,13 +991,24 @@ module.exports = defineConfig({
 
 
 
-## 🔐 lint
+- `prettier.config.js`
 
-> `husky`、`lint-staged`、`commitlint`
+```js
+module.exports = {
+  printWidth: 100, // 单行最大长度
+  semi: true, //  句尾默认添加分号
+  vueIndentScriptAndStyle: true, // 缩进Vue文件中脚本和样式
+  singleQuote: true, // 字符串使用单引号 
+  trailingComma: 'all', // 尾逗号
+  proseWrap: 'never', // 对于 markdown 文件来说不强制换行 https://github.com/prettier/prettier/issues/6766
+  htmlWhitespaceSensitivity: 'strict', 
+  endOfLine: 'auto', // 换行符跟随像
+};
+```
 
-`eslint`、`prettier` 主要在工作区阶段对我们编写的代码进行格式限制，但实际并不影响代码执行，一旦 `git `提交到远程仓库，会混淆仓库内文件格式，导致别人在拉代码后报错（即使不影响执行，但爆红就很不好）。
 
 
+> `eslint`、`prettier` 主要在工作区阶段对我们编写的代码进行格式限制，但实际并不影响代码执行，一旦 `git `提交到远程仓库，会混淆仓库内文件格式，导致别人在拉代码后报错（即使不影响执行，但爆红就很不好）。
 
 - `husky`：监听 `git` 各个钩子周期
 - `lint-staged`：针对暂存区的内容进行代码格式校验
