@@ -530,7 +530,50 @@ $ ffmpeg -encoders
   $ ffmpeg -i input.mp3 output.ogg
   ```
 
-  
+
+
+
+### vmware
+
+> 虚拟机软件，安装 `win`系统 用于补充 `ubuntu` 软件支持度不够问题 [安装教程](https://linuxhint.com/install-vmware-workstation-17-pro-ubuntu-22-04-lts/)
+
+密钥激活
+
+`4A4RR-813DK-M81A9-4U35H-06KND`
+
+`NZ4RR-FTK5H-H81C1-Q30QH-1V2LA`
+
+`JU090-6039P-08409-8J0QH-2YR7F`
+
+`4Y09U-AJK97-089Z0-A3054-83KLA`
+
+`4C21U-2KK9Q-M8130-4V2QH-CF810`
+
+`MC60H-DWHD5-H80U9-6V85M-8280D`
+
+
+
+在 `Ubuntu` 中，启动 `windows` 或者是其他系统都会出现 `VMware Linux - Could not open dev vmmon: No such file or directory.Please make sure that the kernel module vmmon` ，本质上是需要的组件需要签名后才能使用。准备一个可执行文件
+
+```sh
+#!/bin/bash
+
+filename_key="VMWARE16"
+cd /home/jzy/Documents/signature
+sudo openssl req -new -x509 -newkey rsa:2048 -keyout ${filename_key}.priv -outform DER -out ${filename_key}.der -nodes -days 36500 -subj "/CN=VMware/"
+sudo /usr/src/linux-headers-`uname -r`/scripts/sign-file sha256 ./${filename_key}.priv ./${filename_key}.der $(modinfo -n vmmon)
+sudo /usr/src/linux-headers-`uname -r`/scripts/sign-file sha256 ./${filename_key}.priv ./${filename_key}.der $(modinfo -n vmnet)
+sudo mokutil --import ${filename_key}.der 
+echo "NEXT STEPS: reboot > select 'Enroll MOK' > follow prompts to enter password > reboot"
+```
+
+- 执行文件完成组件签名就可以重启电脑然后选择 `Enroll Mok` 选项勾选即可
+
+```bash
+$ chomd 700 ./signature.sh
+$ ./signature.sh
+$ reboot
+```
 
 
 
