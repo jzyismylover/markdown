@@ -1,5 +1,9 @@
 # yu-terminal
 
+
+
+## fronted
+
 > 模仿开发：`~/Desktop/programmer/browser-terminal`
 
 浏览器终端，与 `桌面终端`类似，封装了若干内置功能通过命令行的形式调用，从功能来说，应该包含：
@@ -160,4 +164,44 @@ interface TerminalMethods {
 }
 ```
 
-实际上在 `writeTextOutput`、`writeOutput` 引用了响应式对象 `outputList`，这样在命令执行 `action` 方法后调用这两个方法就可以实现 `outputList` 数据的更新从而在终端上展示执行结果。
+ 实际上在 `writeTextOutput`、`writeOutput` 引用了响应式对象 `outputList`，这样在命令执行 `action` 方法后调用这两个方法就可以实现 `outputList` 数据的更新从而在终端上展示执行结果。
+
+
+
+## backend
+
+> 基于 `express` 、`mysql`、`redis` 开发终端后台，实现背景图片切换、音频获取、单词翻译等需要访问网络资源的功能
+
+```bash
+src 
+├─db.js # 连接数据库
+├─index.js # CloudBaseRunServer 实例创建(端口监听、路由注册)
+├─routes.js # 路由集合
+├─server.js # CloudBaseRunServer 实例定义
+├─thirdpart # 第三方网络资源
+|     ├─backgroundApi.js
+|     ├─neteaseMusicApi.js
+|     ├─baiduFanYi
+|     |     ├─baiduFanYiApi.js
+|     |     ├─index.html
+|     |     └md5.js
+├─service
+|    ├─musicService.js
+|    └userService.js
+├─model
+|   └user.js
+├─exception
+|     ├─errorCode.js
+|     └index.js
+├─controller
+|     ├─backgroundController.js
+|     ├─fanyiController.js
+|     ├─musicController.js
+|     └userController.js
+├─constant
+|    └index.js
+├─config
+|   ├─config.js
+|   └getConfig.js
+```
+
