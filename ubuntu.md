@@ -133,6 +133,46 @@ vscode 的安装总体较为简单，对应在官网下载对应的 deb 包然�
 $ sudo dpkg -i [.deb]
 ```
 
+- `setting.json` 配置
+
+```json
+{
+  //### Basic Setting ###
+  "terminal.integrated.defaultProfile.linux": "zsh",
+  "terminal.integrated.fontFamily": "MesloLGS NF",
+  "files.autoSave": "afterDelay",
+  "editor.formatOnPaste": true,
+  "editor.formatOnSave": true,
+  "explorer.confirmDelete": false,
+  "workbench.iconTheme": "vscode-icons",
+  "editor.detectIndentation": false,
+  "editor.tabSize": 2,
+  "editor.fontSize": 14.8,
+  "terminal.integrated.inheritEnv": false,
+  "http.proxyAuthorization": "false",
+
+  // ### Lint Setting ###
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[rust]": {
+    "editor.defaultFormatter": "rust-lang.rust-analyzer"
+  },
+  // ### Leetcode Setting ###
+  "leetcode.endpoint": "leetcode-cn",
+  "leetcode.workspaceFolder": "/home/jzy/Desktop/programmer/leetcode",
+  "leetcode.defaultLanguage": "javascript",
+  // ### Markdown Setting ###
+  "markdown.preview.fontSize": 15.5,
+  "markdown.preview.fontFamily": "MesloLGS NF",
+  "leetcode.hint.configWebviewMarkdown": false,
+  "leetcode.hint.commandShortcut": false
+}
+
+```
+
+
+
+
+
 ### zsh
 
 zsh 是比bash更为强大的shell，支持定制插件、主题等等
@@ -864,6 +904,23 @@ $ tmux attach -t <name> # 重新进入 tmux 窗口(记录保留)
 $ tmux kill-session -t <name> # 彻底销毁 tmux 窗口
 $ tmux switch -t <name> # 在一个tmux窗口进入到另外一个tmux窗口
 ```
+
+
+
+### alias
+
+> :key: 可用于配置复杂命令参数快捷使用方式
+
+- `curl` 发送 `POST` 请求
+
+  以下配置在 `~/.zshrc` 
+
+  ```bash
+  # 基于 json 格式的 post 请求
+  alias curlpost='request(){curl -X POST -H "Content-Type: application/json" -d $2 $1}; request'
+  ```
+
+  普通 `alias` 配置不支持外部传入参数，因此可以配置成函数的形式接收外部参数
 
 
 
