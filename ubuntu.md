@@ -81,6 +81,52 @@ Categories=AudioVideo;
 
 
 
+## 蓝牙连接
+
+[解决问题方法](https://devicetests.com/fixing-bluetooth-connection-issues-ubuntu)
+
+- 安装对应的依赖包
+
+  ```bash
+  $ sudo apt-get update
+  $ sudo apt-get upgrade
+  $ sudo apt-get install blueman
+  ```
+
+- 重新启动蓝牙服务
+
+  ```bash
+  $ sudo systemctl restart bluetooth
+  ```
+
+- 开启蓝牙高速连接
+
+  ```bash
+  $ sudo vim /etc/bluetooth/main.conf
+  ```
+
+  设置`FastConnectable=true` 
+
+- 连接蓝牙
+
+  ```bash
+  bluetoothctl # 启动 cli
+  power on # 启动蓝牙控制器
+  agent on # 启动蓝牙代理
+  devices # 查看设备 MAC 地址
+  pair <mac address of your device> # 配对该MAC设备
+  trust <mac address of your device> # 信任该MAC设备
+  connect <mac address of your device> # 连接该MAC设备
+  ```
+
+![image-20231201204627331](/home/jzy/Documents/markdown/ubuntu.assets/image-20231201204627331.png)
+
+> connect 24:81:C7:FD:21:0E
+
+
+
+
+
 ## 软件安装
 
 ### docker
@@ -614,6 +660,19 @@ $ chomd 700 ./signature.sh
 $ ./signature.sh
 $ reboot
 ```
+
+
+
+### libglu1
+
+压缩图片的工具 [官方文档 ](https://developers.google.com/speed/webp/docs/using?hl=zh-cn) [包下载链接](https://storage.googleapis.com/downloads.webmproject.org/releases/webp/index.html)
+
+```bash
+$ sudo apt install lidglu1
+$ sudo apt install libxi6 libgconf-2-4
+```
+
+> 以上主要是解决找不到 `dll` 的问题
 
 
 
