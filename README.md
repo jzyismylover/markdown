@@ -52,6 +52,9 @@
 │   └── tauri.md
 ├── typescript.md
 ├── ubuntu.md
+├── monitor # 前端监控
+│   ├── errorCapture # 错误捕获 & 上报
+│   └── performance # 性能指标计算 & 上报
 ├── vben # vben-admin-system 文档输出
 │   ├── utils
 │   ├── vben-css.md

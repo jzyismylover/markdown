@@ -403,3 +403,240 @@ Qu：样式内联没办法利用浏览器缓存，需谨慎使用该行为
 - 数据压缩
   - gzip
   - botli
+
+
+
+# 性能衡量指标
+
+> 以下指标均可以衡量页面加载的情况，其中 LCP、CLS、FID 为 google 规定的核心指标，以下会涵盖指标的描述及其对应的计算
+
+`web-vitals`：`web-vitals` 提供函数可以获取以下指标，但是不兼容苹果浏览器，因此需要我们进行设备兼容。
+
+
+
+## FFID
+
+
+
+## FCP
+
+
+
+## LCP
+
+
+
+## CLS
+
+
+
+## FID
+
+
+
+
+
+# Performance API
+
+
+
+## Performance.navigation(废弃)
+
+返回一个 `PeformanceNavigation` 对象
+
+- type：导航到这个页面的方式
+  - 0 (`TYPE_NAVIGATE`)：通过点击链接，书签和表单提交，或者在浏览器中直接输入网址
+  - 1 (`TYPE_RELOAD`)：点击刷新页面或者通过 `location.reload` 刷新页面
+  - 2 (`TYPE_BACK_FORWARD`)：页面通过历史记录和前进后退访问
+  - 255 (`TYPE_RESERVED`)：任何其他方式
+- redirctCount：到达这个页面之前重定向了多少次
+
+
+
+## Performance.getEntries()
+
+返回 `PerformanceEntry` 数组. `PerformanceEntry` 每一项代表的是浏览器 metric 数据 
+
+- navigation：页面加载周期经历事件.					 数据类型 => [MDN](https://developer.mozilla.org/zh-CN/docs/Web/API/PerformanceNavigationTiming)
+- resource：资源加载的情况（包括 JS、CSS、图片资源）        数据类型 => [MDN](https://developer.mozilla.org/zh-CN/docs/Web/API/PerformanceResourceTiming)
+- mark：使用 `Performance.mark` 创建的自定义 metric 数据.  数据类型 => [MDN](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceMark)
+- measure：使用 `Performance.measure` 创建的自定义 metric 范围. 数据类型 => [MDN](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceMeasure)
+- paint：关于 `first-paint` & `first-contentful-paint` 数据. 数据类型 => [MDN](https://developer.mozilla.org/zh-CN/docs/Web/API/PerformancePaintTiming)
+
+> resource metric example
+
+```js
+{
+  "name": "https://www.google-analytics.com/analytics.js", // 资源加载的链接
+  "entryType": "resource",                                 // performance metric
+  "startTime": 391,                                        // 开始时间
+  "duration": 792,                                         // 资源加载持续时间
+  "initiatorType": "script",                               // 资源加载类型(script、css(image\svg)、fetch、link(css))
+  "nextHopProtocol": "",
+  "workerStart": 0,
+  "redirectStart": 0,
+  "redirectEnd": 0,
+  "fetchStart": 391,
+  "domainLookupStart": 0,
+  "domainLookupEnd": 0,
+  "connectStart": 0,
+  "connectEnd": 0,
+  "secureConnectionStart": 0,
+  "requestStart": 0,
+  "responseStart": 0,
+  "responseEnd": 1183,
+  "transferSize": 0,
+  "encodedBodySize": 0,
+  "decodedBodySize": 0,
+  "serverTiming": []
+}
+```
+
+
+
+## Performance.getEntriesByType
+
+- 描述：获取指定 type metric (resource / navigation / mark)
+
+- 使用
+
+```js
+performance.getEntriesByType(type) // return array
+```
+
+返回的是对应 type metric 类型的数据，详细见上面 MDN 链接
+
+
+
+## Performance.getEntriesByName
+
+- 描述：获取指定 type 指定 name(script / css / link ……) metric 
+- 使用
+
+```js
+performance.getEntriesByName(name, type) // return array
+```
+
+
+
+## Performance.mark
+
+> Performance.mark 和 Performance.measure 可一起理解
+
+- 描述：两者都是通过自定义 browser metric 类型来作一些自定义逻辑处理
+- 区别：不同之前在于前者(mark) 是通过创建一个 browser metric，后者 （measure）是通过创建一个 type 区间，即基于两个 type metric 自定义一个 browser metric. 
+
+- 使用
+
+  - `performance.mark` 可能会在在某个生命周期或者定时器去定义
+
+    ``` javascript
+    performance.mark(name)
+    ```
+
+  - `performance.measure` 通过用于分析衡量两个周期之间的行为
+
+    ```js
+    performance.measure(name, metric1, metric2)
+    ```
+
+    
+
+# Observer API
+
+
+
+## PerformanceObserver API
+
+- 描述：监测性能度量事件（浏览器性能时间轴记录新的 `performance entry` 时候会被通知）
+- 参数
+  - callback
+    - PerformanceObserverEntryList
+      - getEntries
+      - getEntriesByname
+      - getEntriesByType
+    - observer
+- 使用
+
+```js
+const observer = new PerformanceObserver(callback)
+```
+
+### observe
+
+- 描述：监听传入参数中指定的性能条目类型集合
+- 使用
+
+```js
+const observer = new PerformanceObserver(callback)
+
+observer.observe({ entryTypes: [] })
+```
+
+> 目前一些 entryTypes 还属于是实验室属性，因此可能在支持表格中找不到 [blog](https://www.zhangxinxu.com/wordpress/2023/08/js-performanceobserver-api/)
+
+![image-20231214004807464](/home/jzy/Documents/markdown/monitor/performance/performance.assets/image-20231214004807464.png)
+
+
+
+### disconnect
+
+- 描述：阻止性能观察者接收任务性能条目事件
+
+- 使用
+
+```js
+function callback(list, observer) {
+    observer.disconnect() // 后面不再对其他事件进行监听
+}
+
+const observer = new PerformanceObserver(callback)
+```
+
+
+
+## MutationObserver API
+
+- 描述：提供了对 DOM 树更改监听的能力. 会在触发指定 DOM 事件后调用指定的回调函数
+
+- 参数
+
+- - callback
+    - `MutationRecord`：[MDN](https://developer.mozilla.org/zh-CN/docs/Web/API/MutationRecord) DOM 节点修改的一些信息
+    - `observer`：观察者对象
+
+- 使用
+
+```js
+var observer = new MutationObserver(callback);
+```
+
+
+
+### observe
+
+- 描述：对指定 DOM 进行监听
+- 参数
+  - `target`：DOM 树中一个要观察变化的 DOM
+  - `options`：描述 DOM 的哪些变化应该报告给 `MutationObserver` 的 `callback`（即 `MutationRecord` target）
+    - subtree
+    - childList
+    - attributes
+    - attributeFilter
+    - attributeOldValue
+    - characterData
+    - characterDataOldValue
+
+
+
+### disconnect
+
+- 描述：停止对 DOM 更新事件的监听
+
+
+
+## IntersectionObserver API
+
+
+
+## ResizeObserver API
