@@ -1,12 +1,6 @@
 export default [
   '',
-  {
-    title: 'Git',
-    collapsable: true,
-    children: [
-      '/fronted/git/git.md'
-    ]
-  },
+  '/fronted/git/git.md',
   {
     title: 'Javascript',
     collapsable: true,
@@ -33,14 +27,8 @@ export default [
     title: '前端监控',
     collapseable: false,
     children: [
-      {
-        title: '前端错误捕获',
-        link: 'errorCapture/capture.md',
-      },
-      {
-        title: '前端性能监控',
-        link: 'errorCapture/performance.md',
-      },
+      '/fronted/monitor/errorCapture/capture.md',
+      '/fronted/monitor/performance/performance.md'
     ]
   },
 ]
