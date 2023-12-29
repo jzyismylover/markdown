@@ -233,10 +233,12 @@ $ cat /etc/shells # 检验是否安装成功
 2. 基于 oh-my-zsh 配置 zsh
 
 ```bash
+# 国外镜像
 $  wget sh -c "$(wget https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)"
+# 国内镜像
+sh -c "$(wget -O- https://gitee.com/pocmon/mirrors/raw/master/tools/install.sh)"
 ```
 
-安装成功会覆盖 ~/.zshrc，具体一些插件定义以及主题配置可在里面配置
 
 3. 配置 oh-my-zsh 主题
 
@@ -289,9 +291,9 @@ $ chsh -s /bin/zsh # 生效需 reboot后
 6. 配置 powerlevel10 主题
 
 ```bash
-$ git clone https://github.com/romkatv/powerlevel10k.git ~/.oh-my-zsh/themes
+$ git clone --depth=1 https://gitee.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
 ```
-```text
+```bash
 # ~/.zshrc
 ZSH_THEME="powerlevel10k/powerlevel10k"
 ```
