@@ -1,10 +1,6 @@
 > vben-admin 开源项目学习，以下主要记录里面涉及到的知识点
 
-
-
 ## 🔐 vue3
-
-
 
 ### api
 
@@ -15,22 +11,22 @@
 为 `provide / inject` 标注类型。 Vue 提供了一个 `InjectionKey` 接口，它是一个继承自 `Symbol` 的泛型类型，可以用来在提供者和消费者之间同步注入值的类型 [参考](https://cn.vuejs.org/guide/typescript/composition-api.html#typing-provide-inject)
 
 ```tsx
-import { provide, inject } from 'vue'
-import type { InjectionKey } from 'vue'
+import { provide, inject } from "vue";
+import type { InjectionKey } from "vue";
 
-const key = Symbol() as InjectionKey<string>
+const key = Symbol() as InjectionKey<string>;
 
-provide(key, 'foo') // 若提供的是非字符串值会导致错误
+provide(key, "foo"); // 若提供的是非字符串值会导致错误
 
-const foo = inject(key) // foo 的类型：string | undefined
+const foo = inject(key); // foo 的类型：string | undefined
 ```
 
 #### UnwrapRef
 
 ```ts
-type UnwrapRef<T> = T extends Ref<infer R> ? R : T
+type UnwrapRef<T> = T extends Ref<infer R> ? R : T;
 
-UnwrapRef<Ref<number>> // number
+UnwrapRef<Ref<number>>; // number
 ```
 
 #### unref
@@ -38,7 +34,7 @@ UnwrapRef<Ref<number>> // number
 如果参数是 `ref`，则返回内部值；否则返回参数本身，等价于以下判断
 
 ```ts
-val = isRef(val) ? val.value : val
+val = isRef(val) ? val.value : val;
 ```
 
 #### toRefs
@@ -47,15 +43,13 @@ val = isRef(val) ? val.value : val
 
 ```ts
 const obj = reactive({
-    name: 'jzy',
-    age: 18
-})
-const { name, age } = toRefs(obj)
+  name: "jzy",
+  age: 18,
+});
+const { name, age } = toRefs(obj);
 // name.value === obj.name
 // age.value === obj.age
 ```
-
-
 
 ### hooks
 
@@ -68,7 +62,10 @@ const { name, age } = toRefs(obj)
 - `notifycation`
 
 ```ts
-import { NotificationArgsProps, ConfigProps } from 'ant-design-vue/lib/notification';
+import {
+  NotificationArgsProps,
+  ConfigProps,
+} from "ant-design-vue/lib/notification";
 
 // Notifycation 组件提供的方法列表
 export interface NotifyApi {
@@ -85,7 +82,7 @@ export interface NotifyApi {
 
 // 全局配置 notifycation 选项
 notification.config({
-  placement: 'topRight', // 出现位置
+  placement: "topRight", // 出现位置
   duration: 3, // 持续时间
 });
 ```
@@ -95,8 +92,8 @@ notification.config({
   - 定义 `model` 调用方法传入的参数类型
 
     ```ts
-    export interface ModalOptionsEx extends Omit<ModalFuncProps, 'iconType'> {
-      iconType: 'warning' | 'success' | 'error' | 'info';
+    export interface ModalOptionsEx extends Omit<ModalFuncProps, "iconType"> {
+      iconType: "warning" | "success" | "error" | "info";
     }
     export type ModalOptionsPartial = Partial<ModalOptionsEx>;
     ```
@@ -104,14 +101,18 @@ notification.config({
   - 定义 `model` 组件 `icon`
 
     ```ts
-    import { InfoCircleFilled, CheckCircleFilled, CloseCircleFilled } from '@ant-design/icons-vue';
-    
+    import {
+      InfoCircleFilled,
+      CheckCircleFilled,
+      CloseCircleFilled,
+    } from "@ant-design/icons-vue";
+
     function getIcon(iconType: string) {
-      if (iconType === 'warning') {
+      if (iconType === "warning") {
         return <InfoCircleFilled class="modal-icon-warning" />;
-      } else if (iconType === 'success') {
+      } else if (iconType === "success") {
         return <CheckCircleFilled class="modal-icon-success" />;
-      } else if (iconType === 'info') {
+      } else if (iconType === "info") {
         return <InfoCircleFilled class="modal-icon-info" />;
       } else {
         return <CloseCircleFilled class="modal-icon-error" />;
@@ -119,10 +120,10 @@ notification.config({
     }
     ```
 
-  - 定义 `model` 内容渲染函数（需要区分是 `组件类型` 还是`普通文本` ） 
+  - 定义 `model` 内容渲染函数（需要区分是 `组件类型` 还是`普通文本` ）
 
     ```ts
-    function renderContent({ content }: Pick<ModalOptionsEx, 'content'>) {
+    function renderContent({ content }: Pick<ModalOptionsEx, "content">) {
       if (isString(content)) {
         return <div innerHTML={`<div>${content as string}</div>`}></div>;
       } else {
@@ -137,13 +138,16 @@ notification.config({
     const getBaseOptions = () => {
       const { t } = useI18n();
       return {
-        okText: t('common.okText'), // 确认按钮文字
-        centered: true, // 垂直剧中展示 Modal 
+        okText: t("common.okText"), // 确认按钮文字
+        centered: true, // 垂直剧中展示 Modal
       };
     };
-    
+
     // 初始化配置
-    function createModalOptions(options: ModalOptionsPartial, icon: string): ModalOptionsPartial {
+    function createModalOptions(
+      options: ModalOptionsPartial,
+      icon: string
+    ): ModalOptionsPartial {
       return {
         ...getBaseOptions(),
         ...options,
@@ -157,8 +161,8 @@ notification.config({
 
     ```ts
     function createConfirm(options: ModalOptionsEx) {
-      const iconType = options.iconType || 'warning';
-      Reflect.deleteProperty(options, 'iconType');
+      const iconType = options.iconType || "warning";
+      Reflect.deleteProperty(options, "iconType");
       const opt: ModalFuncProps = {
         centered: true,
         icon: getIcon(iconType),
@@ -167,27 +171,23 @@ notification.config({
       };
       return Modal.confirm(opt);
     }
-    
+
     function createSuccessModal(options: ModalOptionsPartial) {
-      return Modal.success(createModalOptions(options, 'success'));
+      return Modal.success(createModalOptions(options, "success"));
     }
-    
+
     function createErrorModal(options: ModalOptionsPartial) {
-      return Modal.error(createModalOptions(options, 'close'));
+      return Modal.error(createModalOptions(options, "close"));
     }
-    
+
     function createInfoModal(options: ModalOptionsPartial) {
-      return Modal.info(createModalOptions(options, 'info'));
+      return Modal.info(createModalOptions(options, "info"));
     }
-    
+
     function createWarningModal(options: ModalOptionsPartial) {
-      return Modal.warning(createModalOptions(options, 'warning'));
+      return Modal.warning(createModalOptions(options, "warning"));
     }
-    
     ```
-
-
-
 
 #### useEventListener
 
@@ -197,12 +197,12 @@ notification.config({
 
 ```ts
 interface UseEventParams {
-    el: Element | Window | any, // 需要监听事件触发的DOM对象
-    listener: EventListener, // 事件触发回调函数
-    name: string, // 监听事件名
-    isDebounce?: boolean, // 是否启动防抖,
-    wait?: number, // 防抖时间
-    autoRemove?: boolean, // 是否在DOM变化后自动清除上一个周期绑定的事件监听函数
+  el: Element | Window | any; // 需要监听事件触发的DOM对象
+  listener: EventListener; // 事件触发回调函数
+  name: string; // 监听事件名
+  isDebounce?: boolean; // 是否启动防抖,
+  wait?: number; // 防抖时间
+  autoRemove?: boolean; // 是否在DOM变化后自动清除上一个周期绑定的事件监听函数
 }
 ```
 
@@ -222,12 +222,10 @@ function useEventListener(options: UseEventParmas): (removeFn: () => void) {
            flag = false && addEventListener
           cleanup(() => {
               removeEventListener
-          })  
+          })
 		})
 }
 ```
-
-
 
 #### useFormItem
 
@@ -254,12 +252,12 @@ function useEventListener(options: UseEventParmas): (removeFn: () => void) {
 
 而项目中给了一种比较 **新奇** 的方式：
 
-```ts 
+```ts
 export function useRuleFormItem<T extends Recordable>(
   props: T,
-  key: keyof T = 'value',
-  changeEvent = 'change',
-  emitData?: Ref<any[]>,
+  key: keyof T = "value",
+  changeEvent = "change",
+  emitData?: Ref<any[]>
 ) {
   const instance = getCurrentInstance();
   const emit = instance?.emit;
@@ -289,7 +287,6 @@ export function useRuleFormItem<T extends Recordable>(
 
   return [state];
 }
-
 ```
 
 凡是通过 `v-model:value` 绑定的值，在自组件中使用如下代码均可完成双向绑定
@@ -297,30 +294,26 @@ export function useRuleFormItem<T extends Recordable>(
 ```vue
 <a-input v-bind="$attrs" :value="state"></a-input>
 
-const [state] = useRuleFormItem(props) 
+const [state] = useRuleFormItem(props)
 ```
 
 🔐 理解这个过程
 
-![image-20230718172452126](/home/jzy/Documents/markdown/vben/vben.assets/image-20230718172452126.png)
+<img src="./vben.assets/image-20230718172452126.png" style="display: block; margin: auto;"/>
 
 可以在自组件内部打印下 `attrs`，出现以上结果；但实际上属性明显从父组件继承下去只有 `placeholder` 和 `class`，那多余的像 `onBlur`、`onChange`、`onUpdate:value` 的出现就得深究。
 
-- `onBlur`、`onChange`、`id` 都是`FormItem`附加在 `firstChild` 上的，表单校验时需在子项变化后执行校验函数，因此需要拓展子项 `onChange` 方法来执行 `onFieldsChange` 
+- `onBlur`、`onChange`、`id` 都是`FormItem`附加在 `firstChild` 上的，表单校验时需在子项变化后执行校验函数，因此需要拓展子项 `onChange` 方法来执行 `onFieldsChange`
 
-<img src="/home/jzy/Documents/markdown/vben/vben.assets/image-20230718173137215.png" alt="image-20230718173137215" style="zoom: 80%;" /> 
+<img src="./vben.assets/image-20230718173137215.png" alt="image-20230718173137215" style="zoom: 80%;" />
 
+- `onUpdate:value` 方法则是 `v-model` 编译后的余项。因此要实现双向绑定，就要触发 `onUpdate:value` 来更新数据
 
+```js
+onUpdate: value = (val) => (formData.sms = val);
+```
 
--  `onUpdate:value` 方法则是 `v-model` 编译后的余项。因此要实现双向绑定，就要触发 `onUpdate:value` 来更新数据
-
-  ```js
-  onUpdate:value=((val) => formData.sms = val)
-  ```
-
-  上面代码的思路其实就是跳过这个过程。**`props` 本身在子组件是 `readOnly`，但实际上也是在更新的**，`innerState`是对于 `props` 的引用 而现在将 `state` 定义为 是 `innerState` 的 `computed` 属性， `formData.sms = state`  === `formData.sms = innerState.value`，`innerState` 的更新导致了组件的重渲染，**重新读取模板数据**触发 `state` 的 `get`方法。
-
-
+上面代码的思路其实就是跳过这个过程。**`props` 本身在子组件是 `readOnly`，但实际上也是在更新的**，`innerState`是对于 `props` 的引用 而现在将 `state` 定义为 是 `innerState` 的 `computed` 属性， `formData.sms = state` === `formData.sms = innerState.value`，`innerState` 的更新导致了组件的重渲染，**重新读取模板数据**触发 `state` 的 `get`方法。
 
 #### useCountDown
 
@@ -382,21 +375,17 @@ export function useCountdown(count: number) {
 }
 ```
 
-
-
-
-
 ### vue-router
 
 > 初始化实例
 
 ```ts
 export const router = createRouter({
-  history: createWebHashHistory(''),
+  history: createWebHashHistory(""),
   routes: basicRoutes,
   strict: true, // 禁用尾部 /
-  scrollBehavior: () => ({ left: 0, top: 0 })
-})
+  scrollBehavior: () => ({ left: 0, top: 0 }),
+});
 ```
 
 - `history` ：采用 `hash` 还是 `history`
@@ -444,9 +433,7 @@ locales
 - 将资源包整合为一个 `object`
 - `i18n` 实例创建，包括资源和配置初始化
 - 提供获取和更新 `locale` 的 hooks `useLocale`
-- 提供在 `模板` 和 `ts` 文件中使用的 `t函数` hooks  `useI18n`
-
-
+- 提供在 `模板` 和 `ts` 文件中使用的 `t函数` hooks `useI18n`
 
 1. 安装依赖
 
@@ -454,50 +441,52 @@ locales
 $ pmpm install vue-i18n
 ```
 
-
-
 2. 定义获取资源包代码 —— 该步骤主要根据资源整合生成语种`资源映射`。具体在 `zh_CN.ts` 内部，基于 `vite` 提供的模块导入机制，通过 `genMessage` 将各个模块整合成对象，整个 `export default ` 出去的就是语言环境为中文的情况下的资源信息
 
 ```ts
-import { genMessage } from '../helper';
-import antdLocale from 'ant-design-vue/es/locale/zh_CN';
-import momentLocale from 'moment/dist/locale/zh-cn';
+import { genMessage } from "../helper";
+import antdLocale from "ant-design-vue/es/locale/zh_CN";
+import momentLocale from "moment/dist/locale/zh-cn";
 
-const modules: Recordable = import.meta.glob('./zh-CN/**/*.ts', { eager: true });
+const modules: Recordable = import.meta.glob("./zh-CN/**/*.ts", {
+  eager: true,
+});
 export default {
   message: {
-    ...genMessage(modules, 'zh-CN'),
+    ...genMessage(modules, "zh-CN"),
     antdLocale,
   },
   momentLocale,
-  momentLocaleName: 'zh-cn',
+  momentLocaleName: "zh-cn",
 };
-
 ```
 
 - `utils` —— 将资源名称以及对应的值整合成一个对象
   - 提取文件名作为 `object key`
-  - 区分一级目录和二级目录 `routes/sys` & `common` 
+  - 区分一级目录和二级目录 `routes/sys` & `common`
 
 ```ts
-/** 
+/**
  * @param langs { './zh-CN/common.ts': { default: {} }}
  * @param prefix language name
  * @return { setting: {
- *  login: { loginButton: '登陆' } 
+ *  login: { loginButton: '登陆' }
  * }, header: {} }
  */
-export function genMessage(langs: Record<string, Record<string, any>>, prefix = 'lang') {
+export function genMessage(
+  langs: Record<string, Record<string, any>>,
+  prefix = "lang"
+) {
   const obj: Recordable = {};
 
   Object.keys(langs).forEach((key) => {
     const langFileModule = langs[key]?.default;
-    let filename = key.replace(`./${prefix}/`, '').replace(/^\.\//, '');
-    const lastIndex = filename.lastIndexOf('.');
+    let filename = key.replace(`./${prefix}/`, "").replace(/^\.\//, "");
+    const lastIndex = filename.lastIndexOf(".");
     filename = filename.substring(0, lastIndex); // 去除文件后缀
-    const keyLists = filename.split('/'); // 基于文件目录是 routes/xxx
+    const keyLists = filename.split("/"); // 基于文件目录是 routes/xxx
     const moduleName = keyLists.shift();
-	
+
     if (moduleName) {
       if (keyLists.length) {
         set(obj, moduleName, obj[moduleName] || {});
@@ -512,10 +501,8 @@ export function genMessage(langs: Record<string, Record<string, any>>, prefix = 
 }
 ```
 
-
-
 3. 提供 `i18n` 初始化函数
-   1.  执行资源加载 `zh_CN.ts`
+   1. 执行资源加载 `zh_CN.ts`
    2. 自定义 `i18n` 选项
    3. 暴露 `setupI18n` 给 `main.ts`
 
@@ -555,16 +542,12 @@ export async function setupI18n(app: App<Element>) {
 }
 ```
 
-
-
 4. 有了初始化函数后初始的资源显示就没有问题了，但是缺少一个用于更新的函数 —— 当语言环境更新的时候需要进行什么操作
 
    1. 更新 `store locale`
-   2.  判断当前语言环境情况
+   2. 判断当前语言环境情况
 
-   <img src="/home/jzy/Documents/markdown/vben/vben.assets/image-20230629105852577.png" alt="image-20230629105852577" style="zoom: 67%;" />
-
-
+   <img src="./vben.assets/image-20230629105852577.png" alt="image-20230629105852577" style="zoom: 67%;" />
 
 5. 最后 `i18n` 的配置、更新都设置好了，就是如何在`模板`或者 `ts` 文件中引入的问题。实际可以抽取成一个 `hooks`
 
@@ -578,7 +561,7 @@ type I18nGlobalTranslation = {
   (key: string, list: unknown[]): string;
   (key: string, named: Record<string, unknown>): string;
 };
-interface I18nGlobalOptions extends Omit<typeof i18n.global, 't'> {
+interface I18nGlobalOptions extends Omit<typeof i18n.global, "t"> {
   t: I18nGlobalTranslation;
 }
 type I18nTranslationRestParameters = [string, any];
@@ -590,7 +573,7 @@ export function useI18n(namespace?: string): {
   const normalFn = {
     t: (key: string) => {
       // return getKey(namespace, key); namespace 作用暂不明确
-      return key
+      return key;
     },
   };
 
@@ -601,8 +584,8 @@ export function useI18n(namespace?: string): {
   const { t, ...methods } = i18n.global as I18nGlobalOptions;
 
   const tFn: I18nGlobalTranslation = (key: string, ...arg: any[]) => {
-    if (!key) return '';
-    if (!key.includes('.') && !namespace) return key;
+    if (!key) return "";
+    if (!key.includes(".") && !namespace) return key;
     return t(getKey(namespace, key), ...(arg as I18nTranslationRestParameters));
   };
   return {
@@ -619,11 +602,11 @@ export const t = (key: string) => key;
 
 ```vue
 <template>
- <div>{{ t('sys.login.loginButton') }}</div>
+  <div>{{ t("sys.login.loginButton") }}</div>
 </template>
 
-<script setup lang='ts'>
-const { t } = useI18n()
+<script setup lang="ts">
+const { t } = useI18n();
 </script>
 ```
 
@@ -639,70 +622,57 @@ const { t } = useI18n()
   "i18n-ally.enabledParsers": ["json", "ts"],
   "i18n-ally.sourceLanguage": "en",
   "i18n-ally.displayLanguage": "zh-CN",
-  "i18n-ally.enabledFrameworks": ["vue", "react"],
+  "i18n-ally.enabledFrameworks": ["vue", "react"]
 }
 ```
-
-
-
-
 
 ### pinia
 
 > vue 目前流行的状态管理工具
 
 ```ts
-export const useCounterStore = defineStore('counter', {
+export const useCounterStore = defineStore("counter", {
   state: () => ({ count: 0 }),
   getters: {
     double: (state) => state.count * 2,
   },
   actions: {
     increment() {
-      this.count++
+      this.count++;
     },
   },
-})
+});
 ```
 
 - `state`：`store` 中的数据
 - `getter`：`store` 中的计算属性
 - `actions`：`store` 中的 `method`
 
-
-
 以上是最简 `pinia` 配置
 
 当然除了以上 `option configuration`，也支持在构造函数内使用 `composition api` 的方式定义数据、计算属性和方法。
 
 ```ts
-export const useCounterStore = defineStore('counter', () => {
-  const count = ref(0)
+export const useCounterStore = defineStore("counter", () => {
+  const count = ref(0);
   function increment() {
-    count.value++
+    count.value++;
   }
 
-  return { count, increment }
-})
+  return { count, increment };
+});
 ```
-
-
 
 > :imp: 解构响应式属性 `storeToRefs `
 
 ```ts
 <script setup>
-import { storeToRefs } from 'pinia'
-const store = useCounterStore()
-// `name` 和 `doubleCount` 是响应式的 ref
-// 会跳过所有的 action 或非响应式 (不是 ref 或 reactive) 的属性
-const { name, doubleCount } = storeToRefs(store)
-// 作为 action 的 increment 可以直接解构
-const { increment } = store
+  import {storeToRefs} from 'pinia' const store = useCounterStore() // `name` 和
+  `doubleCount` 是响应式的 ref // 会跳过所有的 action 或非响应式 (不是 ref 或
+  reactive) 的属性 const {(name, doubleCount)} = storeToRefs(store) // 作为
+  action 的 increment 可以直接解构 const {increment} = store
 </script>
 ```
-
-
 
 > :imp: 使用 store
 
@@ -710,8 +680,8 @@ const { increment } = store
 
 ```ts
 <script setup>
-import { useCounterStore } from '@/stores/counter'
-const store = useCounterStore()
+  import {useCounterStore} from '@/stores/counter' const store =
+  useCounterStore()
 </script>
 ```
 
@@ -732,13 +702,9 @@ export default defineComponent({
 })
 ```
 
-
-
 ## 🔐 components
 
 项目在 `components` 内部封装了若干公共组件，包括 `Dropdown`、`Menu`……，以下主要从封装思路去描述
-
-
 
 ### dropDown
 
@@ -755,22 +721,20 @@ export default defineComponent({
 
 ```ts
 interface DropMenu {
-    text: string,
-    key: string,
-    confirm?: () => void,
-    cancel?: () => void
+  text: string;
+  key: string;
+  confirm?: () => void;
+  cancel?: () => void;
 }
 
 interface DropDownOptions {
-    dropMenuList: DropMenu[],
-    selectedKeys: string[],
-    trigger: string[], // click/doubleclick...
-    menuEvent: () => void,
-    popConfirm: boolean
+  dropMenuList: DropMenu[];
+  selectedKeys: string[];
+  trigger: string[]; // click/doubleclick...
+  menuEvent: () => void;
+  popConfirm: boolean;
 }
 ```
-
-
 
 ### countdown
 
@@ -783,41 +747,33 @@ interface DropDownOptions {
 
 ```ts
 interface CountButtonParams {
-    count: number,
-    beforeFn: () => void
+  count: number;
+  beforeFn: () => void;
 }
 ```
 
 同时需要提供 `reset`、`start`、`restart`、`stop` 等等与计时相关方法
 
 ```ts
-reset => {
-    count = defaultValue
-}
+(reset) => {
+  count = defaultValue;
+};
 
-start => {
-    setInterval(() => {}, count)
-}
+(start) => {
+  setInterval(() => {}, count);
+};
 
-restart => {
-    reset()
-    start()
-}
+(restart) => {
+  reset();
+  start();
+};
 
-stop => {
-    clearInterval()
-}
+(stop) => {
+  clearInterval();
+};
 ```
 
-
-
-
-
-
-
 ## 🔐 vite
-
-
 
 - 初始化 `vue-ts` 项目
 
@@ -832,10 +788,6 @@ $ pnpm add typescript @typescript-eslint/eslint-plugin @typescript-eslint/parser
 ```
 
 配置 `eslintrc`
-
-
-
-
 
 ### plugin
 
@@ -856,31 +808,27 @@ $ pnpm add typescript @typescript-eslint/eslint-plugin @typescript-eslint/parser
 `glob` 在 vite 中用于动态导入，构建时会分离为独立 chunk
 
 ```ts
-const modules = import.meta.glob('./dir/*.js')
+const modules = import.meta.glob("./dir/*.js");
 
 // vite 生成的代码
 const modules = {
-  './dir/foo.js': () => import('./dir/foo.js'),
-  './dir/bar.js': () => import('./dir/bar.js'),
-}
+  "./dir/foo.js": () => import("./dir/foo.js"),
+  "./dir/bar.js": () => import("./dir/bar.js"),
+};
 ```
 
 ```ts
 // 遍历访问模块
 for (const path in modules) {
   modules[path]().then((mod) => {
-    console.log(path, mod)
-  })
+    console.log(path, mod);
+  });
 }
 ```
 
-
-
-
-
 ## 🔐 lint
 
->  `eslint` 、`prettier`、 `husky`、`lint-staged`、`commitlint`
+> `eslint` 、`prettier`、 `husky`、`lint-staged`、`commitlint`
 
 ### eslint
 
@@ -893,22 +841,20 @@ $ pnpm install eslint eslint-plugin-vue @typescript-eslint/eslint-plugin @typesc
 -D
 ```
 
-- `prettier`：prettier的核心代码 
+- `prettier`：prettier 的核心代码
 - `eslint-config-prettier`：这将禁用 ESLint 中的格式化规则，而 Prettier 将负责处理这些规则
 - `eslint-plugin-prettier` ：把 Prettier 推荐的格式问题的配置以 ESLint rules 的方式写入，统一代码问题的来源。
-- `eslint`： ESLint的核心代码 
-- `@typescript-eslint/parser` ：SLint的解析器，用于解析typescript，从而检查和规范Typescript代码 
-- `@typescript/eslint/eslint-plugin`：包含了各类定义好的检测Typescript代码的规范 
-- `eslint-plugin-vue `：支持对vue文件检验 [规则集](https://eslint.vuejs.org/rules/max-len.html)
-- `vue-eslint-parser`：这个解析器允许我们检测.vue文件的 `<template> `。
-
-
+- `eslint`： ESLint 的核心代码
+- `@typescript-eslint/parser` ：SLint 的解析器，用于解析 typescript，从而检查和规范 Typescript 代码
+- `@typescript/eslint/eslint-plugin`：包含了各类定义好的检测 Typescript 代码的规范
+- `eslint-plugin-vue `：支持对 vue 文件检验 [规则集](https://eslint.vuejs.org/rules/max-len.html)
+- `vue-eslint-parser`：这个解析器允许我们检测.vue 文件的 `<template> `。
 
 - `eslint.js`
 
 ```js
 // @ts-check
-const { defineConfig } = require('eslint-define-config');
+const { defineConfig } = require("eslint-define-config");
 module.exports = defineConfig({
   root: true,
   env: {
@@ -916,62 +862,62 @@ module.exports = defineConfig({
     node: true,
     es6: true,
   },
-  parser: 'vue-eslint-parser',
+  parser: "vue-eslint-parser",
   parserOptions: {
-    parser: '@typescript-eslint/parser',
+    parser: "@typescript-eslint/parser",
     ecmaVersion: 2020,
-    sourceType: 'module',
-    jsxPragma: 'React',
+    sourceType: "module",
+    jsxPragma: "React",
     ecmaFeatures: {
       jsx: true,
     },
   },
   extends: [
-    'plugin:vue/vue3-recommended',
-    'plugin:@typescript-eslint/recommended',
-    'prettier',
-    'plugin:prettier/recommended',
+    "plugin:vue/vue3-recommended",
+    "plugin:@typescript-eslint/recommended",
+    "prettier",
+    "plugin:prettier/recommended",
   ],
   rules: {
-    'vue/script-setup-uses-vars': 'error',
-    '@typescript-eslint/ban-ts-ignore': 'off',
-    '@typescript-eslint/explicit-function-return-type': 'off',
-    '@typescript-eslint/no-explicit-any': 'off',
-    '@typescript-eslint/no-var-requires': 'off',
-    '@typescript-eslint/no-empty-function': 'off',
-    'vue/custom-event-name-casing': 'off',
-    'no-use-before-define': 'off',
-    '@typescript-eslint/no-use-before-define': 'off',
-    '@typescript-eslint/ban-ts-comment': 'off',
-    '@typescript-eslint/ban-types': 'off',
-    '@typescript-eslint/no-non-null-assertion': 'off',
-    '@typescript-eslint/explicit-module-boundary-types': 'off',
-    '@typescript-eslint/no-unused-vars': [
-      'error',
+    "vue/script-setup-uses-vars": "error",
+    "@typescript-eslint/ban-ts-ignore": "off",
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-var-requires": "off",
+    "@typescript-eslint/no-empty-function": "off",
+    "vue/custom-event-name-casing": "off",
+    "no-use-before-define": "off",
+    "@typescript-eslint/no-use-before-define": "off",
+    "@typescript-eslint/ban-ts-comment": "off",
+    "@typescript-eslint/ban-types": "off",
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/no-unused-vars": [
+      "error",
       {
-        argsIgnorePattern: '^_',
-        varsIgnorePattern: '^_',
+        argsIgnorePattern: "^_",
+        varsIgnorePattern: "^_",
       },
     ],
-    'no-unused-vars': [
-      'error',
+    "no-unused-vars": [
+      "error",
       {
-        argsIgnorePattern: '^_',
-        varsIgnorePattern: '^_',
+        argsIgnorePattern: "^_",
+        varsIgnorePattern: "^_",
       },
     ],
-    'space-before-function-paren': 'off',
+    "space-before-function-paren": "off",
 
-    'vue/attributes-order': 'off',
-    'vue/v-on-event-hyphenation': 'off',
-    'vue/multi-word-component-names': 'off',
-    'vue/one-component-per-file': 'off',
-    'vue/html-closing-bracket-newline': 'off',
-    'vue/max-attributes-per-line': 'off',
-    'vue/multiline-html-element-content-newline': 'off',
-    'vue/singleline-html-element-content-newline': 'off',
-    'vue/attribute-hyphenation': 'off',
-    'vue/require-default-prop': 'off',
+    "vue/attributes-order": "off",
+    "vue/v-on-event-hyphenation": "off",
+    "vue/multi-word-component-names": "off",
+    "vue/one-component-per-file": "off",
+    "vue/html-closing-bracket-newline": "off",
+    "vue/max-attributes-per-line": "off",
+    "vue/multiline-html-element-content-newline": "off",
+    "vue/singleline-html-element-content-newline": "off",
+    "vue/attribute-hyphenation": "off",
+    "vue/require-default-prop": "off",
     // 'vue/html-self-closing': [
     //   'error',
     //   {
@@ -986,10 +932,7 @@ module.exports = defineConfig({
     // ],
   },
 });
-
 ```
-
-
 
 - `prettier.config.js`
 
@@ -998,15 +941,13 @@ module.exports = {
   printWidth: 100, // 单行最大长度
   semi: true, //  句尾默认添加分号
   vueIndentScriptAndStyle: true, // 缩进Vue文件中脚本和样式
-  singleQuote: true, // 字符串使用单引号 
-  trailingComma: 'all', // 尾逗号
-  proseWrap: 'never', // 对于 markdown 文件来说不强制换行 https://github.com/prettier/prettier/issues/6766
-  htmlWhitespaceSensitivity: 'strict', 
-  endOfLine: 'auto', // 换行符跟随像
+  singleQuote: true, // 字符串使用单引号
+  trailingComma: "all", // 尾逗号
+  proseWrap: "never", // 对于 markdown 文件来说不强制换行 https://github.com/prettier/prettier/issues/6766
+  htmlWhitespaceSensitivity: "strict",
+  endOfLine: "auto", // 换行符跟随像
 };
 ```
-
-
 
 > `eslint`、`prettier` 主要在工作区阶段对我们编写的代码进行格式限制，但实际并不影响代码执行，一旦 `git `提交到远程仓库，会混淆仓库内文件格式，导致别人在拉代码后报错（即使不影响执行，但爆红就很不好）。
 
@@ -1026,13 +967,11 @@ $ pnpm install -D husky
 
 ```json
 {
-   "script": {
-       "prepare": "husky install" 
-   }
+  "script": {
+    "prepare": "husky install"
+  }
 }
 ```
-
-
 
 ### lint-staged
 
@@ -1046,11 +985,13 @@ $ pnpm install -D lint-staged
 
 ```js
 module.exports = {
-  '*.{js,jsx,ts,tsx}': ['eslint --fix', 'prettier --write'],
-  '{!(package)*.json,*.code-snippets,.!(browserslist)*rc}': ['prettier --write--parser json'],
-  'package.json': ['prettier --write'],
-  '*.vue': ['eslint --fix', 'prettier --write'],
-  '*.md': ['prettier --write'],
+  "*.{js,jsx,ts,tsx}": ["eslint --fix", "prettier --write"],
+  "{!(package)*.json,*.code-snippets,.!(browserslist)*rc}": [
+    "prettier --write--parser json",
+  ],
+  "package.json": ["prettier --write"],
+  "*.vue": ["eslint --fix", "prettier --write"],
+  "*.md": ["prettier --write"],
 };
 ```
 
@@ -1058,19 +999,17 @@ module.exports = {
 
 ```json
 {
-    "script": {
-        "lint:lint-staged": "lint-staged -c ./.husky/lintstagedrc.js"
-    }
+  "script": {
+    "lint:lint-staged": "lint-staged -c ./.husky/lintstagedrc.js"
+  }
 }
 ```
 
 - `pre-commit` 钩子执行 `lint-staged`
 
 ```bash
-$ npx husky add .husky/pre-commit 'npm run lint:lint-staged' 
+$ npx husky add .husky/pre-commit 'npm run lint:lint-staged'
 ```
-
-
 
 ### commitlint
 
@@ -1085,6 +1024,3 @@ $ pnpm install -D @commitlint/cli @commitlint/config-conventional
 ```bash
 $ npx husky add .husky/commit-msg "npx --no -- commitlint --edit $1"
 ```
-
-
-

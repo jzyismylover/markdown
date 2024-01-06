@@ -1,7 +1,3 @@
-
-
-
-
 ## declare global
 
 `declare global` 位于 `types/global.d.ts` 下，主要作用是声明全局变量，且该全局变量不是我们自定义的而是来源于`第三方库`，所以也可以理解为使得模块的类型可以在全局使用而不需要多次引入。
@@ -13,11 +9,9 @@ declare global {
   }
 }
 
-window.myGlobalVar = 'Hello, world!';
-console.log(window.myGlobalVar);  // 输出：Hello, world!
+window.myGlobalVar = "Hello, world!";
+console.log(window.myGlobalVar); // 输出：Hello, world!
 ```
-
-
 
 ## 函数重载
 
@@ -25,31 +19,32 @@ console.log(window.myGlobalVar);  // 输出：Hello, world!
 
 ```ts
 // 说明上面的例子
-function getUserInfo(value:number|string):User|User[]|undefined{
-    if(typeof value==='number'){
-        return userList.find(item=>item.id===value)
-    }else{
-        return userList.filter(item=>item.grades===value)
-    }
+function getUserInfo(value: number | string): User | User[] | undefined {
+  if (typeof value === "number") {
+    return userList.find((item) => item.id === value);
+  } else {
+    return userList.filter((item) => item.grades === value);
+  }
 }
 ```
 
 不能明确输入 `value`为 `number`时返回的是什么，因此为了解决这个问题引入 `函数重载`
 
 ```ts
-function getUserInfo(value:number):User|undefined;
-function getUserInfo(value:string,count:number):User[];
+function getUserInfo(value: number): User | undefined;
+function getUserInfo(value: string, count: number): User[];
 // 最后一个参数类型要**兼容**前面的所有函数声明的参数类型
-function getUserInfo(value:number|string,count:number=1):User|User[]|undefined{
-    if(typeof value==='number'){
-        return userList.find(item=>item.id===value)
-    }else{
-        return userList.filter(item=>item.grades===value).slice(0,count)
-    }
+function getUserInfo(
+  value: number | string,
+  count: number = 1
+): User | User[] | undefined {
+  if (typeof value === "number") {
+    return userList.find((item) => item.id === value);
+  } else {
+    return userList.filter((item) => item.grades === value).slice(0, count);
+  }
 }
 ```
-
-
 
 ## unknown
 
@@ -63,17 +58,15 @@ function getUserInfo(value:number|string,count:number=1):User|User[]|undefined{
 ```ts
 let value: unknown;
 
-let value1: unknown = value;   // OK
-let value2: any = value;       // OK
-let value3: boolean = value;   // Error
-let value4: number = value;    // Error
-let value5: string = value;    // Error
-let value6: object = value;    // Error
-let value7: any[] = value;     // Error
-let value8: Function = value;  // Error
+let value1: unknown = value; // OK
+let value2: any = value; // OK
+let value3: boolean = value; // Error
+let value4: number = value; // Error
+let value5: string = value; // Error
+let value6: object = value; // Error
+let value7: any[] = value; // Error
+let value8: Function = value; // Error
 ```
-
-
 
 ## tsconfig.json
 
@@ -125,7 +118,6 @@ let value8: Function = value;  // Error
   ],
   "exclude": ["node_modules", "tests/server/**/*.ts", "dist", "**/*.js"]
 }
-
 ```
 
 🔐 顶层属性有 `compilerOptions`、`include`、`exclude`、`references`、`extends`、`files`。其中 `compilerOptions` 为编译选项，后面的都是非编译选项
@@ -135,24 +127,22 @@ let value8: Function = value;  // Error
 
 [声明文件选项](https://pengfeixc.com/blogs/javascript/tsconfig) —— 这篇文章对于某些选项的讲解我觉得比较好
 
-
-
-- `compilerOptions Language and Enviroment`  
+- `compilerOptions Language and Enviroment`
 
   - **target**：定义了某些 `emscript`语法会被转化或者保留`，如果要兼容低版本浏览器的话那么自然就不能写比较新的版本，但如果是确定要面向新版本浏览器的话则可不考虑语法兼容问题。
   - **experimentalDecorators**：是否支持使用装饰器
   - **jsx**：控制 `jsx` 的生成形式
 
-  ![image-20230625162943016](/home/jzy/Documents/markdown/vben/vben-typescript.assets/image-20230625162943016.png)
+  <img src="./vben-typescript.assets/image-20230625162943016.png" style="display: block; margin: auto;"/>
 
-  - **lib**：`ts` 默认包含了 一些`api` 的类型定义，像 `Math`、`document`，支持 `target` 字段定义的 `js` 版本的新特性。具体可设置为一个数组例如 `[dom, esnext]` 
+  - **lib**：`ts` 默认包含了 一些`api` 的类型定义，像 `Math`、`document`，支持 `target` 字段定义的 `js` 版本的新特性。具体可设置为一个数组例如 `[dom, esnext]`
 
-![image-20230625163525990](/home/jzy/Documents/markdown/vben/vben-typescript.assets/image-20230625163525990.png)
+<img src="./vben-typescript.assets/image-20230625163525990.png" style="display: block; margin: auto;"/>
 
-- `compilerOptions Modules` 
+- `compilerOptions Modules`
 
   - **module**：定义 `.ts` 文件最后编译的 `js` 遵循的规范，可以设置为 `CommonJs`、`UMD`、`ESNext`......
-  - **moduleResolution**：定义导入文件模块时的模块解析策略，即遵循一个怎么样的原则去寻找模块，ts 默认用node的解析策略，即相对的方式导入。可以定义为 `node`、`node16 / nodenext`
+  - **moduleResolution**：定义导入文件模块时的模块解析策略，即遵循一个怎么样的原则去寻找模块，ts 默认用 node 的解析策略，即相对的方式导入。可以定义为 `node`、`node16 / nodenext`
   - **baseUrl**：指定相对导入模块的根目录
   - **paths**：`typescript4.1` 版本之前，设置 `paths` 必须设定 `baseUrl`，但是现在如果没有设置 `baseUrl` 则基于 `tsconfig.json` 所在目录作为根目录。`path`s 的作用是定义导入模块路径别名。
 
@@ -209,7 +199,7 @@ let value8: Function = value;  // Error
   const createKeyboard = (modelID: number) => {
     const defaultModelID = 23;
   'defaultModelID' is declared but its value is never read.
-  
+
     return { type: "keyboard", modelID };
   };
   ```
@@ -219,7 +209,7 @@ let value8: Function = value;  // Error
   ```ts
   const createDefaultKeyboard = (modelID: number) => {
   'modelID' is declared but its value is never read.
-  
+
     const defaultModelID = 23;
     return { type: "keyboard", modelID: defaultModelID };
   };
@@ -231,9 +221,9 @@ let value8: Function = value;  // Error
   function fn(x: string) {
     console.log("Hello, " + x.toLowerCase());
   }
-   
+
   type StringOrNumberFunc = (ns: string | number) => void;
-   
+
   // Unsafe assignment is prevented
   let func: StringOrNumberFunc = fn;
   Type '(x: string) => void' is not assignable to type 'StringOrNumberFunc'.
@@ -247,11 +237,11 @@ let value8: Function = value;  // Error
   type Methodish = {
     func(x: string | number): void;
   };
-   
+
   function fn(x: string) {
     console.log("Hello, " + x.toLowerCase());
   }
-   
+
   // Ultimately an unsafe assignment, but not detected
   const m: Methodish = {
     func: fn,
@@ -259,11 +249,7 @@ let value8: Function = value;  // Error
   m.func(10);
   ```
 
-  
-
   - **strict**：设置为 `true` 相当于使用 `use strict`
-
-
 
 ## 声明文件(.d.ts)
 
@@ -282,24 +268,20 @@ let value8: Function = value;  // Error
 - [`declare module`](https://ts.xcatliu.com/basics/declaration-files.html#declare-module) 扩展模块
 - [`/// `](https://ts.xcatliu.com/basics/declaration-files.html#san-xie-xian-zhi-ling) 三斜线指令
 
-
-
-🔐 其实最重要的是理解 `全局声明文件` 和 `模块声明文件` 
+🔐 其实最重要的是理解 `全局声明文件` 和 `模块声明文件`
 
 - `全局声明文件`里面的类型定义全局生效，不需要引入就可以直接使
 - `模块声明文件`里面的类型定义仅在模块内生效，在之前的一些版本中就是通过 `namespace` 去定义，因此需要引入后才能使用
 
-
-
 🔐 `namespace`
 
-![image-20230720173548863](/home/jzy/Documents/markdown/vben/vben-typescript.assets/image-20230720173548863.png)
+<img src="./vben-typescript.assets/image-20230720173548863.png" style="display: block; margin: auto;"/>
 
 `yuindex` 项目里面经常会见到在 `vue` 文件里面使用：
 
 ```vue
-<script setup lang='ts'>
-    import OutputType = YuTerminal.OutputType
+<script setup lang="ts">
+import OutputType = YuTerminal.OutputType;
 </script>
 ```
 

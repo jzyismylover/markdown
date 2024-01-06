@@ -10,6 +10,7 @@ type DefineConfigType = (config: UserConfig<DefaultThemeConfig> & {
 const domain = '120.77.245.193'
 
 export default (defineConfig as DefineConfigType)({
+  base: '/markdown/',
   title: 'Mr.Jiang-技术博客',
   description: '学习&工作-技术积累',
   head: [
@@ -44,12 +45,12 @@ export default (defineConfig as DefineConfigType)({
   plugins: [
     ["@vuepress/back-to-top"],
     ["@vuepress/medium-zoom"],
-    [
-      "sitemap",
-      {
-        hostname: domain,
-      },
-    ],
+    // [
+    //   "sitemap",
+    //   {
+    //     hostname: domain,
+    //   },
+    // ],
     ["vuepress-plugin-tags"],
     [
       "vuepress-plugin-code-copy",
@@ -68,7 +69,7 @@ export default (defineConfig as DefineConfigType)({
 
     // GitHub 仓库位置
     repo: "jzyismylover/ubuntu-markdown",
-    docsBranch: "master",
+    docsBranch: "docs",
 
     // 编辑链接
     editLinks: true,

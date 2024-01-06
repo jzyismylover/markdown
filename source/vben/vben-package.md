@@ -10,13 +10,13 @@ cache
 └storageCache.ts # 浏览器 storage
 ```
 
-![image-20230630173828177](/home/jzy/Documents/markdown/vben/vben-package.assets/image-20230630173828177.png)
+<img src="./vben-package.assets/image-20230630173828177.png" style="display: block; margin: auto;"/>
 
 🔐 存储加密
 
 项目中亮点之处就是使用 `AES加密算法` 对存储的内容进行加密。可配置传入
 
-``` 
+```
 key - 密钥
 iv - 初始向量
 mode - 加密模式
@@ -29,8 +29,6 @@ padding - 偏移
 - `set`：设置缓存内容，设定缓存的设定时间 `time` 以及可持续时间 `expire`
 - `remove`：根据 `key` 值删除缓存中的内容
 - `clear`：清除缓存的所有内容
-
-
 
 `localStorage` 的存储形式（同时也是需要进行`加密存储` 的数据）
 
@@ -73,10 +71,6 @@ interface BasicStore {
 }
 ```
 
-
-
-
-
 🔐 内存存储
 
 除了将内容存储在浏览器 `storage` 中，项目还定义了 `Memory class`。`Memory class` 主要是将内容存储在内存中，实际上每次更新都是在该对象上进行更新。在更新的过程中提供一个选项 —— 是否覆盖浏览器缓存。这样的好处在用户修改对应配置的时候无法恢复的情况（相当于拷贝了一份副本进行更新）。
@@ -107,14 +101,6 @@ export interface Cache<V = any> {
 
 2. `get` 函数返回的是 `Cache<T>` | `undefined`，因此凡是在使用的时候都需要判断返回值是否为 `undefined`
 
-
-
-
-
-
-
-
-
 ## 🔐 axios
 
 ```text
@@ -123,7 +109,7 @@ http
 ├─axiosCancel.ts # 配置 axios 取消请求
 ├─axiosTransform.ts # 定义 axios transform 接口
 ├─checkStatus.ts # 定义错误 code 检查机制并创建对应的消息提示实例
-├─helper.ts # 日期转换 util 
+├─helper.ts # 日期转换 util
 └index.ts # 实例 axios(配置拦截器)
 ```
 
@@ -150,7 +136,7 @@ http
 
 定义在 `axios` 请求响应不同阶段的接口，包括：
 
-- `beforeRequestHook`：请求之前处理config —— url、参数、时间格式化
+- `beforeRequestHook`：请求之前处理 config —— url、参数、时间格式化
 - `transformRequestHook` ：处理响应结果
 - `requestInterceptors`：`token` 添加、重复请求判断
 - `responseInterceptors`：响应拦截 —— 从 pending 中删除当前请求
@@ -192,8 +178,6 @@ interface RequestOptions {
 
 - `encodeURLComponent`：通过特定字符转义特殊字符，返回被编码后的新字符窜
 - `decodeURLComponent`：解码 `encodeURLComponent` 编码字符返回原字符串
-
-
 
 ## 🔐 moment
 

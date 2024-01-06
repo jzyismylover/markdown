@@ -4,12 +4,12 @@
 - 那什么是版本控制呢？版本控制也是一种软件工程技巧，借此能在软件开发的过程中，确保由不同人所编辑的同一程序文件都得到同步。通俗的来说就是版本控制其实是一个记录着我们对文件不同修改的一个工具。
 
 **1. 本地版本控制**
-本地版本控制主要通过在硬盘上保存一些补丁集，通过应用所有的补丁可以重新计算各个版本的内容。我们在清理电脑垃圾时有时候会看到有windows更新后的缓存文件，那它其实就是记录着上一个版本的一些信息。
+本地版本控制主要通过在硬盘上保存一些补丁集，通过应用所有的补丁可以重新计算各个版本的内容。我们在清理电脑垃圾时有时候会看到有 windows 更新后的缓存文件，那它其实就是记录着上一个版本的一些信息。
 优点：很多系统都有内置配置
 缺点：由于是在自己电脑上，不适合多人协作
 
 **2. 集中化的版本控制系统**<br>
-![avatar](https://static.vue-js.com/8b4b3040-f5ad-11eb-85f6-6fac77c0c9b3.png)
+<img src="https://static.vue-js.com/8b4b3040-f5ad-11eb-85f6-6fac77c0c9b3.png" style="display: block; margin: auto;"/>
 
 <div style="text-align: center;">图1 集中式版本控制系统图示</div>
 
@@ -21,17 +21,16 @@
 
 **3. 分布式的版本控制系统**<br>
 分布式的版本控制系统同样有一个中央仓库，但不同的是它允许每台电脑自己都拥有一个本地仓库，本地仓库保存着中央仓库的历史记录。
-![avatar](https://git-scm.com/book/en/v2/images/distributed.png)
+<img src="https://git-scm.com/book/en/v2/images/distributed.png" style="display: block; margin: auto;"/>
 
 <div style="text-align: center;">图2 分布式版本控制系统图示 </div>
 
 <br>
 优点：解决了集中式版本控制系统完全依赖中央仓库的缺点，每个开发者的电脑上都能够在断网的情况下对本地仓库进行提交、版本回滚的操作。而且即使中央仓库出现故障，也能够通过某个电脑的本地仓库镜像重新生成。
 
-
 <br>
 
-![avatar](https://static.vue-js.com/3273c9a0-f79c-11eb-bc6f-3f06e1491664.png)
+<img src="https://static.vue-js.com/3273c9a0-f79c-11eb-bc6f-3f06e1491664.png" style="display: block; margin: auto;"/>
 
 <div style="text-align: center;">图3 git图示</div>
 
@@ -43,20 +42,22 @@
 - 远程仓库：远程托管文件的仓库，比如 github
 
 ## init
+
 - 初始化本地仓库
+
 ```js
-git init 
+git init
 // 通常在没有本地仓库为空的情况下使用
 ```
 
 ## clone
+
 - 从远程服务器克隆项目到本地仓库
+
 ```js
-git clone [url] 
+git clone [url]
 //整体的步骤是 git init初始化本地仓库，然后拉取远程的内容到本地
 ```
-
-
 
 ## commit
 
@@ -78,12 +79,10 @@ git commit --amend
 $ git config --global core.editor "vi"
 ```
 
-
-
-
 ## branch
 
 - 查看本地、远程分支
+
 ```js
 git branch [option]
 git branch  // 查看本地分支
@@ -91,14 +90,10 @@ git branch -r  // 查看远程分支
 git branch -a  // 查看所有分支（包括本地和远程）
 ```
 
-
-
-
 ## fetch
+
 - 首先先理解清楚 fetch 命令的使用场景和使用背景
-- 从一个或多个其他存储库中获取分支和/或标签(统称为“引用”)以及完成其历史所必需的对象。 远程跟踪分支已更新(Git术语叫做commit)，需要将这些更新取回本地，这时就要用到`fetch`
-
-
+- 从一个或多个其他存储库中获取分支和/或标签(统称为“引用”)以及完成其历史所必需的对象。 远程跟踪分支已更新(Git 术语叫做 commit)，需要将这些更新取回本地，这时就要用到`fetch`
 
 ## rebase
 
@@ -110,11 +105,11 @@ $ git rebase -i master
 
 将当前分支整体移动到 `master` 分支，同时 `-i` 选项包含更多操作，详细请看 【https://waynerv.com/posts/git-rebase-intro/】
 
-
-
 ## stash
-- stash常用于暂时缓存当前分支修改的内容，然后再切换到别的分支去修改紧急的 bug
+
+- stash 常用于暂时缓存当前分支修改的内容，然后再切换到别的分支去修改紧急的 bug
 - 常用的命令有
+
 ```js
 //https://www.cnblogs.com/tocy/p/git-stash-reference.html
 git stash list // 查看当前 stash堆栈的信息
@@ -125,8 +120,6 @@ git stash apply stash@{n} // 将堆栈的第 n 项恢复出来
 git stash drop stash@{n} // 删除第 n 个堆栈的信息
 ```
 
-
-
 ## config
 
 > `git config` 主要用于设置 git 的一些选项，包括 `username`、`email`、`proxy`……
@@ -136,8 +129,6 @@ git stash drop stash@{n} // 删除第 n 个堆栈的信息
 - `system`：对当前操作系统的所有用户都生效
 - `global`：对当前用户生效
 - `local`：对当前文件夹生效（默认值）
-
-
 
 - 设置 `email` & `username`
 
@@ -158,12 +149,9 @@ git stash drop stash@{n} // 删除第 n 个堆栈的信息
   $ git config --[level] --list
   ```
 
-
-
-
 ## 多人协作
 
-![image-20230715095458915](./git.assets/image-20230715095458915.png)
+<img src="./git.assets/image-20230715095458915.png" style="display: block; margin: auto;"/>
 
 一个常见的多人协作场景：
 
@@ -172,9 +160,9 @@ git stash drop stash@{n} // 删除第 n 个堆栈的信息
 - 个人开发完成后 `pr` 到 `feature版本分支`
 - 该版本功能全部开发完成通过冒烟测试后开始提测，生成 `release 分支`
 - 提测完成视情况再整体再合并到 `master`
-- 
+-
 
-![image-20230715100554424](./git.assets/image-20230715100554424.png)
+<img src="./git.assets/image-20230715100554424.png" style="display: block; margin: auto;"/>
 
 🔐 理解 `merge` & `rebase`
 
@@ -191,8 +179,8 @@ git stash drop stash@{n} // 删除第 n 个堆栈的信息
 - `merge` 呈现的是一个交叉状态
 - `rebase` 呈现的是一个线性状态
 
->  `merge` 可以回滚，也就是说上图一可以回滚会图二
+> `merge` 可以回滚，也就是说上图一可以回滚会图二
 
-![image-20230715105422846](./git.assets/image-20230715105422846.png)
+<img src="./git.assets/image-20230715105422846.png" style="display: block; margin: auto;"/>
 
-—— 两个 `个人 feature` 分支完成 `rebase` 
+—— 两个 `个人 feature` 分支完成 `rebase`

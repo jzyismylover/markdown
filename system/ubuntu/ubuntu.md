@@ -1,8 +1,6 @@
-# ubuntu 
+# ubuntu
 
 > 初始安装 ubuntu 时遇到的一些问题，包括对一些目录、应用安装、环境配置等一些解决方案
-
-
 
 🔐 关于 `UEFI` & `BIOS` 启动理解
 
@@ -11,11 +9,9 @@
 
 `UEFI` 相比于`BIOS `，可以直接读取 `FAT	` 分区的文件，因此在启动系统的时候不需要再在 `BIOS `中读取指定扇区的代码然后从活动分区启动操作系统。完全可以开发直接在 `UEFI ` 运行的应用程序，直接在启动的时候读取执行，在重装系统的时候只需插入 `制作好系统的U盘`直接运行启动即可。
 
-
-
 ## 存储库
 
-> ubuntu 软件有多种形式可用 DEB软件包，AppImage，Flatpak Snap…
+> ubuntu 软件有多种形式可用 DEB 软件包，AppImage，Flatpak Snap…
 
 实际在 `apt install` 的时候 `ubuntu` 会从 `main` 存储库寻找下载内容 —— 通常这些安装包都是 `ubuntu` 社区在维护
 
@@ -31,12 +27,12 @@ $ sudo add-apt-repository [repository-link]
 - 自动更新系统的软件源列表。这样，系统就知道从哪些软件源获取软件包的更新和安装
 - 在添加新的软件源时自动导入软件源的 `GPG` 密钥。`GPG` 密钥用于验证软件包的完整性和真实性，确保用户安装的软件没有被篡改
 
-
-
 ## 目录
 
 ### /etc/shells
-该目录主要包含了ubuntu系统支持的终端
+
+该目录主要包含了 ubuntu 系统支持的终端
+
 ```bash
 $ cat /etc/shells
 # /etc/shells: valid login shells
@@ -77,9 +73,7 @@ Comment=Tencent QQMusic
 Categories=AudioVideo;
 ```
 
-> 既然说到了 qqmusic，实际在启动的时候遇到闪退问题，那么实际是因为 desktop 软件启动的时候默认会给应用一个sandbox来限制其行为，而electron中默认也会给渲染进程启动一个sandbox，我理解的花就是外层desktop加的sandbox阻塞了electron和操作系统的通信而导致应用无法正常加载页面，因此需要在启动的时候默认不加上 sandbox，即上面 `--no-sandbox` 的配置 
-
-
+> 既然说到了 qqmusic，实际在启动的时候遇到闪退问题，那么实际是因为 desktop 软件启动的时候默认会给应用一个 sandbox 来限制其行为，而 electron 中默认也会给渲染进程启动一个 sandbox，我理解的花就是外层 desktop 加的 sandbox 阻塞了 electron 和操作系统的通信而导致应用无法正常加载页面，因此需要在启动的时候默认不加上 sandbox，即上面 `--no-sandbox` 的配置
 
 ## 蓝牙连接
 
@@ -105,7 +99,7 @@ Categories=AudioVideo;
   $ sudo vim /etc/bluetooth/main.conf
   ```
 
-  设置`FastConnectable=true` 
+  设置`FastConnectable=true`
 
 - 连接蓝牙
 
@@ -119,13 +113,9 @@ Categories=AudioVideo;
   connect <mac address of your device> # 连接该MAC设备
   ```
 
-![image-20231201204627331](/home/jzy/Documents/markdown/ubuntu.assets/image-20231201204627331.png)
+<img src="/home/jzy/Documents/markdown/ubuntu.assets/image-20231201204627331.png" style="display: block; margin: auto;"/>
 
 > connect 24:81:C7:FD:21:0E
-
-
-
-
 
 ## 软件安装
 
@@ -144,7 +134,7 @@ $ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - #
 2. 添加 docker 仓库到下载源
 
 ```bash
-$ sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"	
+$ sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
 $ apt-cache policy docker-ce
 ```
 
@@ -155,21 +145,19 @@ $ sudo apt install docker-ce -y
 $ sudo systemctl status docker
 ```
 
-> 下载完成之后其实每次运行 docker 都需要 sudo，因为默认 docker 属于 docker 组，因此除了 root / docker其他不能进行读写，因此把当前用户加入组即可
+> 下载完成之后其实每次运行 docker 都需要 sudo，因为默认 docker 属于 docker 组，因此除了 root / docker 其他不能进行读写，因此把当前用户加入组即可
 
 ```bash
 $ sudo usermod -aG docker ${USER}
 $ sudo systemctl restart docker
 ```
 
-4. 安装 docker-compose  [**参考**](https://www.51cto.com/article/715086.html)
+4. 安装 docker-compose [**参考**](https://www.51cto.com/article/715086.html)
 
 ```bash
 $ sudo curl -L "https://github.com/docker/compose/releases/download/v2.6.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose # 版本可替换为最新
 $ sudo chmod +x /usr/local/bin/docker-compose
 ```
-
-
 
 ### vscode
 
@@ -212,16 +200,11 @@ $ sudo dpkg -i [.deb]
   "leetcode.hint.configWebviewMarkdown": false,
   "leetcode.hint.commandShortcut": false
 }
-
 ```
-
-
-
-
 
 ### zsh
 
-zsh 是比bash更为强大的shell，支持定制插件、主题等等
+zsh 是比 bash 更为强大的 shell，支持定制插件、主题等等
 
 1. 安装 zsh
 
@@ -239,7 +222,6 @@ $  wget sh -c "$(wget https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/t
 sh -c "$(wget -O- https://gitee.com/pocmon/mirrors/raw/master/tools/install.sh)"
 ```
 
-
 3. 配置 oh-my-zsh 主题
 
 ```bash
@@ -248,6 +230,7 @@ ZSH_THEME='agnoster'
 ```
 
 > 主题配置后会出现终端无法显示主题图标问题，搜索后发现是字体类型不对，因此需要重新下载 [Ubuntu mono](https://github.com/powerline/fonts/blob/master/UbuntuMono/Ubuntu%20Mono%20derivative%20Powerline%20Bold.ttf) 并完成安装，在 终端`preference/unnamed/text`下面选择该字体并重新启动当前终端，当然下载该字体应用前需要下载 powerline 支持
+
 ```bash
 $ sudo apt-get install fonts-powerline
 ```
@@ -293,28 +276,31 @@ $ chsh -s /bin/zsh # 生效需 reboot后
 ```bash
 $ git clone --depth=1 https://gitee.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
 ```
+
 ```bash
 # ~/.zshrc
 ZSH_THEME="powerlevel10k/powerlevel10k"
 ```
+
 配置主题样式
+
 ```bash
 $ p10k configure
 ```
-更多颜色定制可参考 [教程](https://blog.csdn.net/Lijuejie/article/details/111567856)。整体在配置的过程中也遇到了 ubuntu 终端无法设置新下载字体的问题(MesloLGS无法正常应用包括其他字体也是)。
+
+更多颜色定制可参考 [教程](https://blog.csdn.net/Lijuejie/article/details/111567856)。整体在配置的过程中也遇到了 ubuntu 终端无法设置新下载字体的问题(MesloLGS 无法正常应用包括其他字体也是)。
 那么实际在解决问题的时候也没有遇到比较好的方法，最后也是从 [github](https://github.com/fontmgr/MesloLGSNF/blob/main/fonts/MesloLGS%20NF%20Italic.ttf) 把里面的所以 Meslogs 字体全部下载下来才最后能应用的上，这个真的好坑呀！
 当然其实 [官网](https://github.com/romkatv/powerlevel10k#how-was-the-recommended-font-created) 也给了 Meslogs 字体的下载方式，只是自己没有看仔细！！！
+
 ```bash
 $ git clone --depth=1 https://github.com/romkatv/nerd-fonts.git
 cd nerd-fonts
 ./build 'Meslo/S/*'
 ```
 
-
-
 ### clash
 
-clash 是一个管理代理的工具，在 windows/macos上都有图形化界面，在 linux 上可能更多还是在命令行中配置
+clash 是一个管理代理的工具，在 windows/macos 上都有图形化界面，在 linux 上可能更多还是在命令行中配置
 
 1. 当然首先还是得把 clash.gz 下载到本地 [下载链接](https://github.com/Dreamacro/clash/releases)
 
@@ -324,7 +310,7 @@ clash 是一个管理代理的工具，在 windows/macos上都有图形化界面
 $ gzip -d [.gz] # 会删除 gz 文件
 ```
 
-3. 当然这时候解压缩得到的就是一个可执行文件了。当前还缺少 clash 配置文件，因此需要在windows端通过UI导出配置并重命名为 `config.yaml` 拷贝到 ubuntu 中 `~/.config/clash`
+3. 当然这时候解压缩得到的就是一个可执行文件了。当前还缺少 clash 配置文件，因此需要在 windows 端通过 UI 导出配置并重命名为 `config.yaml` 拷贝到 ubuntu 中 `~/.config/clash`
 
    > 当然也可以在实际执行 clash 的时候使用 -f 选项制定 yaml 文件
 
@@ -344,7 +330,7 @@ proxychains 是一个强大的代理工具(在终端也能进行指定代理服�
 $ sudo apt-get install proxychains4
 ```
 
-2. 修改 `/etc/proxychains4.conf`，在 `ProxyList` 下面修改对应连接协议的端口为 clash代理端口(前提是clash必须得先启动了)
+2. 修改 `/etc/proxychains4.conf`，在 `ProxyList` 下面修改对应连接协议的端口为 clash 代理端口(前提是 clash 必须得先启动了)
 
 ```text
 [ProxyList]
@@ -367,7 +353,7 @@ $ proxychains4 sudo apt-get update
 1. 基于 `bestwu/wechat` 镜像
 
 ```yaml
-version: '3'
+version: "3"
 networks:
   wechat:
     driver: bridge
@@ -382,7 +368,7 @@ services:
     devices:
       - /dev/snd # 声卡
     volumes:
-      - /tmp/.X11-unix:/tmp/.X11-unix 
+      - /tmp/.X11-unix:/tmp/.X11-unix
       - $HOME/WeChatFiles:/WeChatFiles # 文件存储
     environment:
       - DISPLAY=unix$DISPLAY
@@ -422,11 +408,9 @@ docker run \
   zixia/wechat
 ```
 
-
-
 ### typora
 
-> 非常好用的markdown编辑工具
+> 非常好用的 markdown 编辑工具
 
 1. 安装
 
@@ -438,7 +422,7 @@ $ sudo snap install typora
 
 使用的时候其实我之前一直觉得比较鸡肋的地方就是里面我放了截图，但实际发给别人的时候就看不到这些截图了。但实际可以通过 **[picgo](https://picgo.github.io/PicGo-Core-Doc/zh/guide/commands.html#config-set)** 来解决这个问题。
 
-```bash 
+```bash
 $ npm install -g picgo
 ```
 
@@ -481,10 +465,7 @@ $ picgo set uploader
     "picgo-plugin-gitee": false // gitee图床插件
   }
 }
-
 ```
-
-
 
 > :warning: 实际完成上面在 typora 配置的时候就遇到问题了
 
@@ -492,15 +473,15 @@ $ picgo set uploader
 
 因为是基于 `picgo-core` ，因此只能使用自定义命令（**格式是 [node] [picgo] u**)，但是由于 `typora` 使用 snap 安装，并没有权限读取除了 ~/snap & ~/media 外的其他目录，因此在实际验证图片上传选项会出现 `permission denine`。解决的方案：
 
-```bash 
-# 先使用硬链接保证能访问 node 
+```bash
+# 先使用硬链接保证能访问 node
 $ ln $(which node) ~/snap/typora/80/node
 ```
 
 用同样的方式链接 `picgo` 发现不行，因为啊其实 `$(which picgo)` 其实是一个软链接文件，作为快捷方式访问由于 `snap` 依然无权限
 
 ```bash
-$ cd /home/jzy/.nvm/versions/node/v18.16.0/bin/      
+$ cd /home/jzy/.nvm/versions/node/v18.16.0/bin/
 $ ll
 total 87M
 lrwxrwxrwx 1 jzy jzy  45  4月 12 13:31 corepack -> ../lib/node_modules/corepack/dist/corepack.js
@@ -527,8 +508,6 @@ $ cp -r picgo ~/snap/typora/80/picgo
 # ~ 指的是 ~/snap/typora/80
 ~/node ~/picgo/bin/picgo u
 ```
-
-
 
 ### git
 
@@ -569,31 +548,29 @@ $ ssh-keygen -t rsa -C "3011543110@qq.com" -f ~/.ssh/github_rsa
 
 ```bash
 # github账号配置
-Host github.com 
-port 22 
-User git 
-HostName github.com 
-PreferredAuthentications publickey 
-IdentityFile ~/.ssh/github_rsa 
+Host github.com
+port 22
+User git
+HostName github.com
+PreferredAuthentications publickey
+IdentityFile ~/.ssh/github_rsa
 
-# gitlab账号配置(HostName为公司gitlab地址) Host gitlab.com 
-port 22 
-User git 
-HostName gitlab.xxx.com User git 
-PreferredAuthentications publickey 
+# gitlab账号配置(HostName为公司gitlab地址) Host gitlab.com
+port 22
+User git
+HostName gitlab.xxx.com User git
+PreferredAuthentications publickey
 IdentityFile ~/.ssh/id_rsa
 ```
 
 对应参数[说明](https://daemon369.github.io/ssh/2015/03/21/using-ssh-config-file)：
 
-- Host：识别的模式，对识别的模式，配置对应的主机名和ssh文件 
-- Port 自定义的端口。默认为22，可不配置 
-- User 自定义的用户名，默认为git，可不配置 
-- HostName 真正连接的服务器地址 
-- PreferredAuthentications 指定优先使用哪种方式验证，支持密码和秘钥验证方式 
+- Host：识别的模式，对识别的模式，配置对应的主机名和 ssh 文件
+- Port 自定义的端口。默认为 22，可不配置
+- User 自定义的用户名，默认为 git，可不配置
+- HostName 真正连接的服务器地址
+- PreferredAuthentications 指定优先使用哪种方式验证，支持密码和秘钥验证方式
 - IdentityFile 指定本次连接使用的密钥文件
-
-
 
 ### ffmpeg
 
@@ -618,9 +595,6 @@ $ ffmpeg -encoders
   $ ffmpeg -i input.mp3 output.ogg
   ```
 
-
-
-
 ### vmware
 
 > 虚拟机软件，安装 `win`系统 用于补充 `ubuntu` 软件支持度不够问题 [安装教程](https://linuxhint.com/install-vmware-workstation-17-pro-ubuntu-22-04-lts/)
@@ -639,8 +613,6 @@ $ ffmpeg -encoders
 
 `MC60H-DWHD5-H80U9-6V85M-8280D`
 
-
-
 在 `Ubuntu` 中，启动 `windows` 或者是其他系统都会出现 `VMware Linux - Could not open dev vmmon: No such file or directory.Please make sure that the kernel module vmmon` ，本质上是需要的组件需要签名后才能使用。准备一个可执行文件
 
 ```sh
@@ -651,7 +623,7 @@ cd /home/jzy/Documents/signature
 sudo openssl req -new -x509 -newkey rsa:2048 -keyout ${filename_key}.priv -outform DER -out ${filename_key}.der -nodes -days 36500 -subj "/CN=VMware/"
 sudo /usr/src/linux-headers-`uname -r`/scripts/sign-file sha256 ./${filename_key}.priv ./${filename_key}.der $(modinfo -n vmmon)
 sudo /usr/src/linux-headers-`uname -r`/scripts/sign-file sha256 ./${filename_key}.priv ./${filename_key}.der $(modinfo -n vmnet)
-sudo mokutil --import ${filename_key}.der 
+sudo mokutil --import ${filename_key}.der
 echo "NEXT STEPS: reboot > select 'Enroll MOK' > follow prompts to enter password > reboot"
 ```
 
@@ -662,8 +634,6 @@ $ chomd 700 ./signature.sh
 $ ./signature.sh
 $ reboot
 ```
-
-
 
 ### libglu1
 
@@ -676,8 +646,6 @@ $ sudo apt install libxi6 libgconf-2-4
 
 > 以上主要是解决找不到 `dll` 的问题
 
-
-
 ### tree-node-cli
 
 获取目录树 [juejin](https://juejin.cn/post/6869586796435472397)
@@ -686,15 +654,11 @@ $ sudo apt install libxi6 libgconf-2-4
 $ npm install -g tree-node-cli
 ```
 
-
-
-
-
 ## 编程环境
 
 ### nvm
 
-nvm 是一个可以在系统中切换node版本的工具，相比单独安装node.exe 更加方便可定制性更高
+nvm 是一个可以在系统中切换 node 版本的工具，相比单独安装 node.exe 更加方便可定制性更高
 
 ```bash
 $ wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | zsh
@@ -705,14 +669,14 @@ $ nvm --version # 无效 可重启终端
 $ nvm ls-remote # 查看可安装 node 版本
 $ nvm install v18.8.0 # 安装 node v18版本
 $ nvm ls # 查看当前安装了的 node
-$ nvm use [version] # 具体使用哪个版本的 node 
+$ nvm use [version] # 具体使用哪个版本的 node
 ```
 
 > 当然加入上面使用了 bash 去初始化的话只需把对应 nvm 启动配置从 `~/.bashrc` 克隆到 `~/.zshrc` 即可
 
 ### anaconda
 
-conda是一个包管理工具及python环境管理工具，anaconda是conda最大的发行版本，anaconda 内含数据科学和机器学习要用到的很多软件
+conda 是一个包管理工具及 python 环境管理工具，anaconda 是 conda 最大的发行版本，anaconda 内含数据科学和机器学习要用到的很多软件
 
 1. 安装 anaconda
 
@@ -728,9 +692,7 @@ $ source ~/.bashrc # 初始会存在一个 base 环境
 $ conda config --set auto_activate_base false # 配置默认不进入base环境(即不存在python环境)
 ```
 
-
-
-> :warning: 以上 是基于 anaconda 的安装过程，但是整体 anaconda 体积比较大，而作为web开发工作者其实并不需要包含这么多机器学习相关依赖，因此可以考虑下载 `miniconda`。`miniconda`体积小，仅仅包含基础的 conda 以及 python 环境。
+> :warning: 以上 是基于 anaconda 的安装过程，但是整体 anaconda 体积比较大，而作为 web 开发工作者其实并不需要包含这么多机器学习相关依赖，因此可以考虑下载 `miniconda`。`miniconda`体积小，仅仅包含基础的 conda 以及 python 环境。
 
 ```bash
 $ wget -c https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
@@ -739,48 +701,47 @@ $ zsh Miniconda3-latest-Linux-x86_64.sh
 ```
 
 3. 常用命令
+
 ```bash
 #创建虚拟环境
 conda create -n your_env_name python=X.X（3.6、3.7等）
- 
+
 #激活虚拟环境
 source activate your_env_name(虚拟环境名称)
- 
+
 #退出虚拟环境
 source deactivate your_env_name(虚拟环境名称)
- 
+
 #删除虚拟环境
 conda remove -n your_env_name(虚拟环境名称) --all
- 
+
 #查看安装了哪些包
 conda list
- 
+
 #安装包
 conda install package_name(包名)
 conda install scrapy==1.3 # 安装指定版本的包
 conda install -n 环境名 包名 # 在conda指定的某个环境中安装包
- 
+
 #查看当前存在哪些虚拟环境
-conda env list 
-#或 
+conda env list
+#或
 conda info -e
 #或
 conda info --envs
- 
+
 #检查更新当前conda
 conda update conda
- 
+
 #更新anaconda
 conda update anaconda
- 
+
 #更新所有库
 conda update --all
- 
+
 #更新python
 conda update python
 ```
-
-
 
 ### compose
 
@@ -790,7 +751,7 @@ conda update python
 
   ```yml
   version: "3"
-  
+
   services:
     mysql:
       image: mysql
@@ -804,8 +765,7 @@ conda update python
       volumes:
         - ~/docker-compose/mysql/data:/var/lib/mysql
         - ~/docker-compose/mysql/config/my.cnf:/etc/mysql/my.cnf
-      command: 
-        --max_connections=1000
+      command: --max_connections=1000
         --character-set-server=utf8mb4
         --collation-server=utf8mb4_general_ci
         --default-authentication-plugin=mysql_native_password
@@ -814,12 +774,12 @@ conda update python
 - `wechat`
 
   ```yml
-  version: '2'
+  version: "2"
   networks:
     wechat:
       driver: bridge
       name: wechat
-  
+
   services:
     wechat:
       image: bestwu/wechat
@@ -863,8 +823,8 @@ conda update python
   - `compose` 启动文件
 
   ```yml
-  version: '3.4'
-  
+  version: "3.4"
+
   services:
     redis:
       image: redis:7.0.2-alpine # 指定服务镜像，最好是与之前下载的redis配置文件保持一致
@@ -886,13 +846,13 @@ conda update python
 - `nginx`
 
   ```yml
-  version: '3'
-  
+  version: "3"
+
   networks:
     nginx:
-       external: true
-       name: nginx
-          
+      external: true
+      name: nginx
+
   services:
     nginx:
       image: nginx:latest
@@ -903,9 +863,6 @@ conda update python
       networks:
         - nginx
   ```
-
-
-
 
 ### pnpm
 
@@ -921,15 +878,7 @@ conda update python
    wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.bashrc" SHELL="$(which bash)" bash -
    ```
 
-   
-
-
-
-
-
 ## 命令
-
-
 
 ### xrandr
 
@@ -944,28 +893,28 @@ $ xrandr
 Screen 0: minimum 16 x 16, current 1920 x 1080, maximum 32767 x 32767
 XWAYLAND0 connected primary 1920x1080+0+0 (normal left inverted right x axis y axis) 340mm x 190mm
    1920x1080     59.96*+
-   1440x1080     59.87  
-   1400x1050     59.86  
-   1280x1024     59.89  
-   1280x960      59.94  
-   1152x864      59.78  
-   1024x768      59.92  
-   800x600       59.86  
-   640x480       59.38  
-   320x240       59.52  
-   1680x1050     59.95  
-   1440x900      59.89  
-   1280x800      59.81  
-   720x480       59.71  
-   640x400       59.20  
-   320x200       58.96  
-   1600x900      59.95  
-   1368x768      59.88  
-   1280x720      59.86  
-   1024x576      59.90  
-   864x486       59.92  
-   720x400       59.55  
-   640x350       59.77 
+   1440x1080     59.87
+   1400x1050     59.86
+   1280x1024     59.89
+   1280x960      59.94
+   1152x864      59.78
+   1024x768      59.92
+   800x600       59.86
+   640x480       59.38
+   320x240       59.52
+   1680x1050     59.95
+   1440x900      59.89
+   1280x800      59.81
+   720x480       59.71
+   640x400       59.20
+   320x200       58.96
+   1600x900      59.95
+   1368x768      59.88
+   1280x720      59.86
+   1024x576      59.90
+   864x486       59.92
+   720x400       59.55
+   640x350       59.77
 ```
 
 XWAYLAND0 就是目前计算机的显示器别名
@@ -980,12 +929,12 @@ $ xrandr --output HDMI-1-1 --same-as XWAYLAND0 --auto
 - 设置 HDMI 为右扩展屏幕
 
 ```bash
-$ xrandr --output HDMI-1-1 --right-of XWAYLAND0 --auto 
+$ xrandr --output HDMI-1-1 --right-of XWAYLAND0 --auto
 ```
 
 ### [tmux](https://zhuanlan.zhihu.com/p/98384704)
 
->  终端切换工具，非常好用！它的作用主要是创建一个脱离于当前终端的窗口使得会话与终端窗口分离，他则作为一个桥梁。
+> 终端切换工具，非常好用！它的作用主要是创建一个脱离于当前终端的窗口使得会话与终端窗口分离，他则作为一个桥梁。
 
 ```bash
 $ tmux new -s <name> # 创建一个窗口
@@ -995,15 +944,13 @@ $ tmux kill-session -t <name> # 彻底销毁 tmux 窗口
 $ tmux switch -t <name> # 在一个tmux窗口进入到另外一个tmux窗口
 ```
 
-
-
 ### alias
 
 > :key: 可用于配置复杂命令参数快捷使用方式
 
 - `curl` 发送 `POST` 请求
 
-  以下配置在 `~/.zshrc` 
+  以下配置在 `~/.zshrc`
 
   ```bash
   # 基于 json 格式的 post 请求
@@ -1012,23 +959,15 @@ $ tmux switch -t <name> # 在一个tmux窗口进入到另外一个tmux窗口
 
   普通 `alias` 配置不支持外部传入参数，因此可以配置成函数的形式接收外部参数
 
-
-
-
-
 ## 日常使用
-
-
 
 ### 快捷键
 
 > `super` 其实就是电脑上的 `win`
 
-
-
 - `super` ：打开活动搜索界面
 - `ctrl + alt + t`：打开终端
-- `super + l`：🔓屏
+- `super + l`：🔓 屏
 - `super + d`：显示桌面
 - `super + a`：显示应用菜单
 - `super + tab / alt + tab`：应用切换
@@ -1036,12 +975,10 @@ $ tmux switch -t <name> # 在一个tmux窗口进入到另外一个tmux窗口
 - `super + 箭头`：移动窗口位置
   - `super + <` 使当前窗口紧贴左边缘
   - `super + >` 使当前窗口紧贴右边缘
-  - `super + 👆`  使当前窗口全屏
+  - `super + 👆` 使当前窗口全屏
   - `super + 👇`：使当前窗口缩小
 - `super + m`：切换到通知栏
 - `super + 空格`：切换输入法
-
-
 
 ### hosts
 
@@ -1056,7 +993,6 @@ $ nslookup [domain name]
 2. 刷新 `DNS` 配置 `
 
 ```bash
-$ sudo apt install nscd 
+$ sudo apt install nscd
 $ sudo /etc/init.d/nscd restart
 ```
-

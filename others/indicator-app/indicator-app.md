@@ -8,7 +8,7 @@
 
 ### jwt
 
-![02](/home/jzy/Documents/markdown/indicator-app/indicator-app.assets/02.png)
+<img src="/home/jzy/Documents/markdown/indicator-app/indicator-app.assets/02.png" style="display: block; margin: auto;"/>
 
 对于业务内需要保护的 `api` 基本都需遵循这套流程，即使用前都需要校验 `token`。当然如何去鉴定的问题就是 `jwt` 包所处理的事情。
 
@@ -18,15 +18,13 @@
 def create_token(user_id):
     payload = {
         'user_id': user_id,
-        'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=24), 
+        'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=24),
         # 时间变化导致每次生成token签名不一样
     }
     token = jwt.encode(payload=payload, key=SALT, algorithm='HS256')
 
     return token
 ```
-
-
 
 ### 邮箱认证
 
@@ -43,7 +41,7 @@ mark_dyn_data(email, {'update_time': time.time(), 'code': captcha})
 
 ### 操作历史
 
-在文本语种识别模块需要记录下用户输入文本，因此需要新建一个 `history` 表存储. 逻辑不难唯一需要注意的是在获取 用户`history`必须基于 `user_id`  进行获取。
+在文本语种识别模块需要记录下用户输入文本，因此需要新建一个 `history` 表存储. 逻辑不难唯一需要注意的是在获取 用户`history`必须基于 `user_id` 进行获取。
 
 ```python
 def get_history_rows(user_id):
@@ -70,8 +68,6 @@ def get_history_rows(user_id):
     return histories
 ```
 
-
-
 ## 指标提取
 
 ### celery
@@ -85,7 +81,7 @@ file.read().hex() # 传入
 bytes.fromhex(file['data']) # 读取
 ```
 
-尝试这个方法前，其实也想使用 `decode` / `encode` 的方式基于 `unicode` 
+尝试这个方法前，其实也想使用 `decode` / `encode` 的方式基于 `unicode`
 
 - decode() 方法用于将 bytes 类型的二进制数据转换为 str 类型，这个过程也称为“解码”
 - encode() 方法为字符串类型（str）提供的方法，用于将 str 类型转换成 bytes 类型，这个过程也称为“编码”
@@ -95,8 +91,6 @@ file.read().decode(encoding='utf-8')
 ```
 
 使用的时候会发现针对英文或者中文这样的编码解码过程没有问题，但是对于一些小众语种文本可能就没办法正常处理（小语种文本），解码生成的 str 无法编码成功，生成 `File` 时出现乱码。
-
-
 
 > 回到 celery 的知识，celery 主要由 broker、backend、worker 组成
 
@@ -196,4 +190,3 @@ class ZHUtils(BaseUtils):
                 )
         return words
 ```
-

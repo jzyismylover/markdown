@@ -24,13 +24,11 @@ $ nest g controller <path>
 $ nest g module <path>
 ```
 
-
-
 ## controller
 
 控制器，负责处理传入的请求并向客户端返回响应。
 
-![img](https://docs.nestjs.com/assets/Controllers_1.png)
+<img src="https://docs.nestjs.com/assets/Controllers_1.png" style="display: block; margin: auto;"/>
 
 ```bash
 # 快速生成一个控制器
@@ -52,26 +50,22 @@ export class FileProcessController {
 
 请求路径： `/file-proces/txt`。
 
-
-
 - 对于一个 route 来说，可为 get、post、delete....
 
 ```typescript
-@Controller('cats')
+@Controller("cats")
 export class CatsController {
   @Post() // 匹配 post 请求
   create(): string {
-    return 'This action adds a new cat';
+    return "This action adds a new cat";
   }
 
   @Get() // 匹配 get 请求
   findAll(): string {
-    return 'This action returns all cats';
+    return "This action returns all cats";
   }
 }
 ```
-
-
 
 - 同时也允许我们从对应的 route 中解析得到我们需要的信息比如 request、response.... [详情请看](https://docs.nestjs.com/controllers#request-object)
 
@@ -79,8 +73,9 @@ export class CatsController {
 @Controller()
 export class CatsController {
   @Get()
-  findAll(@Req() request: Request): string { // 解析得到请求(请求头、请求体...)
-    return 'This action returns all cats';
+  findAll(@Req() request: Request): string {
+    // 解析得到请求(请求头、请求体...)
+    return "This action returns all cats";
   }
 }
 ```
@@ -88,12 +83,10 @@ export class CatsController {
 ```typescript
 @Get('user:id') // /user/1
 findOne(@Param() params: any): string { // 获得 params
-  console.log(params.id); // 1 
+  console.log(params.id); // 1
   return `This action returns a #${params.id} cat`;
 }
 ```
-
-
 
 - 路由泛匹配
 
@@ -104,17 +97,7 @@ findAll() {
 }
 ```
 
-
-
 > controller 注册逻辑：可以看到上面都是通过 @Get 或者 @Post 这些装饰器来注册路由，这些语法是 JS 里面装饰器逻辑, 本质上是基于 `Reflect.metaData ` 来实现数据注入（IOC 容器控制反转）
-
-
-
-
-
-
-
-
 
 ## pipe
 
@@ -134,19 +117,19 @@ async findOne(@Param('id', ParseIntPipe) id: number) {
 ```ts
 @Injectable()
 export class TransformStrToIntPipe implements PipeTransform {
-  params = []
+  params = [];
   constructor(params?: string[]) {
-    this.params = params || []
+    this.params = params || [];
   }
   // 转换 body 中 numberString 参数
   transform(value: any, metadata: ArgumentMetadata) {
-    const re = {}
-    for(const key in value) {
-      this.params.includes(key) ?
-        (re[key] = Number(value[key]))
-        : (re[key] = value[key]) 
+    const re = {};
+    for (const key in value) {
+      this.params.includes(key)
+        ? (re[key] = Number(value[key]))
+        : (re[key] = value[key]);
     }
-    return re
+    return re;
   }
 }
 ```
@@ -156,8 +139,6 @@ export class TransformStrToIntPipe implements PipeTransform {
   - data: 未知
   - type: 来自 `body` / `param` / `query`
   - metatype: `dto class`
-
-
 
 ## 执行上下文
 
@@ -177,13 +158,16 @@ export class AllFilter implements ExceptionFilter {
     const response = ctx.getResponse();
     const request = ctx.getRequest();
 
-    const status = exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
+    const status =
+      exception instanceof HttpException
+        ? exception.getStatus()
+        : HttpStatus.INTERNAL_SERVER_ERROR;
 
     response.status(status).json({
       statusCode: status,
       timestamp: new Date().toISOString(),
       path: request.url,
-      exception: String(exception)
+      exception: String(exception),
     });
   }
 }
@@ -197,7 +181,7 @@ export class AllFilter implements ExceptionFilter {
 export interface ExecutionContext extends ArgumentsHost {
   // 当前控制器类名
   getClass<T>(): Type<T>;
-    
+
   // 处理指定请求的控制器方法名
   getHandler(): Function;
 }
@@ -214,7 +198,7 @@ export const Roles = (...roles: string[]) => SetMetadata('roles', roles);
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(private jwtService: JwtService, private reflector: Reflector) {}
-  
+
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const isPublic = this.reflector.getAllAndOverride(IS_PUBLIC_KEY, [
       context.getClass(),
@@ -229,16 +213,13 @@ export class AuthGuard implements CanActivate {
 
 > 上面使用到了 `getAllAndOverride` 方法，该方法的含义是如果 class & method 同时注入了相同元数据的话 method 会覆盖 class 的值。常见的还有 `getAllAndMerge`，处理的机制是合并 method & class 定义的值 —— ['user', 'admin']
 
-
-
 ## 数据校验
 
 > 对应官网 validation 章节：主要介绍的是对入参参数的类型校验以及 nest 里面支持自动进行相关类型转换的机制
 
 ```typescript
+
 ```
-
-
 
 ## cache
 
@@ -260,7 +241,7 @@ export class HttpCacheInterceptor extends CacheInterceptor {
     // 获取当前请求上下文
     const { httpAdapter } = this.httpAdapterHost;
 
-    const isGetRequest = httpAdapter.getRequestMethod(request) === 'GET';
+    const isGetRequest = httpAdapter.getRequestMethod(request) === "GET";
     const excludePaths = [
       // 需要排除的路径
     ];
@@ -275,8 +256,6 @@ export class HttpCacheInterceptor extends CacheInterceptor {
   }
 }
 ```
-
-
 
 ## 序列化
 
@@ -295,14 +274,14 @@ export class HttpCacheInterceptor extends CacheInterceptor {
 ```ts
 // user.entity.ts
 export class UserEntity {
-  id: number
-  username: string
+  id: number;
+  username: string;
 
   @Exclude()
-  password: string
+  password: string;
 
   constructor(partial: Partial<UserEntity>) {
-    Object.assign(this, partial)
+    Object.assign(this, partial);
   }
 }
 ```
@@ -311,35 +290,31 @@ export class UserEntity {
 
 ```json
 {
-    "id": 1,
-    "username": "john",
-    "email": "3011543110@qq.com"
+  "id": 1,
+  "username": "john",
+  "email": "3011543110@qq.com"
 }
 ```
-
-
 
 ## version
 
 > 官网 `version` 章节主要说的是对于 url 版本的设定
 
 ```ts
-@Controller('users')
+@Controller("users")
 export class UsersController {
   @Get()
-  @Version('1') // 对应 url /v1/users
+  @Version("1") // 对应 url /v1/users
   findAll() {
-    return 'findAll()';
+    return "findAll()";
   }
 
-  @Get(':id') // 对应 url /users/1
-  findOne(@Param('id') id: string) {
+  @Get(":id") // 对应 url /users/1
+  findOne(@Param("id") id: string) {
     return `findOne(${id})`;
   }
 }
 ```
-
-
 
 ## cookie
 
@@ -357,18 +332,17 @@ async signIn(@Res({ passthrough: true }) res: Response, @Body() signDto: Record<
 实际可以将 `token` 放入 `cookie` 中进行验证起到同源保护的效果。
 
 ```ts
-import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+import { createParamDecorator, ExecutionContext } from "@nestjs/common";
 
-export const Cookies = createParamDecorator((data: string, ctx: ExecutionContext) => {
-  const request = ctx.switchToHttp().getRequest();
-  return data ? request.cookies?.[data] : request.cookies;
-});
-
+export const Cookies = createParamDecorator(
+  (data: string, ctx: ExecutionContext) => {
+    const request = ctx.switchToHttp().getRequest();
+    return data ? request.cookies?.[data] : request.cookies;
+  }
+);
 ```
 
 如上可通过编写一个 `拦截器` 来获取 `cookie`，既可以获取 `命名cookie` 也可以获取 `匿名 cookie`
-
-
 
 ## prisma
 
@@ -386,8 +360,6 @@ mysql> show create table History; # 展示创建这个表实际需要的 sql 语
 mysql> show create table History\G # 更美观地展示 sql 语句
 ```
 
-
-
 schema.prisma 文件主要包含三个组件：
 
 - 数据源：定义你的数据库连接，并且数据库连接字符串存在 `DATABASE_URL` 环境变量中。
@@ -396,19 +368,13 @@ schema.prisma 文件主要包含三个组件：
 
 - 数据模型：定义你的数据库模型。每一个模型都将被映射为底层数据库中的一张表。
 
-
-
-
-
 实际在操作的时候遇到了些问题
 
 1. ```text
    Error validating field `user` in model `History`: The relation field `user` on model `History` is missing an opposite relation field on the model `User`. Either run `prisma format` or add it manually.
    ```
 
-   一开始以为是 `User` 的结构里面缺失了 `History`  需要引用关联的键，但实际检查发现并无缺少。最后的话根据报错的提示在 `bash` 输入 `npx prisma fotmat` 即可	
-
-
+   一开始以为是 `User` 的结构里面缺失了 `History` 需要引用关联的键，但实际检查发现并无缺少。最后的话根据报错的提示在 `bash` 输入 `npx prisma fotmat` 即可
 
 ![Install and generate Prisma Client](https://www.prisma.io/docs/static/c24add4ac2d8984ecc6846f54a92a318/663f3/prisma-client-install-and-generate.png)
 
@@ -431,37 +397,37 @@ $ npx primsa init
 
 - 更新`database` 连接
 
- ```prisma
- 
- // 生成 prisma 查询构建器
- generator client {
-   provider = "prisma-client-js"
- }
- 
- // database
- datasource db {
-   provider = "mysql"
-   url      = env("DATABASE_URL")
- }
- 
- // database table
- model User {
-   id       Int       @id @default(autoincrement())
-   username String    @unique
-   password String
-   email    String    @unique
-   History  History[]
- }
- 
- model History {
-   id     Int    @id @default(autoincrement())
-   user   User   @relation(fields: [userId], references: [id])
-   userId Int
-   text   String
-   hash   String
- }
- 
- ```
+```prisma
+
+// 生成 prisma 查询构建器
+generator client {
+  provider = "prisma-client-js"
+}
+
+// database
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// database table
+model User {
+  id       Int       @id @default(autoincrement())
+  username String    @unique
+  password String
+  email    String    @unique
+  History  History[]
+}
+
+model History {
+  id     Int    @id @default(autoincrement())
+  user   User   @relation(fields: [userId], references: [id])
+  userId Int
+  text   String
+  hash   String
+}
+
+```
 
 - 转换 model 语法生成 sql 并更新到数据库中
 
@@ -475,9 +441,7 @@ $ npx prisma migrate dev --name <comment>
 $ npm install @prisma/client
 ```
 
-执行该语句后会自动执行 `prisma generate`，该命令会读取 最新`schema.prisma`生成查询器，即当前查询器对应最新数据库结构。因此该命令的执行时机最好是 —— 已经确定好数据库模型后。 
-
-
+执行该语句后会自动执行 `prisma generate`，该命令会读取 最新`schema.prisma`生成查询器，即当前查询器对应最新数据库结构。因此该命令的执行时机最好是 —— 已经确定好数据库模型后。
 
 ### 注入数据
 
@@ -486,7 +450,7 @@ $ npm install @prisma/client
 - 注入脚本
 
 ```ts
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -496,9 +460,9 @@ async function main() {
     update: {},
     create: {
       id: 1,
-      username: 'jzyismlover',
-      email: '3011543110@qq.com',
-      password: 'jzy',
+      username: "jzyismlover",
+      email: "3011543110@qq.com",
+      password: "jzy",
     },
   });
 
@@ -508,8 +472,8 @@ async function main() {
     create: {
       id: 1,
       userId: 1,
-      hash: 'hash',
-      text: 'jzyismylover',
+      hash: "hash",
+      text: "jzyismylover",
     },
   });
 }
@@ -519,16 +483,15 @@ main()
   .finally(() => {
     prisma.$disconnect();
   });
-
 ```
 
 - package.json
 
 ```json
 {
-    "prisma": {
-        "seed": "ts-node prisma/seed.ts"
-    }
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
+  }
 }
 ```
 
@@ -537,10 +500,3 @@ main()
 ```bash
 $ npx prisma db seed
 ```
-
-
-
-
-
-
-

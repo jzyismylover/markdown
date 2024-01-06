@@ -1,7 +1,5 @@
 # 性能优化
 
-
-
 ## 衡量真实性能
 
 衡量真实性能指的是从用户角度来看一些指标的具体表现，crux 可以帮助我们去了解真实用户访问情况。
@@ -13,6 +11,7 @@ crux： Chrome 用户体验报告，是一份公开数据集，包含数百万�
 实验数据很多时候是在一个特定模拟场景下进行（保证使用者的一致性），这种模拟场景有很多限制，比如地理位置、缓存使用、网速限制……，因此相比于真实用户数据数值上还是有明显差异。不同的真实用户也受限于其使用环境数值也会有些许偏差。从具体指标上来说：
 
 - LCP
+
   - 不同用户使用的设备屏幕尺寸不一致，视口显示元素不一致
   - 不同用户设备上安装的字体集影响文本大小
   - 登陆与未登陆网页上一般显示内容不一致
@@ -23,11 +22,9 @@ crux： Chrome 用户体验报告，是一份公开数据集，包含数百万�
 - CLS
   - 受用户行为影响，事件的触发都有可能导致 CLS 数值差异
 
-
-
 ## 优化资源分发
 
-资源分发字面理解就是从服务器获取资源，优化的方向就是尽可能减少 ttr 
+资源分发字面理解就是从服务器获取资源，优化的方向就是尽可能减少 ttr
 
 - CDN：内容分发网络技术，通过服务器集群优先从离用户最近的下游机器返回数据。可配置缓存，在一定时间内直接从缓存中返回数据，过期再回源站重新获取。
 
@@ -44,7 +41,7 @@ crux： Chrome 用户体验报告，是一份公开数据集，包含数百万�
   <link rel="preload" as="script|style|font" href=>
   ```
 
-- DNS 预解析：DNS 预解析意味着提前进行寻址解析 IP操作，在真实请求发起的时候可以复用之前缓存的解析 IP，避免再次进行 DNS 解析的过程
+- DNS 预解析：DNS 预解析意味着提前进行寻址解析 IP 操作，在真实请求发起的时候可以复用之前缓存的解析 IP，避免再次进行 DNS 解析的过程
 
   ```html
   <link ref="dns-prefetch" href=>
@@ -58,12 +55,9 @@ crux： Chrome 用户体验报告，是一份公开数据集，包含数百万�
 
 - 预提取资源：区别于预加载资源，资源优先级会被设置为最低，浏览器在空闲时才开始加载资源
 
-  ``` html
+  ```html
   <link ref="prefetch" href=>
   ```
-
-
-
 
 ## 优化图片
 
@@ -79,8 +73,6 @@ crux： Chrome 用户体验报告，是一份公开数据集，包含数百万�
 - 方法一：直接在 `tinypng.com` 上传图片压缩. 每天有 20 张图片限额
 - 方法二：调用官方提供的 api 编写脚本批量压缩. 每个月有 500 次免费调用次数. 破解的手段：可以使用 `x-forward-for` & `host` 解决负载均衡限制，当然会存在调用不稳定的情况
 
-
-
 手段二：**选择合适的图片格式**
 
 - `	webp`：新一代图片格式，体积更小
@@ -92,19 +84,15 @@ crux： Chrome 用户体验报告，是一份公开数据集，包含数百万�
 for file in images/*; do cwebp "$file" -o "${file%.*}.webp"; done
 ```
 
-
-
 手段三：**使用 `cdn`**
 
 图片 cdn 本身也有压缩策略. 上传后可以对图片进行大小、格式转换
 
 [免费 cdn](https://cdn.gcore.com/origin-groups/403977)：网站提供了免费的 cdn 服务，可配置源站。
 
+手段四：**动图格式替换**，对于动图通常我们会使用 `gif` 数据格式。但是 `gif` 往往体积很大，作为替代可以使用 `video`
 
-
-手段四：**动图格式替换**，对于动图通常我们会使用 `gif` 数据格式。但是 `gif` 往往体积很大，作为替代可以使用 `video` 
-
-> ffmepg 转换 gif 
+> ffmepg 转换 gif
 
 ```bash
 $ ffmpeg -i <gif> -b:v 0 -crf 25 -f mp4 -vcodec libx264 -pix_fmt yuv420p <video>
@@ -118,8 +106,6 @@ $ ffmpeg -i <gif> -c vp9 -b:v 0 -crf 41 <video>
 <video autoplay loop muted playsinline></video>
 ```
 
-
-
 手段五：**自适应图片**
 
 在不同分辨率的情况展示不同图片. 好处在与能够在移动设备上减少图片大小
@@ -127,7 +113,7 @@ $ ffmpeg -i <gif> -c vp9 -b:v 0 -crf 41 <video>
 `<img />` 上 srcset / size 属性可以帮助实现这个功能
 
 ```html
-<img secrets="@/assets/500.png 500w, @/assets/1000.png 1000w" size='50vw' />
+<img secrets="@/assets/500.png 500w, @/assets/1000.png 1000w" size="50vw" />
 ```
 
 计算规则：
@@ -136,10 +122,6 @@ $ ffmpeg -i <gif> -c vp9 -b:v 0 -crf 41 <video>
 - 如果 srcset 指定了 x，则以该值作为像素密度
 
 像素密度：屏幕的对角线长度 / 屏幕英寸
-
-
-
-
 
 ## 延迟加载图片和视频
 
@@ -152,13 +134,16 @@ $ ffmpeg -i <gif> -c vp9 -b:v 0 -crf 41 <video>
   - `IntersectionObserver` ：通过观察元素是否进入视口再动态下载图片
 
     ```js
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function () {
       // lazy 标识图片需要懒加载
-      var lazyImages = [].slice.call(document.querySelectorAll("img.lazy")); 
-    
+      var lazyImages = [].slice.call(document.querySelectorAll("img.lazy"));
+
       if ("IntersectionObserver" in window) {
-        let lazyImageObserver = new IntersectionObserver(function(entries, observer) {
-          entries.forEach(function(entry) {
+        let lazyImageObserver = new IntersectionObserver(function (
+          entries,
+          observer
+        ) {
+          entries.forEach(function (entry) {
             if (entry.isIntersecting) {
               let lazyImage = entry.target;
               lazyImage.src = lazyImage.dataset.src;
@@ -168,8 +153,8 @@ $ ffmpeg -i <gif> -c vp9 -b:v 0 -crf 41 <video>
             }
           });
         });
-    
-        lazyImages.forEach(function(lazyImage) {
+
+        lazyImages.forEach(function (lazyImage) {
           lazyImageObserver.observe(lazyImage);
         });
       } else {
@@ -187,38 +172,41 @@ $ ffmpeg -i <gif> -c vp9 -b:v 0 -crf 41 <video>
   - `IntersectionObserver`
 
     ```js
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function () {
       var lazyVideos = [].slice.call(document.querySelectorAll("video.lazy"));
-    
+
       if ("IntersectionObserver" in window) {
-        var lazyVideoObserver = new IntersectionObserver(function(entries, observer) {
-          entries.forEach(function(video) {
+        var lazyVideoObserver = new IntersectionObserver(function (
+          entries,
+          observer
+        ) {
+          entries.forEach(function (video) {
             if (video.isIntersecting) {
               // video 标签存在多个 source 标签
               for (var source in video.target.children) {
                 // 替换 source 标签 src
                 var videoSource = video.target.children[source];
-                if (typeof videoSource.tagName === "string" && videoSource.tagName === "SOURCE") {
+                if (
+                  typeof videoSource.tagName === "string" &&
+                  videoSource.tagName === "SOURCE"
+                ) {
                   videoSource.src = videoSource.dataset.src;
                 }
               }
-    
+
               video.target.load();
               video.target.classList.remove("lazy");
               lazyVideoObserver.unobserve(video.target);
             }
           });
         });
-    
-        lazyVideos.forEach(function(lazyVideo) {
+
+        lazyVideos.forEach(function (lazyVideo) {
           lazyVideoObserver.observe(lazyVideo);
         });
       }
     });
-    
     ```
-
-
 
 > 拜读了下 [lozad](https://github.com/ApoorvSaxena/lozad.js/blob/master/src/lozad.js#L21) ，支持图片、视频、背景图懒加载
 
@@ -229,7 +217,14 @@ $ ffmpeg -i <gif> -c vp9 -b:v 0 -crf 41 <video>
   - 使用 `mutationObserver` 监听元素链接是否发生变化，发生变化则重新加载
 
   ```js
-  const validAttribute = ['data-iesrc', 'data-alt', 'data-src', 'data-srcset', 'data-background-image', 'data-toggle-class']
+  const validAttribute = [
+    "data-iesrc",
+    "data-alt",
+    "data-src",
+    "data-srcset",
+    "data-background-image",
+    "data-toggle-class",
+  ];
   ```
 
 - `IntersectionObserve`
@@ -241,8 +236,6 @@ $ ffmpeg -i <gif> -c vp9 -b:v 0 -crf 41 <video>
     - threshold：可见判定百分比阈值
     - rootMagin
 
-
-
 ## 优化网页字体
 
 - 网页字体通常指的是网络字体，一般由 @font-face 定义
@@ -252,7 +245,7 @@ $ ffmpeg -i <gif> -c vp9 -b:v 0 -crf 41 <video>
     - 缩小字体子集范围
       - fontmin
       - unicode-range
-    - 使用 .woff2 字体格式（体积小、能够被优先加载） 
+    - 使用 .woff2 字体格式（体积小、能够被优先加载）
   - 改变浏览器字体渲染策略
     - font-display
       - swap：先用备用字体渲染文本，网络字体请求完成后再替换. Qu：会出现无样式文本闪烁
@@ -261,9 +254,7 @@ $ ffmpeg -i <gif> -c vp9 -b:v 0 -crf 41 <video>
 
 > 字体加载时机
 
-![image-20231203161509713](/home/jzy/Documents/markdown/performance/performance.assets/image-20231203161509713.png)
-
-
+<img src="./performance.assets/image-20231203161509713.png" style="display: block; margin: auto;"/>
 
 > 字体加载 `api`
 
@@ -283,10 +274,9 @@ fontFile.load.then(() => {
 
 ```css
 @font-face {
-  font-family: 'Awesome Font';
-  src: local('Awesome Font'),
-       url('/fonts/awesome.woff2') format('woff2'),
-       url('/fonts/awesome.woff') format('woff');
+  font-family: "Awesome Font";
+  src: local("Awesome Font"), url("/fonts/awesome.woff2") format("woff2"), url("/fonts/awesome.woff")
+      format("woff");
 }
 ```
 
@@ -295,11 +285,10 @@ fontFile.load.then(() => {
 
 > 字体子集 `unicode-range`
 
-```css 
+```css
 @font-face {
-  font-family: 'Awesome Font';
-  src: local('Awesome Font'),
-       url('/fonts/awesome-l.woff2') format('woff2');
+  font-family: "Awesome Font";
+  src: local("Awesome Font"), url("/fonts/awesome-l.woff2") format("woff2");
   unicode-range: U+000-5FF;
 }
 ```
@@ -308,11 +297,9 @@ fontFile.load.then(() => {
 
 > fontmin
 
-提取 `ttf` 字体中需要用到的字符然后转换为 `ttf` 文件输出从而实现压缩效果. 提取字体是关键 
+提取 `ttf` 字体中需要用到的字符然后转换为 `ttf` 文件输出从而实现压缩效果. 提取字体是关键
 
-- `font-spider`：提取网页中使用到这个字体的文字集合 
-
-
+- `font-spider`：提取网页中使用到这个字体的文字集合
 
 ## 优化 css
 
@@ -323,17 +310,13 @@ fontFile.load.then(() => {
   - 分离关键 css 与 非关键 css
   - 多媒体查询加载图片
 
-
-
 > 减少体积
 
-通常构建工具都有可以压缩 css 资源的插件. 
+通常构建工具都有可以压缩 css 资源的插件.
 
 - webpack
   - `optimize-css-assets-plugin`：压缩 css
   - `mini-css-extract-plugin`：将每个样式表提取到自己的文件中
-
-
 
 > 提取关键 css
 
@@ -341,13 +324,9 @@ fontFile.load.then(() => {
 
 Qu：样式内联没办法利用浏览器缓存，需谨慎使用该行为
 
-
-
 > 根据不同屏幕大小加载不同尺寸的图片
 
 电脑、平板、手机 —— 不同设备对于图片的大小&分辨率不一致，多媒体查询可以根据不同屏幕大小加载不同图片从而在不同设备上能够实现图片体积递减。通常来说桌面设备屏幕的图片会比移动设备的背景大
-
-
 
 ## 优化第三方资源
 
@@ -357,16 +336,12 @@ Qu：样式内联没办法利用浏览器缓存，需谨慎使用该行为
   - 异步加载资源
   - 尽早于第三方建立 TCP 连接（DNS 域名解析）
 
-
-
 > 异步加载资源
 
 - 对于非关键脚本尽量使用 `async` 标识
 - JS 资源的位置尽量放在页面底部
 
-
-
-## 优化 javascript 
+## 优化 javascript
 
 - javascript 通常指的是页面交互的必要资源
 - javascript 资源的加载会阻塞页面解析 & 渲染
@@ -375,8 +350,6 @@ Qu：样式内联没办法利用浏览器缓存，需谨慎使用该行为
   - 拆分大文件（构建分离 chunk）
   - 缩减大小、数据压缩
   - 移除未使用的代码
-
-
 
 > 拆分大文件
 
@@ -392,19 +365,16 @@ Qu：样式内联没办法利用浏览器缓存，需谨慎使用该行为
 
 🔐 拆分的意义在于延迟加载，在初始 bundle 加载的时候不会纳入
 
-
-
 > 缩减大小、数据压缩
 
-- 缩减大小：`webpack4` 以上默认支持 `terser`.  
+- 缩减大小：`webpack4` 以上默认支持 `terser`.
+
   - tree-shaking：删除没有使用的代码块
-  - 代码混淆 
+  - 代码混淆
 
 - 数据压缩
   - gzip
   - botli
-
-
 
 # 性能衡量指标
 
@@ -412,33 +382,17 @@ Qu：样式内联没办法利用浏览器缓存，需谨慎使用该行为
 
 `web-vitals`：`web-vitals` 提供函数可以获取以下指标，但是不兼容苹果浏览器，因此需要我们进行设备兼容。
 
-
-
 ## FFID
-
-
 
 ## FCP
 
-
-
 ## LCP
-
-
 
 ## CLS
 
-
-
 ## FID
 
-
-
-
-
 # Performance API
-
-
 
 ## Performance.navigation(废弃)
 
@@ -451,15 +405,13 @@ Qu：样式内联没办法利用浏览器缓存，需谨慎使用该行为
   - 255 (`TYPE_RESERVED`)：任何其他方式
 - redirctCount：到达这个页面之前重定向了多少次
 
-
-
 ## Performance.getEntries()
 
-返回 `PerformanceEntry` 数组. `PerformanceEntry` 每一项代表的是浏览器 metric 数据 
+返回 `PerformanceEntry` 数组. `PerformanceEntry` 每一项代表的是浏览器 metric 数据
 
-- navigation：页面加载周期经历事件.					 数据类型 => [MDN](https://developer.mozilla.org/zh-CN/docs/Web/API/PerformanceNavigationTiming)
-- resource：资源加载的情况（包括 JS、CSS、图片资源）        数据类型 => [MDN](https://developer.mozilla.org/zh-CN/docs/Web/API/PerformanceResourceTiming)
-- mark：使用 `Performance.mark` 创建的自定义 metric 数据.  数据类型 => [MDN](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceMark)
+- navigation：页面加载周期经历事件. 数据类型 => [MDN](https://developer.mozilla.org/zh-CN/docs/Web/API/PerformanceNavigationTiming)
+- resource：资源加载的情况（包括 JS、CSS、图片资源） 数据类型 => [MDN](https://developer.mozilla.org/zh-CN/docs/Web/API/PerformanceResourceTiming)
+- mark：使用 `Performance.mark` 创建的自定义 metric 数据. 数据类型 => [MDN](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceMark)
 - measure：使用 `Performance.measure` 创建的自定义 metric 范围. 数据类型 => [MDN](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceMeasure)
 - paint：关于 `first-paint` & `first-contentful-paint` 数据. 数据类型 => [MDN](https://developer.mozilla.org/zh-CN/docs/Web/API/PerformancePaintTiming)
 
@@ -492,8 +444,6 @@ Qu：样式内联没办法利用浏览器缓存，需谨慎使用该行为
 }
 ```
 
-
-
 ## Performance.getEntriesByType
 
 - 描述：获取指定 type metric (resource / navigation / mark)
@@ -501,50 +451,42 @@ Qu：样式内联没办法利用浏览器缓存，需谨慎使用该行为
 - 使用
 
 ```js
-performance.getEntriesByType(type) // return array
+performance.getEntriesByType(type); // return array
 ```
 
 返回的是对应 type metric 类型的数据，详细见上面 MDN 链接
 
-
-
 ## Performance.getEntriesByName
 
-- 描述：获取指定 type 指定 name(script / css / link ……) metric 
+- 描述：获取指定 type 指定 name(script / css / link ……) metric
 - 使用
 
 ```js
-performance.getEntriesByName(name, type) // return array
+performance.getEntriesByName(name, type); // return array
 ```
-
-
 
 ## Performance.mark
 
 > Performance.mark 和 Performance.measure 可一起理解
 
 - 描述：两者都是通过自定义 browser metric 类型来作一些自定义逻辑处理
-- 区别：不同之前在于前者(mark) 是通过创建一个 browser metric，后者 （measure）是通过创建一个 type 区间，即基于两个 type metric 自定义一个 browser metric. 
+- 区别：不同之前在于前者(mark) 是通过创建一个 browser metric，后者 （measure）是通过创建一个 type 区间，即基于两个 type metric 自定义一个 browser metric.
 
 - 使用
 
   - `performance.mark` 可能会在在某个生命周期或者定时器去定义
 
-    ``` javascript
-    performance.mark(name)
+    ```javascript
+    performance.mark(name);
     ```
 
   - `performance.measure` 通过用于分析衡量两个周期之间的行为
 
     ```js
-    performance.measure(name, metric1, metric2)
+    performance.measure(name, metric1, metric2);
     ```
 
-    
-
 # Observer API
-
-
 
 ## PerformanceObserver API
 
@@ -559,7 +501,7 @@ performance.getEntriesByName(name, type) // return array
 - 使用
 
 ```js
-const observer = new PerformanceObserver(callback)
+const observer = new PerformanceObserver(callback);
 ```
 
 ### observe
@@ -568,16 +510,14 @@ const observer = new PerformanceObserver(callback)
 - 使用
 
 ```js
-const observer = new PerformanceObserver(callback)
+const observer = new PerformanceObserver(callback);
 
-observer.observe({ entryTypes: [] })
+observer.observe({ entryTypes: [] });
 ```
 
 > 目前一些 entryTypes 还属于是实验室属性，因此可能在支持表格中找不到 [blog](https://www.zhangxinxu.com/wordpress/2023/08/js-performanceobserver-api/)
 
-![image-20231214004807464](/home/jzy/Documents/markdown/monitor/performance/performance.assets/image-20231214004807464.png)
-
-
+<img src="./performance/performance.assets/image-20231214004807464.png" style="display: block; margin: auto;"/>
 
 ### disconnect
 
@@ -587,13 +527,11 @@ observer.observe({ entryTypes: [] })
 
 ```js
 function callback(list, observer) {
-    observer.disconnect() // 后面不再对其他事件进行监听
+  observer.disconnect(); // 后面不再对其他事件进行监听
 }
 
-const observer = new PerformanceObserver(callback)
+const observer = new PerformanceObserver(callback);
 ```
-
-
 
 ## MutationObserver API
 
@@ -611,8 +549,6 @@ const observer = new PerformanceObserver(callback)
 var observer = new MutationObserver(callback);
 ```
 
-
-
 ### observe
 
 - 描述：对指定 DOM 进行监听
@@ -627,16 +563,10 @@ var observer = new MutationObserver(callback);
     - characterData
     - characterDataOldValue
 
-
-
 ### disconnect
 
 - 描述：停止对 DOM 更新事件的监听
 
-
-
 ## IntersectionObserver API
-
-
 
 ## ResizeObserver API

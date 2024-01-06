@@ -1,4 +1,4 @@
-# echarts 
+# echarts
 
 可视化图表开源库
 
@@ -10,8 +10,6 @@
 4. 将配置项注入 `echarts` 实例（ `setOptions` ）
 
 因此关键是理解配置项！！！
-
-
 
 ## options
 
@@ -29,21 +27,15 @@
   - `yAxis`：配置 y 轴
   - `series`：配置图表数据、类型……
 
-
-
 ## charts
 
 > 各种类型图表配置项
 
-
-
-![image-20230826143300733](/home/jzy/Documents/markdown/echarts/echarts.assets/image-20230826143300733.png)
-
-  
+<img src="./echarts.assets/image-20230826143300733.png" style="display: block; margin: auto;"/>
 
 ### line
 
-![image-20230826105310013](/home/jzy/Documents/markdown/echarts/echarts.assets/image-20230826105310013.png)
+<img src="./echarts.assets/image-20230826105310013.png" style="display: block; margin: auto;"/>
 
 ```js
 const options = {
@@ -87,8 +79,6 @@ const options = {
 
 ```
 
-
-
 ## scatter
 
 散点图，用于呈现两组变量之前相关性。区别于折线图或者柱状图之类，`x y` 轴都是 `value` 轴，因此对应 `series` 要配置成数组
@@ -96,16 +86,16 @@ const options = {
 ```js
 const options = {
   xAxis: {
-    type: 'value',
+    type: "value",
     scale: true,
   },
   yAxis: {
-    type: 'value',
+    type: "value",
     scale: true,
   },
   series: [
     {
-      type: 'scatter',
+      type: "scatter",
       data: [[]],
     },
   ],
@@ -117,50 +107,42 @@ const options = {
 - 涟漪动画：散点动画效果
 - 气泡：散点大小根据条件呈现不一样的大小
 
-
-
 ## pie
 
 饼图可以帮助快速了解不同分类的数据的占比情况
 
-![image-20230826114922777](/home/jzy/Documents/markdown/echarts/echarts.assets/image-20230826114922777.png)
+<img src="./echarts.assets/image-20230826114922777.png" style="display: block; margin: auto;"/>
 
 🔐 其中说明下圆环以及南丁格尔图的实现
 
 - 圆环：对应设置圆环的是 `radius`
 
   ```js
-  radius: ['50%', '75%']
+  radius: ["50%", "75%"];
   // 50% 对应的是内圆半径
   // 75% 对应的是外园半径
   ```
 
 - 南丁格尔图：直白说就是每个饼图区域半径大小都不一致（根据数据大小区分），对应的设置属性是 `roseType`，置为 `true` 即可
 
-
-
 ## radar
 
 雷达图应用与需要比较多个维度数据相对于最大值情况或者不同产品的对比
-
-
 
 ## gauge
 
 仪表盘，呈现一个动作的得分情况
 
-
-
 ## display
 
-![image-20230826145758342](/home/jzy/Documents/markdown/echarts/echarts.assets/image-20230826145758342.png)
+<img src="./echarts.assets/image-20230826145758342.png" style="display: block; margin: auto;"/>
 
 对于显示 `echarts` 支持进行不同级别对上述属性进行配置
 
 - 主题：可从 `echarts` 官网自定义主题并下载成 `js` 的方式引入即可
 
   ```js
-  instance.init(dom, themeName)
+  instance.init(dom, themeName);
   ```
 
 - 调色板：调色板即为颜色配置
@@ -178,20 +160,18 @@ const options = {
   - `areaStyle`
   - `label`
 
-  
-
 ## animation
 
 - `echarts` 自带的 `loading` 动画
 
 ```js
-instance.showLoading() // 显示加载动画
+instance.showLoading(); // 显示加载动画
 
-instance.hideLoading() // 隐藏加载动画
+instance.hideLoading(); // 隐藏加载动画
 ```
 
 - 增量动画：增量动画的触发基于 `setOptions` 执行
 
-  🔐 `setOptions` 
+  🔐 `setOptions`
 
   多次执行 `setOptions` 遵顼相同覆盖，不同融合的原则
