@@ -2,7 +2,7 @@
 
 概览来看，9 月份是真正开始业务工作的第一个月，具体分类如下：
 
-<img src="./oppo-work/202309/work.assets/image-20231006094938282.png" style="display: block; margin: auto;"/>
+<img src="./readme.assets/image-20231006094938282.png" style="display: block; margin: auto;"/>
 
 ## 组件重构
 
@@ -10,7 +10,7 @@
 
 组件重构思路：理清原来代码逻辑，从具体代码文件来说
 
-<img src="./oppo-work/202309/work.assets/image-20231006095725151.png" style="display: block; margin: auto;"/>
+<img src="./readme.assets/image-20231006095725151.png" style="display: block; margin: auto;"/>
 
 - `checkPkg.js`：apk 文件校验逻辑实现
   - 合并完成解析 `apk` 文件，`node` 有 `apk-parser` 可以完成类似任务，解析过程中需要实现一个 `sleep` 函数 —— 解析过程需要我们轮询进行，即每间隔 3 s 向后端发起请求根据返回状态判断解析是否成功。
@@ -258,7 +258,7 @@ export default {
 
 > 多层组件数据同步
 
-<img src="./oppo-work/202309/work.assets/image-20231006214033244.png" style="display: block; margin: auto;"/>
+<img src="./readme.assets/image-20231006214033244.png" style="display: block; margin: auto;"/>
 
 ### 上传组件重构
 
@@ -313,3 +313,4 @@ check(instance, options, file) {
 ```
 
 `check` 函数签名如上， `options` 的 `key` 必须为约定好的值，这样才能保证 `checkSize`、`checkType` 能够正常获取参数。
+

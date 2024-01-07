@@ -8,7 +8,7 @@
 
 关键词：模块化、Commonjs、核心模块、文件模块、自定义模块、模块路径、文件定位、包缓存、作用域隔离、runThisContext、
 
-### 2.2 核心模块
+### 核心模块
 
 关键词：Module.\_extensions、libuv、c++扩展插件
 
@@ -33,7 +33,6 @@
   npm owner add <user> <package name> # 添加一个所有者
   npm owner rm <user> <package name> # 删除一个所有者
   ```
-
 ## 第三章 异步 I/O
 
 - 为什么异步 IO 在 JS 中很重要
@@ -484,6 +483,9 @@ child_process.fork("./worker.js");
 - execFile：启动一个子进程执行可执行文件
 - fork：与 spawn 类似，不同在于创建的子进程只需执行指定需要执行的 javascript 文件
 
-子进程与父进程之间通过 ipc 进行数据通信，以下是地层基于 libuv 的实现
+<img src="./deep-nodejs.assets/image-20231125113556664.png" style="display: block; margin: auto;"/>
 
-<img src="./deep-nodejs.assets/image-20231125113556664.png) ![image-20231125113645641](./deep-nodejs.assets/image-20231125113645641.png" style="display: block; margin: auto;"/>
+子进程与父进程之间通过 ipc 进行数据通信，地层基于 libuv 的实现
+
+
+

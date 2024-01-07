@@ -4,13 +4,13 @@
 
 - 如何优雅解决表格设计？[数据表格应该这样设计](https://www.woshipm.com/pd/4239403.html)
 
-<img src="./oppo-work/202310/work.assets/table-2023-06-17-1439.png" style="display: block; margin: auto;"/>
+<img src="./readme.assets/table-2023-06-17-1439.png" style="display: block; margin: auto;"/>
 
 在设计实现的时候会遇到一种可以对每个数据列都进行筛选的需求，如上所示为实现流程
 
 - 如何解决 `dialog` 的滚动事件会透穿？透穿主要指的是 `body` 也可以滚动的时候，在 `dialog` 滚动的时候会导致 `body` 的滚动，这是不被允许接收的。[滚动条占宽度吗？](https://tianzi77.github.io/2016/09/07/scroll-bug/)
 
-<img src="./oppo-work/202310/work.assets/image-20231010003819658.png" style="display: block; margin: auto;"/>
+<img src="./readme.assets/image-20231010003819658.png" style="display: block; margin: auto;"/>
 
 - `obus` 错误上报。`obus` 是一个前端错误上报工具（公司自研），但是有个问题就是 `obus` 只能实例化一次，即一个应用内只能唯一对应一个上报 `id`，但是存在这样的场景，其他应用使用 `ssi` 接入了开平头部，应用内和开平头部都需要使用 `obus` 进行上报，且对应不同的上报 `app_id`。
 
@@ -73,7 +73,7 @@
 </script>
 ```
 
-<img src="./oppo-work/202310/work.assets/image-20231029165725888.png" style="display: block; margin: auto;"/>
+<img src="./readme.assets/image-20231029165725888.png" style="display: block; margin: auto;"/>
 
 > 本质上可以 理解`postMessage` 模式为发布订阅模式
 

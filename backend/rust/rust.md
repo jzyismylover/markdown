@@ -1,4 +1,8 @@
+# rust
+
+:::tip
 学习资源
+:::
 
 - [The Tao of Rust](https://github.com/ZhangHanDong/tao-of-rust-codes/blob/master/tao_of_rust_english.md)
 - [Translation of the official The Rust Programming Language book](https://github.com/KaiserY/rust-book-chinese)

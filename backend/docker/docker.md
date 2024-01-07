@@ -1,18 +1,21 @@
 # docker
 
+## 背景
+
 docker 的出现使得环境可以跨平台，不依赖与主机的操作系统。
 
 [docker 百度百科](https://baike.baidu.com/item/Docker/13344470)
 
 ### 场景一：单机
 
-<img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/84c2c41a62c648aab6f2fd5185779d58~tplv-k3u1fbpfcp-zoom-in-crop-mark:1304:0:0:0.awebp" style="display: block; margin: auto;"/>
+<img src="./docker.assets/image.png" style="display: block; margin: auto;"/>
+
 
 在同一台电脑安装不同环境的项目
 
 ### 场景二：多机
 
-<img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/b31848e522bd4290b7536ae20fa88b71~tplv-k3u1fbpfcp-zoom-in-crop-mark:1304:0:0:0.awebp" style="display: block; margin: auto;"/>
+<img src="./docker.assets/image-1.png" style="display: block; margin: auto;"/>
 
 在不同操作系统的电脑下载不同环境的项目
 
@@ -31,7 +34,7 @@ docker 的出现使得环境可以跨平台，不依赖与主机的操作系统�
 
 - 镜像文件非常小巧(只包括一些非常常用的启动脚本和命令)
 
-### 基础命令
+## 基础命令
 
 - 删除所有的镜像文件
 
@@ -131,11 +134,11 @@ $ docker cp ddb1:/usr/share/nginx/html /var
 
 ```
 
-### 联合文件系统
+## 联合文件系统
 
 union 文件系统是一种分层、轻量级并且高性能的文件系统。
 
-#### 提交新镜像
+## 提交新镜像
 
 提交容器副本使之成为一个新的镜像
 
@@ -153,7 +156,7 @@ qingyu-docs   latest    53dcfcf198fe   9 hours ago      24.3MB
 ubuntu        latest    ba6acccedd29   13 months ago    72.8MB
 ```
 
-### 容器与宿主机通信
+## 容器与宿主机通信
 
 ```bash
 # 将容器上的文件拷贝到当前宿主机的文件夹
@@ -163,7 +166,7 @@ $ docker cp mycontainer:/opt/testnew/file.txt /opt/test/
 $ docker cp /opt/test/ mycontainer:/opt/testnew/file.txt
 ```
 
-### 容器数据卷
+## 容器数据卷
 
 容器内文件和宿主机文件的共享同步，容器数据卷的方式完成数据的**持久化**，把容器内的数据备份 + 持久化到本机宿主机目录，保证容器内的数据不会消失。
 
@@ -192,9 +195,9 @@ $ docker run -it --name ubuntu-testing -v /tmp/dockerData:/var/docker:ro ubuntu
 $ docker run -it --name ubuntu-02 --volumes-from ubuntu-01 ubuntu
 ```
 
-### 部件安装
+## 部件安装
 
-#### 安装 mysql
+### 安装 mysql
 
 ```bash
 $ docker pull mysql:latest
@@ -235,7 +238,7 @@ collation-server = utf8_general_ci
 +--------------------------+-------------------------------
 ```
 
-#### [安装 gitlab](https://zhuanlan.zhihu.com/p/413217715)
+### [安装 gitlab](https://zhuanlan.zhihu.com/p/413217715)
 
 ```bash
 $ docker pull gitlab/gitlab-ci
@@ -321,7 +324,7 @@ $ /etc/gitlab/initial_root_password
 ]
 ```
 
-#### 安装 gitlab-runner
+### 安装 gitlab-runner
 
 ```bash
 $ docker run -d \
@@ -332,7 +335,7 @@ $ docker run -d \
 gitlab/gitlab-runner:latest
 ```
 
-#### [安装 jenkins](https://www.cnblogs.com/esofar/p/11163583.html)
+### [安装 jenkins](https://www.cnblogs.com/esofar/p/11163583.html)
 
 tips: 要更换阿里云加速镜像不然下不来
 
@@ -386,7 +389,7 @@ jenkins 在下载插件之前会先检查网络连接，其会读取这个文件
 
 `http://mirror.esuni.jp/jenkins/updates/update-center.json`
 
-#### 安装 redis
+### 安装 redis
 
 ```bash
 $ docker pull redis
@@ -438,7 +441,7 @@ $ auth [password]
 $ ...
 ```
 
-#### 安装 registry
+### 安装 registry
 
 Docker 官方的 Docker Registry 是一个基础版本的 Docker 镜像仓库，具备仓库管理的完整功能，但是没有图形化界面。因此可以考虑使用 `registry` 简易搭建一个私服仓库。
 
@@ -471,9 +474,9 @@ $  docker run -d \
        - registry
 ```
 
-### docker 进阶
+## docker 进阶
 
-#### 容器状态
+### 容器状态
 
 ```bash
 jzy:yunshan-qingyu/ (feature/jzy✗) $ docker stats ubuntu
@@ -481,7 +484,7 @@ CONTAINER ID   NAME      CPU %     MEM USAGE / LIMIT     MEM %     NET I/O      
 0ed639cf7c23   ubuntu    0.00%     307.3MiB / 18.66GiB   1.61%     85.5MB / 1.93MB   0B / 0B     3
 ```
 
-#### 网络
+### 网络
 
 docker 的网络模式有四种
 
@@ -568,7 +571,7 @@ lo        Link encap:Local Loopback
           RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
 ```
 
-#### 自定义网络
+### 自定义网络
 
 自定义网络的意思是在原有网络的基础上创建新的有标识含义的专有网络给容器使用，可以解决的问题：<u>不同容器之间不能通过容器名 ping 通，可以完美避开之前需要指定固定 ip 才能完成容器之间通信的问题</u>
 
@@ -684,7 +687,7 @@ Dockerfile 构建流程
 
 compose 可以理解为是使用一个`docker-compose.yml`配置文件管理若干的容器的启动来实现容器编排。
 
-### 安装
+## 安装
 
 ```bash
 $  curl -L https://github.com/docker/compose/releases/download/1.23.1/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
@@ -710,7 +713,7 @@ $  curl -L https://raw.githubusercontent.com/docker/compose/1.29.1/contrib/compl
 $  echo "199.232.68.133 raw.githubusercontent.com" >> /etc/hosts
 ```
 
-### 基础配置
+## 基础配置
 
 以下为基于 flask 嵌入 redis 的 docker-compose.yml 配置
 

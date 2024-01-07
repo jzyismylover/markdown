@@ -43,7 +43,7 @@ export enum mechanismType {
 1.  `window.onerror` 只能存在一个且后声明的覆盖前面声明的，`window.addEvenetListener('error')` 可以声明多个，按添加顺序触发执行
 2.  `window.addEvenetListener('error')` 能够处理静态资源错误
 
-<img src="./oppo-work/202311/work.assets/image-20231108004503666.png" style="display: block; margin: auto;"/>
+<img src="./readme.assets/image-20231108004503666.png" style="display: block; margin: auto;"/>
 
 :game_die: 解析运行时错误堆栈调用：可以使用开源库 [`error-stack-parser`](https://www.npmjs.com/package/error-stack-parser/v/2.0.5), 传入 `error` 对象可以帮助解析出调用堆栈以及具体错误发生的行号、列号…….。（虽然没具体深入了解源码，但是基本的实现应该如下，基于正则处理 `error message string`）
 
@@ -261,7 +261,7 @@ window.addEventListener("error", (event) => handler(event), true);
 
 - [Nest 微服务](https://juejin.cn/post/7207637337571901495)：微服务通过 `TCP` 与主服务进行通信，主 `controller` 接收 HTTP 请求然后建立 TCP 连接与微服务进行数据通信，微服务接收数据再在内部 `service` 进行处理。
 
-  <img src="./oppo-work/202311/work.assets/image-20231116001146060.png" style="display: block; margin: auto;"/>
+  <img src="./readme.assets/image-20231116001146060.png" style="display: block; margin: auto;"/>
 
 - [qiankun 样式隔离](https://juejin.cn/post/7184419253087535165)：qiankun 本身有两种样式隔离方案
 
