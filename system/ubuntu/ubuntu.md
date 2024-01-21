@@ -113,9 +113,20 @@ Categories=AudioVideo;
   connect <mac address of your device> # 连接该MAC设备
   ```
 
-<img src="/home/jzy/Documents/markdown/ubuntu.assets/image-20231201204627331.png" style="display: block; margin: auto;"/>
-
 > connect 24:81:C7:FD:21:0E
+
+:::tip 使用问题
+使用一段时间后会发现无法搜索到蓝牙的情况
+
+Failed to connect: org.bluez.Error.Failed
+:::
+
+```bash
+sudo apt install --reinstall pulseaudio-module-bluetooth
+pactl unload-module module-bluetooth-discover
+pactl load-module module-bluetooth-discover
+```
+可以尝试方法重新下载 & 更新依赖
 
 ## 软件安装
 
