@@ -7,47 +7,77 @@
 2. [快应用卡片开发文档](https://open.oppomobile.com/new/developmentDoc/info?id=11803)
 :::
 
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>卡片</title>
-  <style>
-    .card-box {
-      display: flex;
-      width: 400px;
-      height: 400px;
-      flex-wrap: wrap;
-      justify-content: space-around;
-      align-items: center;
-      background-color: #8f8c8c;
-    }
-    .card-box div {
-      width: 150px;
-      height: 150px;
-      border-radius: 8px;
-      background-color: rgb(68, 70, 70);
-    }
+## 任务系统二期
 
-    @media (prefer-color-scheme: dark) {
-      .card-box {
-        background-color: #010101;
-      }
-      .card-box div {
-        background-color: #ffffff;
-      }
-    }
-  </style>
-</head>
-<body>
-  <div class="card-box">
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-  </div>
-</body>
-</html>
+从交互来看其实难度不算特别大，但其实开发过程还是遇到了不少问题导致比预期的开发时间要长
+- 组件数据流在初期没定义好
+- 一期部分组件没封装好，二期功能叠加耗时耗力
+- ui 开发逻辑没有考虑数据回填
+
+### 组件数据流
+
+其实这应该在初期就应该要定义好，比如作为子组件需要的数据是需要父组件传入还是通过某些关键数据在生命周期内发起请求。
+- 从父组件传入：考虑一个问题 —— 数据延迟性。因为其实父组件的数据获取在大部分场景下也是通过网络请求的方式，那就意味着在子组件挂载过程引用父组件传入的值可能为空，需要进行判断。而在大部分场景下，`watch` 可以解决这个问题。在 `watch` 中定义监听，由空到非空的过程必然会触发 `handler` 函数，因此可以在 `handler` 中再对一些依赖数据进行初始化
+
+:::warning 注意
+需要注意的是，依赖数据本身需要做一个兼容设置，否则在第一次页面渲染的过程会导致非预期报错
+:::
+
+### 组件封装
+
+在业务中有一个需求是能够同时对表单编辑和查看详情，支持三种状态（查看、新建、更新）。为了解决不必要代码冗余，一期使用了 `render` 函数的方式，通过 js 配置表单，并在 `render` 函数根据不同条件渲染。回看这个设计思路，其实本身没有什么问题，但实际从代码上看，在 `methods` 里面有很多 `renderMethods` —— 渲染 ui，导致在看代码的时候非常混乱，很难快速定位或者说理解自己当时的意图。
+
+> 为什么用 render 函数？
+
+对于这类需要大量使用表单控件的场景，其实会定义好若干 `form-item`
+- `SelectFormItem`
+- `InputFormItem`
+- `RadioFormItem`
+- ……
+
+在配置项中是这么去定义若干个表单控件集合
+```js
+const formItems = [
+  { form_type: 'select', },
+  { form_type: 'input' },
+  { form_type: 'textarea' },
+  { form_type: 'radio' },
+  { form_type: 'checkbox' },
+  // 自定义 form_type
+]
 ```
+`render` 函数可以通过变量去渲染组件
+
+```js
+render(h) {
+  return h('form', [
+    formItems.map(formItem => {
+      return h(`${formItem.form_type}-form-item`, {
+        props: {}
+      })
+    })
+  ])
+}
+```
+
+那么像上面这种写法就非常方便了，需要叠加就往 `formItems` 里面叠加就好。但是要兼容详情 & 更新的状态就得根据条件判断生成，这样子就会导致代码段整体非常混乱没有逻辑。
+
+:::tip 提示
+因为二期需要叠加新的自定义表单控件，所以理解原来这个过程各种 ui render 函数就非常繁琐。
+:::
+
+解决思路的话还是需要将不同状态进行分类，如果是`更新`或者`创建`状态的话单独一个组件，`详情`单独一个组件，这样子两者互不干涉可以定义自己的表单。
+
+
+### 组件数据回填
+
+一些提交类在提交完成，下次打开后是需要进行数据回填的。但在 UI 开发阶段其实很多时候并没有考虑这个问题，因为数据本身很多都是在 data 中通过静态数据定义好，而实际后端数据的结构并不一定和我们相似（在后端没给出具体数据定义的情况下），这就导致在处理接口的时候和之前写的逻辑存在互斥的情况。
+
+:::tip
+统一逻辑 & 数据结构是个比较大成本的工作
+:::
+
+因此在像这种下一步需要进行数据回填的操作的情况下在 UI 开发阶段首先就需要和后端对齐数据结构，然后自己 mock 一个延时数据函数模拟真正场景下，这样才可能将问题即时暴露。
+
+
+## 前端 cli 工具搭建
