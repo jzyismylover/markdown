@@ -17,18 +17,24 @@ export default [
   },
   {
     title: 'React',
-    collapsable: false
+    children: [
+      '/fronted/react/react基础.md',
+      '/fronted/react/react进阶.md'
+    ]
   },
   {
     title: 'Electron',
-    collapsable: false
+    children: [
+      '/fronted/electron/electron.md',
+      '/fronted/electron/electron-builder.md'
+    ]
   },
   {
     title: '前端监控',
-    collapseable: false,
     children: [
       '/fronted/monitor/errorCapture/capture.md',
       '/fronted/monitor/performance/performance.md'
     ]
   },
+  // '/fronted/microfronted/README.md'
 ]
