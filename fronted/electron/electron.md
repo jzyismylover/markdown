@@ -1,4 +1,6 @@
-# 主流技术
+# 技术背景
+
+## 主流技术
 桌面应用开发技术其实有很多， qt、nw.js、electron、tauri。
 - qt 使用 c++ 开发，贴近底层开发，效率高
 - nw.js & electron ：允许我们使用 web 开发的技术构建应用
@@ -10,7 +12,7 @@
 
 以上是从整个开发生态上的介绍，那针对前端开发人员，主流技术栈为：JS/TS，上手开发成本最低的是 nw.js & electron，electron 相比 nw.js 社区更活跃，很多大应用基于 electron 构建。像 vscode、QQ（使用 electron 重构），很多问题在社区都能找到解决方案。因此没有特殊需求的情况下其实还是首选 electron 作为开发框架。下面也主要围绕 electron 相关进行介绍。
 
-# 工作原理
+## 工作原理
 对于跨端框架我们可能比较感兴趣这个框架是怎么去实现多平台兼容以及实现过程中都解决了什么重要的问题。那对于 electron 来说，能够跨端的原因是集成了 chromium。chromium 是一个渲染引擎，本身是可以在多个 os 架构下使用，因此使用 chromium 作为 UI 渲染可以做到多端 UI 一致（不需要考虑平台兼容性的问题）。chromium 作为一个渲染引擎本身并不能进行 一些与系统相关 GUI 编程 ，因此 electron 同时集成了 node 提供文件、网络处理的能力。既然是桌面应用，那应用免不了是要跟操作系统打交道，像系统托盘，消息通知……，这是 node 无法解决的问题，因此最后封装了 native api 提供应用调用底层系统 api 功能的能力。
 
 <img src="./assets/image-01.png"  style="display:block; margin:20px auto;;"/>
@@ -41,9 +43,9 @@ chromium browser 进程
 
 🌟 最后基于 libuv 提供 backend fd 标识（backend fd 可以标识 libuv 有新事件推送），以 chromium event loop 作为主事件循环，新开一个线程来执行轮询操作，同样是轮询好处在于不需要针对多个 GUI 事件轮训，cpu 占用降低。
 
-# 功能分析
+## 功能分析
 
-## 启动
+### 启动
 目前社区上其实有一些已经集成了 electron 的脚手架，像 vite-plugin-electron、vue-cli-electron...... 很多时候会比较好奇整个启动的流程是什么样子的？要说明这个问题首先介绍一下 electron 的整个运作机制。
 <img src="./assets/image-05.png"  style="display:block; margin:20px auto;;"/>
 前面其实也有提到，electron 采用的是多进程架构，分为主进程和渲染进程
@@ -56,13 +58,13 @@ chromium browser 进程
 <img src="./assets/image-06.png"  style="display:block; margin:20px auto;;"/>
 <div style="text-align:center;">图 6 electron 生命周期</div><br>
 
-## 进程通信
+### 进程通信
 为什么需要进程通信这个过程？—— 在渲染进程想要使用 node / electron api
 - 方式一：设置 nodeIntegration: true，即允许直接通过 import / require 的方式导入 electron / node api（不安全 -- 一旦被劫持了就 gg（直接执行方法、原型链污染））
 - 方式二：基于事件订阅，主进程监听事件流，渲染进程通过数据推送触发事件更新，主进程执行事件，相比于方式一，劫持者也没有这么容易去更改过程中的行为
 
 
-### 单窗口通信
+#### 单窗口通信
 > 单窗口怎么与逻辑主进程进行数据通信
 electron 封装了 ipcMain、ipcRenderer 模块
 ```
@@ -80,7 +82,7 @@ ipcRenderer.on(channel, (event, ...args) => func(...args));
 ipcRenderer.send(channel, data);
 ```
 
-### 多窗口通信
+#### 多窗口通信
 如果存在多窗口的情况下不同窗口之前需要进行数据通信的话又是怎么样的一种形式？
 - 方式一：以主进程作为沟通桥梁
 <img src="./assets/image-07.png"  style="display:block; margin:20px auto;;"/>
@@ -128,23 +130,6 @@ contextBridge.exposeInMainWorld(
 其实在 contextBridge 引出之前还有一种方式是直接设置 window，但这被认为是不安全！
 如果直接在 window 上设置的话，可以会存在篡改风险，黑客通过劫持网络请求通过 JS 完全可以重写 window 上的方法从而实现一些危险的操作。而 contextBridge 定义的上下文方法其实是不允许被重写的。
 
-
-api
-demo 演示
-BrowserView
-允许在窗口中嵌入 web url、browserwindow
-
-BrowserWindow
-main process 创建窗口，窗口放大、缩小、focus 都是通过这个 BrowserWindow 实例操作
-
-Tray
-系统托盘设置. 菜单、图标的定制……
-
-Notification
-系统通知
-
-webContents
-主进程对窗口（渲染进程）的引用，包括一些数据推送、窗口获取……
 
 ## 打包
 在 electron 中，打包可以分为两个阶段，一个阶段是资源的打包（渲染进程、主进程代码），另外一个阶段是生成不同平台不同架构的二进制程序包。
@@ -214,21 +199,14 @@ const options = {
  
 ## 更新
 electron 的更新可以分为两种：全量更新、增量更新
-全量更新：全量更新即每次需要更新的时候都需要用户重新下载完整应用包后重启应用
-增量更新：每次只下载有差异的部分
-blockmap
-asar
+- 全量更新：全量更新即每次需要更新的时候都需要用户重新下载完整应用包后重启应用
+- 增量更新：每次只下载有差异的部分
+  - blockmap
+  - asar
 
-version: 2.0.0
-files:
-  - url: YourAppName-Mac-2.0.0-Installer.dmg
-    sha512: Qc3PvBSJAn+D/HtyT7b9pLDoE0WAzBmaMahaf+7OQG+cJvrbYjerIlS0QZhGvfAEWnyBaPIRi50rvdmlGEP8rg==
-    size: 91650113
-path: YourAppName-Mac-2.0.0-Installer.dmg
-sha512: Qc3PvBSJAn+D/HtyT7b9pLDoE0WAzBmaMahaf+7OQG+cJvrbYjerIlS0QZhGvfAEWnyBaPIRi50rvdmlGEP8rg==
-releaseDate: '2023-12-19T01:40:43.774Z'
 
-全量更新
+
+### 全量更新
 electron-builder 在打包的过程中会生成一个 latest.yml 文件（在 macos 上是  latest-mac.yml ，在 linux 中为 latest-linux.yml），描述应用的版本、下载链接、签名等信息，electron-updater 判断版本更新的就是基于 latest.yml 中的 version 字段。
 ```json
 "build": {
@@ -242,14 +220,14 @@ electron-builder 在打包的过程中会生成一个 latest.yml 文件（在 ma
 ```
 
 ```yml
-latest.yml
-version: 
+version: 2.0.0
 files:
-  - url:
-    sha512: 
-    size:
-path: 
-sha512: 
+  - url: YourAppName-Mac-2.0.0-Installer.dmg
+    sha512: Qc3PvBSJAn+D/HtyT7b9pLDoE0WAzBmaMahaf+7OQG+cJvrbYjerIlS0QZhGvfAEWnyBaPIRi50rvdmlGEP8rg==
+    size: 91650113
+path: YourAppName-Mac-2.0.0-Installer.dmg
+sha512: Qc3PvBSJAn+D/HtyT7b9pLDoE0WAzBmaMahaf+7OQG+cJvrbYjerIlS0QZhGvfAEWnyBaPIRi50rvdmlGEP8rg==
+releaseDate: '2023-12-19T01:40:43.774Z'
 ```
 
 
@@ -259,9 +237,9 @@ sha512:
 
 缺点：每次更新都需要拉取完整程序安装包，更新时间慢，需要流量大
 
-## 增量更新
+### 增量更新
 
-### blockmap
+#### blockmap
 
 <img src="./assets/image-11.png"  style="display:block; margin:20px auto;;"/>
 <div style="text-align:center;">图 8 blockmap diff 算法</div><br>
@@ -283,7 +261,7 @@ sha512:
 ```
 blockmap 大概长这样子，checksums 就是对应的哈希值，offset 就是分片偏移
 
-### asar
+#### asar
 electron-builder 打包的时候可以配置生成 asar 文件
 app.asar：打包一般不频繁更新的文件
 app.asar.unpack：打包频繁更新的文件（一般是渲染进程代码）

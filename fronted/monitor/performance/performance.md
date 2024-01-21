@@ -517,7 +517,7 @@ observer.observe({ entryTypes: [] });
 
 > 目前一些 entryTypes 还属于是实验室属性，因此可能在支持表格中找不到 [blog](https://www.zhangxinxu.com/wordpress/2023/08/js-performanceobserver-api/)
 
-<img src="./performance/performance.assets/image-20231214004807464.png" style="display: block; margin: auto;"/>
+<img src="./performance.assets/image-20231214004807464.png" style="display: block; margin: auto;"/>
 
 ### disconnect
 

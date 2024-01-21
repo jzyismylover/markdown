@@ -76,7 +76,7 @@ window.addEventListener("error", function (event) {});
 
 > js 运行时错误类型
 
-<img src="./errorCapture/capture.assets/image-20231108004503666.png" style="display: block; margin: auto;"/>
+<img src="./capture.assets/image-20231108004503666.png" style="display: block; margin: auto;"/>
 
 :game_die: 解析运行时错误堆栈调用：可以使用开源库 [`error-stack-parser`](https://www.npmjs.com/package/error-stack-parser/v/2.0.5), 传入 `error` 对象可以帮助解析出调用堆栈以及具体错误发生的行号、列号…….。（虽然没具体深入了解源码，但是基本的实现应该如下，基于正则处理 `error message string`）
 
@@ -372,7 +372,10 @@ export class Queue {
 
 - 第五位，表示这个位置属于 names 属性中的哪一个变量。
 
-<img src="http://ruanyifeng.com/blogimg/asset/201301/bg2013012202.png" style="display: block; margin: auto;"/>
+
+<img src="capture.assets/image.png
+" style="display: block; margin: auto;"/>
+
 
 ## 映射过程
 
