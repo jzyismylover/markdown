@@ -665,6 +665,44 @@ $ sudo apt install libxi6 libgconf-2-4
 $ npm install -g tree-node-cli
 ```
 
+## 环境变量
+
+```bash
+alias gitv='git --version'
+
+# curl post 请求
+alias curlpost='request(){curl -X POST -H "Content-Type: application/json" -d $2 $1}; request'
+
+# npm 源站登陆
+alias npmlogin='npm login --registry=https://registry.npmjs.org'
+
+# npm 源站发布
+alias npmpublish='npm publish --registry=https://registry.npmjs.org'
+
+# 文件到阿里云服务器
+alias scpaliyunfile='request(){scp $1 root@<ip>:/var/www/html/$2}; request'
+
+# 文件夹推送到阿里云服务器
+alias scpaliyundict='request(){scp -r $1 root@<ip>:/var/www/html/$2}; request'
+
+# 阿里云服务器登陆
+alias aliyun='ssh root@<ip>'
+
+# vite 快速创建项目
+alias create-vite='request(){pnpm create vite $1 --template $2}; request'
+
+# ubuntu 启动谷歌
+alias google='sh -c "export LANGUAGE=ZH-CN.UTF-8 && /usr/bin/google-chrome-stable %U &"'
+
+# 切换node 18 版本
+alias no18="pnpm env --global use 18"
+
+# 切换node 16 版本
+alias no16="pnpm env --global use 16"
+```
+
+
+
 ## 编程环境
 
 ### nvm
