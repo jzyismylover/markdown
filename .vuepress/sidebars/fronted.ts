@@ -13,7 +13,9 @@ export default [
   '/fronted/typescript/typescript.md',
   {
     title: 'Vue',
-    collapsable: false
+    children: [
+      '/fronted/vue/vueuse.md'
+    ]
   },
   {
     title: 'React',

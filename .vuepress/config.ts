@@ -1,18 +1,20 @@
-import { defineConfig, UserConfig, DefaultThemeConfig } from 'vuepress/config'
-import navbar from './navbar'
-import sidebar from './sidebar'
-import footer from './footer'
+import { defineConfig, UserConfig, DefaultThemeConfig } from "vuepress/config";
+import navbar from "./navbar";
+import sidebar from "./sidebar";
+import footer from "./footer";
 
-type DefineConfigType = (config: UserConfig<DefaultThemeConfig> & {
-  permalink: string
-}) => void
+type DefineConfigType = (
+  config: UserConfig<DefaultThemeConfig> & {
+    permalink: string;
+  }
+) => void;
 
-const domain = '120.77.245.193'
+const domain = "120.77.245.193";
 
 export default (defineConfig as DefineConfigType)({
-  base: '/markdown/',
-  title: 'Mr.Jiang-技术博客',
-  description: '学习&工作-技术积累',
+  base: "/markdown/",
+  title: "Mr.Jiang-技术博客",
+  description: "学习&工作-技术积累",
   head: [
     // 站点图标
     ["link", { rel: "" }],
@@ -33,7 +35,7 @@ export default (defineConfig as DefineConfigType)({
   ],
   permalink: "/:slug",
   // 监听文件变化
-  extraWatchFiles: ['.vuepress/*.ts', '.vuepress/sidebars/*.ts'],
+  extraWatchFiles: [".vuepress/*.ts", ".vuepress/sidebars/*.ts"],
   markdown: {
     // 开启代码块的行号
     lineNumbers: true,
@@ -45,24 +47,19 @@ export default (defineConfig as DefineConfigType)({
   plugins: [
     ["@vuepress/back-to-top"],
     ["@vuepress/medium-zoom"],
-    // [
-    //   "sitemap",
-    //   {
-    //     hostname: domain,
-    //   },
-    // ],
     ["vuepress-plugin-tags"],
+    ["img-lazy"],
     [
       "vuepress-plugin-code-copy",
       {
         successText: "代码已复制",
       },
     ],
-    ["img-lazy"],
+    ["posts-encrypt", {}],
   ],
 
   themeConfig: {
-    logo: '/logo.png',
+    logo: "/logo.png",
     nav: [],
     sidebar,
     lastUpdated: "最近更新",
@@ -74,5 +71,5 @@ export default (defineConfig as DefineConfigType)({
     // 编辑链接
     editLinks: true,
     editLinkText: "完善页面",
-  }
-})
+  },
+});
