@@ -1,0 +1,28 @@
+name: 更新服务器个人博客
+
+on:
+  push:
+    branches: docs
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@docs
+
+      # 使用action库 actions/setup-node安装node
+      - name: 安装 node
+        uses: actions/setup-node@main
+        with:
+          node-version: lts/*
+
+      # 安装依赖
+      - name: 安装依赖
+        run: npm install
+
+      - name: 打包
+        run: npm run docs:build
+
+      - name: 发布阿里云弹性服务器
+        uses: easingthemes/ssh-deploy@main
