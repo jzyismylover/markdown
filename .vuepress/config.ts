@@ -12,7 +12,6 @@ type DefineConfigType = (
 const domain = "120.77.245.193";
 
 export default (defineConfig as DefineConfigType)({
-  base: "/markdown/",
   title: "Mr.Jiang-技术博客",
   description: "学习&工作-技术积累",
   head: [
