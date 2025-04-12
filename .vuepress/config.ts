@@ -12,7 +12,7 @@ type DefineConfigType = (
 const domain = "120.77.245.193";
 
 export default (defineConfig as DefineConfigType)({
-  title: "Mr.Jiang-技术博客",
+  title: "Mr.J 技术博客",
   description: "学习&工作-技术积累",
   head: [
     // 站点图标
