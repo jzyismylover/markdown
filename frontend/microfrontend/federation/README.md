@@ -30,11 +30,11 @@
 
 #### Build 阶段
 
-![](https://common-1306887959.cos.ap-guangzhou.myqcloud.com/vscode/markdown/1744903006594_5f8ccef4-dc98-4082-91f7-da43353700b3.png?q-sign-algorithm=sha1&q-ak=AKIDRFtKYZOzOZaZPBpKdjohMn24wc6TdaJo&q-sign-time=1744903011;1744906611&q-key-time=1744903011;1744906611&q-header-list=host&q-url-param-list=&q-signature=3bdcce49593acf24f3de441f617ff2e46213a1b8)
+![](https://common-1306887959.cos.ap-guangzhou.myqcloud.com/vscode/markdown/1744903006594_5f8ccef4-dc98-4082-91f7-da43353700b3.png)
 
 #### Output 阶段
 
-![](https://common-1306887959.cos.ap-guangzhou.myqcloud.com/vscode/markdown/1744903006594_5f8ccef4-dc98-4082-91f7-da43353700b3.png?q-sign-algorithm=sha1&q-ak=AKIDRFtKYZOzOZaZPBpKdjohMn24wc6TdaJo&q-sign-time=1744903870;1744907470&q-key-time=1744903870;1744907470&q-header-list=host&q-url-param-list=&q-signature=8229839afd1fc68487f7c23a6abf56541ef517c8)
+![](https://common-1306887959.cos.ap-guangzhou.myqcloud.com/vscode/markdown/1744903006594_5f8ccef4-dc98-4082-91f7-da43353700b3.png)
 
 ##### generate hook
 
