@@ -9,8 +9,6 @@ type DefineConfigType = (
   }
 ) => void;
 
-const domain = "120.77.245.193";
-
 export default (defineConfig as DefineConfigType)({
   title: "Mr.J 技术博客",
   description: "学习&工作-技术积累",
@@ -32,6 +30,7 @@ export default (defineConfig as DefineConfigType)({
       `,
     ],
   ],
+  // 永久链接: /:slug 表示不带扩展名
   permalink: "/:slug",
   // 监听文件变化
   extraWatchFiles: [".vuepress/*.ts", ".vuepress/sidebars/*.ts"],
@@ -44,6 +43,7 @@ export default (defineConfig as DefineConfigType)({
 
   //@ts-ignore
   plugins: [
+    // 
     ["@vuepress/back-to-top"],
     ["@vuepress/medium-zoom"],
     ["vuepress-plugin-tags"],

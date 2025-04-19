@@ -1,10 +1,10 @@
-import type { SidebarConfig4Multiple } from 'vuepress/config'
-import algorithm from './sidebars/algorithm'
-import fronted from './sidebars/fronted'
+import type { SidebarConfig4Multiple } from "vuepress/config";
+import algorithm from "./sidebars/algorithm";
+import frontend from "./sidebars/frontend";
 
 // @ts-ignore
 export default {
-  '/algorithm/': algorithm,
-  '/fronted/': fronted,
-  '/': 'auto'
-} as SidebarConfig4Multiple
+  "/algorithm/": algorithm,
+  "/frontend/": frontend,
+  "/": "auto",
+} as SidebarConfig4Multiple;

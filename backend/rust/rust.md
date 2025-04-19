@@ -489,11 +489,11 @@ mod user {}
 默认情况下一个模块内定义的方法、枚举、结构体都是私有的，如果需要能够暴露给外部使用的话需要加上 `pub` 字段
 
 ```rust
-mod fronted {
+mod frontend {
     pub fn add() {}
 }
 
-mod fronted {
+mod frontend {
     pub mod practise {
         pub fn add() {}
     }

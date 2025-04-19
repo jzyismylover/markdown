@@ -373,7 +373,7 @@ function generateRoutesByServer(routes) {
 
 #### 前端生成
 
-其实项目里面 `fronted` & `static ` 界定有点模糊，从个人的角度，可以理解为就是使用前端定义的静态路由来渲染菜单。
+其实项目里面 `frontend` & `static ` 界定有点模糊，从个人的角度，可以理解为就是使用前端定义的静态路由来渲染菜单。
 
 ```ts
 // router.ts

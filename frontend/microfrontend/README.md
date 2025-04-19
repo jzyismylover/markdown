@@ -37,7 +37,7 @@ single-spa [精读](https://zhuanlan.zhihu.com/p/378346507)
 
 single-spa 的思路是监听 window.location.url 变化，然后走应用切换的流程。下图 single-spa 控制的生命周期
 
-![Alt text](README.assets/image-1.png)
+![Alt text](https://common-1306887959.cos.ap-guangzhou.myqcloud.com/vscode/markdown/1745071971204_a2ec178e-2deb-4587-9fc0-6f952a8b63c7.png?q-sign-algorithm=sha1&q-ak=AKIDRFtKYZOzOZaZPBpKdjohMn24wc6TdaJo&q-sign-time=1745071980;1745075580&q-key-time=1745071980;1745075580&q-header-list=host&q-url-param-list=&q-signature=3e9f6f6ad33810b883ba8bd2eb180bca41a03de6)
 
 - register：全局注册子应用，非生命周期内容
 - load：加载主应用
@@ -47,12 +47,12 @@ single-spa 的思路是监听 window.location.url 变化，然后走应用切换
 - unload：卸载主应用
 
 
-![Alt text](README.assets/image-2.png)
+![Alt text]([README.assets/image-2.png](https://common-1306887959.cos.ap-guangzhou.myqcloud.com/vscode/markdown/1745071971204_7c43c833-89bd-40bc-ad58-004d83dd93bf.png?q-sign-algorithm=sha1&q-ak=AKIDRFtKYZOzOZaZPBpKdjohMn24wc6TdaJo&q-sign-time=1745071980;1745075580&q-key-time=1745071980;1745075580&q-header-list=host&q-url-param-list=&q-signature=065f7a02e0a877a1281cfafc792397f8c1cb6376))
 
 
 而对于这种切换子应用的方案也会存在一定性能上的问题：
 
-![Alt text](README.assets/image.png)
+![Alt text](https://common-1306887959.cos.ap-guangzhou.myqcloud.com/vscode/markdown/1745071971204_71d806a8-1d4f-4afe-bb43-e8f65a6ceae9.png?q-sign-algorithm=sha1&q-ak=AKIDRFtKYZOzOZaZPBpKdjohMn24wc6TdaJo&q-sign-time=1745071980;1745075580&q-key-time=1745071980;1745075580&q-header-list=host&q-url-param-list=&q-signature=13d4c064e0c08b1b1b102bd7855b5aa23895cbaa)
 
 > 上图是从整个应用初始化的情况而言，从父应用到子应用的加载会经历的一个阶段。而每个子应用的加载也都会重复经历右边模块的流程。
 

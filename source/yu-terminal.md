@@ -2,7 +2,7 @@
 
 
 
-## fronted
+## frontend
 
 > 模仿开发：`~/Desktop/programmer/browser-terminal`
 

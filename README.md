@@ -12,7 +12,7 @@ permalink: /
 
 ## 本站内容
 
-- [前端学习](/fronted/README.md)
+- [前端学习](/frontend/README.md)
 - [后端学习](/backend/README.md)
 - [算法学习](/algorithm/README.md)
 - [源码学习](/source/README.md)
@@ -22,7 +22,7 @@ permalink: /
 - [其余部分](/others/README.md)
 
 
-## [前端学习](/fronted/README.md)
+## [前端学习](/frontend/README.md)
 
 前端知识积累：JS、TS、Vue、React…… 同时包含了跨端开发、微前端、Web3 相关开发知识
 
@@ -53,4 +53,4 @@ permalink: /
 
 ## [知识碎片](/others/README.md)
 
-搜索的一些问题以及解决思路. 大学
+搜索的一些问题以及解决思路
