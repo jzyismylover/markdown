@@ -2,3 +2,4 @@ node_modules
 .vuepress/dist
 *.sh
 .vercel
+.DS_Store
