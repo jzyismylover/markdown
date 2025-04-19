@@ -41,8 +41,8 @@ export default [
     title: "微前端",
     // 该 sidebar 模块里面的子内容
     children: [
-      "/frontend/microfrontend/README.md",
-      "/frontend/microfrontend/federation/README.md",
+      "/frontend/microfrontend/microfrontend.md",
+      "/frontend/microfrontend/federation/federation.md",
     ],
   },
 ] as SidebarConfigArray;
