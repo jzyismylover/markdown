@@ -1,6 +1,6 @@
 # Macos
 
-:::info
+::: info
 
 macos 配置相比于 ubuntu 要好些。一些三方应用都可以有对应的 dmg 文件可以下载
 
