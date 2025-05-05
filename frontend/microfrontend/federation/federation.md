@@ -5,16 +5,18 @@
 - 依赖共享
 - 跨应用复用
 
-::: info
+::: tip
 依赖共享
 :::
+
 原先在微前端的架构里边，主应用与各个子应用间的依赖是独立加载，也就是在运行时里边难以避免双方会加载部分相同的依赖。在模块联邦技术引出之前通常会基于构建工具去细粒度去进行 splitChunk 将依赖分离为单独 chunk，在不加 hash 的前提下可以利用浏览器对 js 资源的缓存从而避免二次请求拉取相同依赖资源。但是这种需要人工地去定义，且当一个项目的依赖版本需要发生变更的时候这种方式会因为缓存的原因更新不上去。新的依赖版本可能有小 feature 的新 API 更新，版本更新不上去相当于调用了压根不存在的东西，在没有考虑容错的前提下 js 运行时就会异常。
 
 有没有解决方案？也是有的，可以增加 hash 或者重新命名新版本，但是后续子项目想要升级的话均需要遵循相关的命名才可以重新去走缓存加载的线路，整体维护起来难度会比较大。
 
-::: info
+::: tip
 跨应用单元复用
 :::
+
 这里的单元可以是组件、函数，在以往如果我们需要做这种跨应用的远程模块引入，大体上有以下方式：
 
 - npm 包
@@ -27,7 +29,11 @@
   - vite、rollup 插件机制深入了解：对应插件钩子具体的含义以及可以在这个钩子中常见的业务逻辑
   - 运行时依赖共享
 
-### Rollup 插件
+### 第一章 插件基础了解
+
+::: tip
+Rollup 插件
+:::
 
 #### Build 阶段
 
@@ -41,7 +47,7 @@
 
 generate hook 是 rollup 在拿到所有 chunk 准备输出到文件系统前的最后阶段，通常在这个钩子我们可以对最后要输出的产物做最后处理，比如是根据一定策略将某些产物排除在输出列表外
 
-### shared-production plugin
+### 第二章 shared
 
 > vite raw
 
@@ -53,11 +59,11 @@ import federation_fn_import from "./federation_fn_import.js?raw";
 
 `federation_fn_import.js` 的内容将作为字符串引入，不再视作模块
 
-::: info
+::: tip
 模块逻辑
 :::
 
-该内置插件是 `shared 配置` 生产环境处理插件，主要的作用是构造 shared 的 importMap，然后对输出阶段的一些产物做处理
+插件主要用于构造 `shared` 的 importMap，然后对输出阶段的 `chunk` 过滤
 
 #### options hook
 
@@ -107,39 +113,14 @@ this.resolve("src/packages/tools/package.json");
 
 > 存疑点：当 manualChunks 配置为 shared module 的情况下会出现什么问题？
 
-### expose-production
+### 第三章 remotes
 
-### remote-production
+该内置插件主要在 transform 钩子实现了两个大功能点，解决了整体在模块联邦里面的一些疑惑
 
-该内置插件主要实现了两个大功能点，解决了整体在模块联邦里面的一些疑惑
+1. 模块联邦为什么能在运行时共享依赖，构建阶段做了什么处理？
+2. 模块联邦怎么实现远程模块的运行时调用，构建阶段做了什么处理？
 
-1. 模块联邦是怎么在运行时共享依赖？
-
-```js
-// 源代码
-import { createApp } from "vue";
-
-// 插件处理后代码
-const { createApp } = importShared("vue");
-```
-
-插件里面是对源代码做了如上替换，而 `importShared` 函数再处理运行时加载的逻辑（后续会详细讲解）。源代码中区分了几种依赖导入的方式：
-
-- `import a, { b } from 'module'`
-
-处理方式：`const a = importShared('module'); const { b } = a`
-
-- `import { b } from 'module'`
-
-处理方式：`const { b } = importShared('module')`
-
-- `import a from 'module'`
-
-处理方式: `const a = importShared('module')`
-
-2. 模块联邦怎么识别到 remote，并从 remote 导入对应的 export？
-
-::: info
+::: tip
 要了解插件的详细实现，首先需要了解 estree-walk 在递归过程中 [AST 节点](https://juejin.cn/post/7025193043460358151) 的概念
 :::
 
@@ -149,7 +130,7 @@ import d from "e"; // ImportDeclaration
 export default e = 1; //ExportDefaultDeclaration
 ```
 
-`ImportDeclaration` 里边的 `Specifier` 属性
+`ImportDeclaration` 里边的 `Specifier` 属性，当取值为不同情况的时候代表了不同含义
 
 - ImportSpecifier
 
@@ -168,6 +149,73 @@ import a from "./a.js";
 ```js
 import * as a from "./a.js";
 ```
+
+#### 运行时依赖共享构建处理
+
+```js
+// 源代码
+import { createApp } from "vue";
+
+// 插件处理后代码
+const { createApp } = importShared("vue");
+```
+
+插件里面是对源代码做了如上替换，而 `importShared` 函数再处理运行时加载的逻辑。
+
+> 前情说明
+
+这里补充一些前情部分，在构建阶是怎么知道我们需要对这个表达式进行替换的呢？这个是关键问题，没有这一部其实下面部分整体逻辑压根都不会走进去。版本上其实还是通过 Estree AST 节点 —— node.source.value 代表的是当前的模块名，比如说 vue。然后会从 `prodSharedOptions` 匹配是否包含了这个模块名，如果包含了这个模块名，才会走下面具体导入方法转换的逻辑。这里还要提一个点：`importShared` 函数从哪里来呢？其实在匹配通过后，会将一个 `hasImportShared` 变量设置为 true，然后往 chunk 的最前面塞入
+
+```js
+magicString.prepend(
+  `import {importShared} from '\0virtual:__federation_fn_import';\n`
+);
+```
+
+`virtual:__federation_fn_import` 虚拟模块其实是导入、共享 shared 模块函数的入口，具体里面的逻辑是什么我们下一章节再讲解。
+
+源代码中区分了几种依赖导入方式进行处理：
+
+- `import { b } from 'module'`： ImportSpecifier
+
+```js
+magicString.overwrite(
+  node.start,
+  node.end,
+  // `const { b } = importShared('module')`
+  `const ${defaultImportDeclaration} = await importShared('${moduleName}');\n`
+);
+```
+
+- `import a from 'module`：ImportDefaultSpecifier
+
+```js
+magicString.overwrite(
+  node.start,
+  node.end,
+  // const a = importShared('module')
+  `const {${namedImportDeclaration.join(
+    ","
+  )}} = await importShared('${moduleName}');\n`
+);
+```
+
+- `import a, {b as c, d} from 'module'`：ImportSpecifier、ImportDefautSpecifier 混合方式
+
+```js
+// 代表着 b:c,d
+const imports = namedImportDeclaration.join(",");
+
+// defaultImportDeclaration 代表着 a
+// 所以得到的表达式是： const a = await importShared('module'); const {b:c,d} = module;
+const line = `const ${defaultImportDeclaration} = await importShared('${moduleName}');\nconst {${imports}} = ${defaultImportDeclaration};\n`;
+
+magicString.overwrite(node.start, node.end, line);
+```
+
+需要注意的是，以上执行的基础是在判断当前 ImportDefination 识别到的 `node.source.value`，也就是模块名在我们配置的 `shared` 列表中才会去做这个替换
+
+#### 运行时动态导入构建处理
 
 插件源代码如针对 shared 模块那样，针对 remotes 也区分了几种处理方式，同样是 walk 递归中根据 AST 节点的类型做分类
 
@@ -255,8 +303,10 @@ magicString.append(
 );
 ```
 
-::: info
-以上源代码中其实都涉及到了几个关键函数 `__federation_method_getRemote`、`__federation_method_unwrapDefault`
+### 第四章 virtual:**federation**
+
+::: tip
+第四章的源代码中涉及到了几个关键函数 `__federation_method_getRemote`、`__federation_method_unwrapDefault`
 :::
 
 - `__federation_method_unwrapDefault`：确保不同模块系统（ESM & COMMONJS）之间的默认导出行为一致
@@ -314,7 +364,7 @@ async function __federation_method_ensure(remoteId) {
       // 通过 import 加载 JS
       return new Promise((resolve, reject) => {
         const getUrl =
-        // 区分是 Promise 函数还是字面量字符串
+          // 区分是 Promise 函数还是字面量字符串
           typeof remote.url === "function"
             ? remote.url
             : () => Promise.resolve(remote.url);
@@ -323,8 +373,8 @@ async function __federation_method_ensure(remoteId) {
             .then((lib) => {
               // 单例控制
               if (!remote.inited) {
-                // globalThis.__federation_shared__
-                const shareScope = wrapShareModule(remote.from);
+                const shareScope = wrapShareModule(remote.from); // from: vite | webpack
+                // 疑问点：init 函数从何而来？
                 lib.init(shareScope);
                 remote.lib = lib;
                 remote.lib.init(shareScope);
@@ -341,3 +391,157 @@ async function __federation_method_ensure(remoteId) {
   }
 }
 ```
+
+在上面这段代码中整体看起来还是比较好理解，区分是三方引入是采用全局挂载还是通过模块的方式引入。但还是有部分存疑点：
+
+1. `lib.init()`：init 方法是怎么来的？
+2. 在什么场景下使用全局挂载，什么场景下使用模块引入？
+
+为了解答以上的问题，我们需要看第五章节 `remotes`
+
+### 第五章 expose
+
+#### 模块初始化函数
+
+#### CSS 动态导入
+
+Q：在模块联邦里面我们是将 css 都打包到一个大文件中（`cssCodeSplit=false`），为什么需要这么做？
+
+### 第六章 virtual:**federation_fn_import**
+
+在第三章 remotes 里面有提到，插件最后是将 `import xx from 'module'` 的语法转换为 `const xx = importShared('module')` 的语法，`importShared` 函数的实现其实并未详细提及，在源代码中，importShared 函数其实是通过虚拟模块带入，下面会具体了解下这个函数的实现以及其关联的上下文.
+
+```js
+async function importShared(name, shareScope = "default") {
+  // moduleCache: Object.create(null)
+  return moduleCache[name]
+    ? // 检查 moduleCache 是否有 module 已经初始化的对象
+      // 如果有：直接返回
+      new Promise((r) => r(moduleCache[name]))
+    : // 如果没有，首先从运行时中取
+      (await getSharedFromRuntime(name, shareScope)) ||
+        // 如果运行时中没有，则走初始化路线
+        getSharedFromLocal(name);
+}
+```
+
+- `getSharedFromRuntime`
+
+```js {4}
+// 从运行时全局对象中获取结果
+async function getSharedFromRuntime(name, shareScope) {
+  let module = null;
+  // 全局对象上是否已经有实例结果， __federation_shared__ 从何而来？
+  if (globalThis?.__federation_shared__?.[shareScope]?.[name]) {
+    // name -> 模块名
+    const versionObj = globalThis.__federation_shared__[shareScope][name];
+    const versionKey = Object.keys(versionObj)[0];
+    const versionValue = Object.values(versionObj)[0];
+    if (moduleMap[name]?.requiredVersion) {
+      // 判断配置的版本是否与当前 package.json 版本可以降级满足
+      if (satisfy(versionKey, moduleMap[name].requiredVersion)) {
+        module = await (await versionValue.get())();
+      } else {
+        console.log(
+          `provider support ${name}(${versionKey}) is not satisfied requiredVersion(\${moduleMap[name].requiredVersion})`
+        );
+      }
+    } else {
+      // 调用 shared module get 方法
+      module = await (await versionValue.get())();
+    }
+  }
+  if (module) {
+    return flattenModule(module, name);
+  }
+}
+```
+
+- `getSharedFromlocal`
+
+```js
+async function getSharedFromLocal(name) {
+  // 远程模块是否配置依赖 import 选项为 true
+  if (moduleMap[name]?.import) {
+    // 这里边是兜底策略，当 requiredVersion 不满足的情况下会走到这里复用本地模块的依赖
+    let module = await (await moduleMap[name].get())();
+    return flattenModule(module, name);
+  } else {
+    // 如果 import 为 false，兜底策略失效，最后会无法完成模块 shared
+    console.error(
+      `consumer config import=false,so cant use callback shared module`
+    );
+  }
+}
+```
+
+上面代码的逻辑并不难，但是还是有些点需要去理清楚：
+
+1. `moduleMap` 指代的是什么？：其实在源代码中，`moduleMap` 被赋值为 `__rf_var__moduleMap`，而在最终打包阶段其实是在第三章介绍的 remotes 识别到这个特殊的字符串后做代码替换 —— 本质是将 shared 的注册，基础配置组合成一个对象
+
+```js
+if (id === "\0virtual:__federation_fn_import") {
+  // shared 配置
+  const moduleMapCode = parsedOptions.prodShared
+    .filter((shareInfo) => shareInfo[1].generate)
+    .map(
+      // ROLLUP_FILE_URL_${sharedInfo[1].emitFile} 在最后替换成 shared 的 bundle 文件地址
+      (sharedInfo) =>
+        `'${sharedInfo[0]}':{get:()=>
+          ()=>__federation_import(import.meta.ROLLUP_FILE_URL_${
+            sharedInfo[1].emitFile
+          }),import:${sharedInfo[1].import}${
+          sharedInfo[1].requiredVersion
+            ? `,requiredVersion:'${sharedInfo[1].requiredVersion}'`
+            : ""
+        }}`
+    )
+    .join(",");
+  // 这里 getModuleMarker 会返回 __rf_var__moduleMap
+  return code.replace(
+    getModuleMarker("moduleMap", "var"),
+    `{${moduleMapCode}}`
+  );
+}
+```
+
+最后其实相当于是
+
+```js
+// __rf_var_moduleMap 会被替换成对象
+const moduleMap = {
+  vue: {
+    get: () => () =>
+      __federation_import(
+        new URL("__federation_shared_vue-67087f9e.js", import.meta.url).href
+      ),
+    import: true,
+  },
+  pinia: {
+    get: () => () =>
+      __federation_import(
+        new URL("__federation_shared_pinia-16496f0d.js", import.meta.url).href
+      ),
+    import: true,
+  },
+};
+```
+
+2. `__federation_shared__` 是从哪里初始化？
+
+第五章节说到 `__federation__` 虚拟模块提供了 `init` 方法，方法本身是为了初始化 remote 上下文。在这个方法里边，其实内置了对 shared 内容的初始化。
+
+:::tip
+对于本地模块 & 远程模块来说 getSharedFromRuntime & getSharedFromlocal 会有什么区别
+:::
+
+- 本地模块：会正常走 getSharedFromLocal 的逻辑，因为本地模块默认是会生成 shared bundle 文件，所以无论如何 getSharedFromLocal 的策略都不会失效
+
+todo: 解释远程模块 getShared 过程
+
+
+:::tip
+`__federation_shared__` 在多模块的场景下会不会被重复覆盖
+:::
+
+todo: 解释多模块场景下 `globalThis.__federation_shared__` 赋值情况
