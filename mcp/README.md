@@ -1,0 +1,58 @@
+# Model Context Protocol
+
+## 基本概念
+
+Model Context Protocol 简写为 MCP，一句话总结：MCP 是大语言模型通过调用外部数据源、工具扩展自身能力的通用协议. 在 MCP 里边有几个比较关键的概念：
+- MCP Host：chat 客户端
+- MCP Client：客户端实现的一个本地服务
+- MCP server：远程或本地启动服务
+  
+具体交互流程梳理如下：
+
+```puml
+@startuml MCP 工作流
+
+autoactivate on
+
+Actor User as U
+participant "MCP HOST" as H
+participant "MCP Client" as C
+participant "MCP Server" as S
+participant "大模型" as M
+
+U -> H: 用户在聊天界面发送问答类信息
+H -> C: 会把信息发送给 client 处理
+C --> C: 初始化 client 实例
+C -> M: 发送用户问答以及当前 host 装载的 mcp 工作列表
+M -> M: 推理内容
+M --> C: 返回需要推理内容、使用的工具列表
+alt 调用工具列表存在
+  loop 遍历工具列表
+  C -> S: 建立服务连接
+    alt 建立连接成功
+      C -> S: 模型处理好的参数
+      S -> S: 接受参数
+      S -> S: 函数执行
+      S --> C: 处理好的信息流
+      C -> M: 发送 Server 处理好的信息
+      M -> M: 二次处理 \n (.etc 这里我有个疑惑点就是 Server 返回的信息模型能根据前面的上下文二次处理？）
+      M --> C: 模型二次处理结果
+    else 建立连接失败
+      C --> H: 流程失败信息
+    end
+  end
+else 
+  C --> H: 返回模型处理好的文本信息(数据流)
+end
+
+
+@enduml
+```
+
+所以我们可以一句话概括：MCP Host 内置实现了 MCP Client，在接受到用户的提问输入后通过 MCP Client 与大模型和 MCP Server 进行往返交互最后输出问答结果
+
+## MCP Server
+
+### 原理
+
+### 具体实现
