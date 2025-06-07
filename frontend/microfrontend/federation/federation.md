@@ -396,16 +396,108 @@ async function __federation_method_ensure(remoteId) {
 
 1. `lib.init()`：init 方法是怎么来的？
 2. 在什么场景下使用全局挂载，什么场景下使用模块引入？
+3. `wrapShareModule` 方法来源？
 
-为了解答以上的问题，我们需要看第五章节 `remotes`
+> 问题三
+
+```js
+// 原始模式
+ const wrapShareModule = ${REMOTE_FROM_PARAMETER} => {
+   return merge({
+     ${getModuleMarker('shareScope')}
+   }, (globalThis.__federation_shared__ || {})['${shareScope}'] || {});
+ }
+
+// 构建阶段替换
+ const wrapShareModule = remoteFrom => {
+   return merge({
+     'vue':{'3.2.45':{get:()=>get(new URL('__federation_shared_vue-67087f9e.js', import.meta.url).href, remoteFrom), loaded:1}},'pinia':{'2.0.21':{get:()=>get(new URL('__federation_shared_pinia-16496f0d.js', import.meta.url).href, remoteFrom), loaded:1}}
+   }, (globalThis.__federation_shared__ || {})['default'] || {});
+ };
+```
+如果是本地模块，在 `transform` 钩子中会对虚拟模块 `_federation_` 做字符串替换，将 `__rf_placeholder__shareScope` 替换为如上所示代码块（共享依赖初始化 第六章讲到 `__federation_fn_import__`会用到这块知识）
+
+
+为了解答以上未解答的问题，我们需要看第五章节 `expose`
 
 ### 第五章 expose
 
-#### 模块初始化函数
+这个插件的作用其实就是为远程模块生成 `remoteEntry` 文件，该文件是远程模块的入口
 
-#### CSS 动态导入
+```ts
+// 原 expose 配置
+federation({
+  exposes: {
+    './Button': './src/components/Button.vue',
+    './utils': './src/utils/index.js'
+  }
+})
 
-Q：在模块联邦里面我们是将 css 都打包到一个大文件中（`cssCodeSplit=false`），为什么需要这么做？
+// 构建后的 expose 配置
+moduleMap = {
+  "Button": () => {
+    // 加载 Button 组件的 CSS
+    loadCSS('assets/Button-abc123.css', false, 'Button');
+    
+    // 导入 Button 模块
+    return __federation_import('${__federation_expose_Button}')
+      .then(module => {
+        // 如果模块只有默认导出，返回 module.default
+        // 否则返回整个模块
+        return Object.keys(module).every(item => exportSet.has(item)) 
+          ? () => module.default 
+          : () => module;
+      });
+  },
+  
+  "utils": () => {
+    loadCSS('assets/utils-def456.css', false, 'utils');
+    return __federation_import('${__federation_expose_utils}')
+      .then(module => 
+        Object.keys(module).every(item => exportSet.has(item)) 
+          ? () => module.default 
+          : () => module
+      );
+  }
+}
+```
+
+这里有几个关键点：
+
+1. 为什么需要判断 module 还是 module.default 
+
+情况一：只有默认导出
+```js
+export default Button;
+// module = { default: Button }
+// 应该返回 Button
+```
+
+情况二：有命名导出
+
+```js
+export const utils = {};
+export const helpers = {};
+// module = { utils: {}, helpers: {} }
+// 应该返回整个 module
+```
+
+情况三：有默认导出、命名导出
+```js
+export default Button;
+export const utils = {};
+export const helpers = {};
+// module = { utils: {}, helpers: {}, default: Button }
+// 应该返回整个 module
+```
+> 因为调用的数组函数是 every，所以当所有 key 都满足的情况下才会导出 default, 这里明确不全部满足，所以在同时有默认导出和命名导出的情况下会把整个 module 导出
+
+2. 在模块联邦里面推荐是将 css 都打包到一个大文件中（`cssCodeSplit=false`），为什么需要这么做？
+
+第一点：如果 css 分 chunk 打包那就意味着需要分开加载，分开加载就有加载时序上的问题，在一些项目里边可能确认存在说一个样式文件依赖另外一个基础样式文件的情况，如果出现基础文件后加载的情况，就会出现页面样式的闪烁问题
+第二点：分包意味着更多的网络请求，如果文件分得太小太细就不能利用好浏览器的缓存
+
+> 当然不分包意味着首次加载需要花费更多的时间，导致首屏渲染的效率变低，可基于实际的项目情况考虑
 
 ### 第六章 virtual:**federation_fn_import**
 
@@ -535,13 +627,38 @@ const moduleMap = {
 对于本地模块 & 远程模块来说 getSharedFromRuntime & getSharedFromlocal 会有什么区别
 :::
 
-- 本地模块：会正常走 getSharedFromLocal 的逻辑，因为本地模块默认是会生成 shared bundle 文件，所以无论如何 getSharedFromLocal 的策略都不会失效
+- 本地模块：会正常走 getSharedFromLocal 的逻辑（初始化 globalThis.`__federation_shared__` 没赋值），本地模块默认是会生成 shared bundle 文件，所以无论如何 getSharedFromLocal 的策略都不会失效
 
-todo: 解释远程模块 getShared 过程
+- 远程模块：
 
 
 :::tip
 `__federation_shared__` 在多模块的场景下会不会被重复覆盖
 :::
 
-todo: 解释多模块场景下 `globalThis.__federation_shared__` 赋值情况
+> 解释多模块场景下 `globalThis.__federation_shared__` 赋值情况
+
+
+### 第七章 源代码调试
+
+在想深入了解插件里边在构建阶段的运行逻辑免不了需要对源代码添加断点，`@originjs/vite-plugin-federation`仓库是 monorepo 架构，所以在 examples 里边的示例事直接通过 workspace: 的方式引入 lib 构建后的包，此时我们直接在 lib 源代码里边打断点是不生效。原因嘛其实就是运行时人家不认源代码，因为本身用的就是 build 的版本，识别到这一点其实也就很好解决，是不是只需要把源代码和 build 的代码建立关联就好，这样子编辑器启动脚本的时候自动就会去跑源代码，在里边打的断点就能生效
+
+```ts{9}
+export default defineConfig({
+  build: {
+    lib: {
+      entry: ['./src/index.ts', 'src/utils/semver/satisfy.ts'],
+      formats: ['es', 'cjs']
+    },
+    target: 'node14',
+    minify: false,
+    sourcemap: true,
+    rollupOptions: {
+      external: ['fs', 'path', 'crypto', 'magic-string'],
+      output: {
+        minifyInternalExports: false
+      }
+    }
+  }
+})
+```
