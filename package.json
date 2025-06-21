@@ -1,9 +1,10 @@
 {
   "name": "vuepress-docs",
-  "version": "1.0.0",
+  "version": "2.0.0",
+  "type": "module",
   "scripts": {
-    "docs:dev": "vuepress dev .",
-    "docs:build": "set NODE_OPTIONS=--openssl-legacy-provider --max_old_space_size=8192 && vuepress build .",
+    "docs:dev": "vuepress dev",
+    "docs:build": "vuepress build",
     "commit": "cz"
   },
   "license": "MIT",
@@ -12,20 +13,21 @@
   },
   "config": {
     "commitizen": {
-      "path": "./commit-msg.js"
+      "path": "./commit-msg.cjs"
     }
   },
   "devDependencies": {
-    "@vuepress/plugin-back-to-top": "^1.9.10",
-    "@vuepress/plugin-medium-zoom": "^1.9.10",
+    "@types/node": "^24.0.3",
+    "@vuepress/bundler-vite": "next",
+    "@vuepress/client": "next",
+    "@vuepress/plugin-back-to-top": "next",
+    "@vuepress/plugin-medium-zoom": "next",
+    "@vuepress/plugin-register-components": "next",
+    "@vuepress/theme-default": "next",
     "commitizen": "^4.3.1",
-    "vuepress": "^1.9.10",
-    "vuepress-plugin-feed": "^0.1.9",
-    "vuepress-plugin-sitemap": "^2.3.1",
-    "vuepress-plugin-tags": "^1.0.2"
-  },
-  "dependencies": {
-    "vuepress-plugin-code-copy": "^1.0.6",
-    "vuepress-plugin-img-lazy": "^1.0.4"
+    "markdown-it-container": "^4.0.0",
+    "sass-embedded": "^1.89.2",
+    "vue": "^3.4.0",
+    "vuepress": "next"
   }
 }

@@ -1,5 +1,7 @@
 node_modules
 .vuepress/dist
+.vuepress/.cache
+.vuepress/.temp
 *.sh
 .vercel
 .DS_Store

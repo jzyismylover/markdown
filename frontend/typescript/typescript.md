@@ -236,11 +236,11 @@ const sem: PersonInterface = {
   type res = MapType<{ a: 1; b: 2 }>;
   ```
 
-  <img src="typescript.assets/image.png" style="display: block; margin: auto;"/>
+  <img src="./typescript.assets/image.png" style="display: block; margin: auto;"/>
 
   **映射类型就相当于把一个集合映射到另一个集合，这是它名字的由来**。
 
-  <img src="typescript.assets/image-1.png" style="display: block; margin: auto;"/>
+  <img src="./typescript.assets/image-1.png" style="display: block; margin: auto;"/>
 
   除了值可以变化，索引也可以做变化，用 as 运算符，叫做`重映射`。
 
@@ -256,13 +256,13 @@ const sem: PersonInterface = {
 
   我们用 as 把索引也做了修改，改成了 3 个 key 重复：
 
-  <img src="typescript.assets/image-2.png" style="display: block; margin: auto;"/>
+  <img src="./typescript.assets/image-2.png" style="display: block; margin: auto;"/>
 
   这里的 & string 可能会迷惑，解释一下：
 
   因为索引类型（对象、class 等）可以用 string、number 和 symbol 作为 key，这里 keyof T 取出的索引就是 string | number | symbol 的联合类型，和 string 取交叉部分就只剩下 string 了。就像前面所说，交叉类型会把同一类型做合并，不同类型舍弃。
 
-  <img src="typescript.assets/image-3.png" style="display: block; margin: auto;"/>
+  <img src="./typescript.assets/image-3.png" style="display: block; margin: auto;"/>
 
 ```typescript
 interface Point {
@@ -402,7 +402,7 @@ type UppercaseA<Item extends string> = Item extends "a"
   : Item;
 ```
 
-<img src="typescript.assets/image-4.png" style="display: block; margin: auto;"/>
+<img src="./typescript.assets/image-4.png" style="display: block; margin: auto;"/>
 
 可以看到，我们类型参数 Item 约束为 string，条件类型的判断中也是判断是否是 a，但传入的是联合类型。这就是 TypeScript 对联合类型在条件类型中使用时的特殊处理：会把联合类型的每一个元素单独传入做类型计算，最后合并。
 
@@ -959,7 +959,7 @@ function configurable(value: boolean) {
 
 ### 三、协变&逆变
 
-<img src="typescript.assets/image-5.png" style="display: block; margin: auto;"/>
+<img src="./typescript.assets/image-5.png" style="display: block; margin: auto;"/>
 
 参数的位置是逆变的，也就是被赋值的函数参数要是赋值的函数参数的子类型，而 string 不是 'hello' 的子类型，所以报错了。
 
@@ -1069,7 +1069,7 @@ type UppercaseA<Item extends string> = Item extends "a"
   : Item;
 ```
 
-<img src="typescript.assets/image-6.png" style="display: block; margin: auto;"/>
+<img src="./typescript.assets/image-6.png" style="display: block; margin: auto;"/>
 
 可以看到，我们类型参数 Item 约束为 string，条件类型的判断中也是判断是否是 a，但传入的是联合类型。这就是 TypeScript 对联合类型在条件类型中使用时的特殊处理：会把联合类型的每一个元素单独传入做类型计算，最后合并。
 
@@ -1523,7 +1523,7 @@ function doSomething(obj: Record<string, any>) {}
 
 ## tsconfig.json 配置
 
-![Alt text](typescript.assets/image-7.png)
+![Alt text](./typescript.assets/image-7.png)
 
 ### complieOnSave
 

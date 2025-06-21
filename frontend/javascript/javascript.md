@@ -369,7 +369,7 @@ CSRF 和 XSS
 
 - CSRF(跨站请求伪造) 的攻击流程
 
-<img src="E:\杂七杂八的东西\typeorm 图片存储区\v2-4f67322fc9c1aba2d6a251696d14ec31_720w.jpg" style="display: block; margin: auto;"/>
+<!-- 图片路径无效，已移除 -->
 
 1. 登录受信任网站 A ，并在本地生成保存 Cookie；
 2. 在不登出 A 情况下，访问病毒网站 B
@@ -393,7 +393,7 @@ CSRF 是如何模拟发起 get / post 请求？换言而知就是问有哪些方
 
 - XSS(跨站脚本) 的攻击流程
 
-<img src="E:\杂七杂八的东西\typeorm 图片存储区\v2-04906c5c0874c9e33a95dde9643ef74f_720w.jpg" style="display: block; margin: auto;"/>
+<!-- 图片路径无效，已移除 -->
 
 [DOM 型 XSS 攻击](https://www.jianshu.com/p/190dedd585f2)
 
@@ -745,7 +745,7 @@ getGenPromise(g)
 
 > 原型链是实现继承的方式之一，每个实例对象都有一个 proto 属性指向构造函数的原型，当这个原型的 proto 属性又指向另一个实例或者原型时就构成了原型链。
 
-<img src="E:\杂七杂八的东西\typeorm 图片存储区\1ed77e1f65372daaaca3552f86ebdd71_sm_xform_imageauth_key=1650629181-QB8bKLSg3goWZqna-0-7f3bb63e446b927e35eb4cfd4879817b&response-content-disposition=inline%3B+filename%3Dimage.png%3B+filename%3DUTF-8''image.png" style="display: block; margin: auto;"/>
+<!-- 图片路径无效，已移除 -->
 
 :key: 谨记一点：对象其实是由函数构造出来的，同时函数原型也是一个特殊的对象。
 

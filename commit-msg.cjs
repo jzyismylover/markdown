@@ -102,8 +102,8 @@ function prompter(cz, commit) {
     ...(autoScope && autoScope !== ""
       ? [{ name: `🎯 自动检测: ${autoScope}`, value: autoScope }]
       : []),
-    ...projectDirectories.map((dir) => ({ name: `📁 ${dir}`, value: dir })),
     { name: "📝 手动输入", value: "custom" },
+    ...projectDirectories.map((dir) => ({ name: `📁 ${dir}`, value: dir })),
   ];
 
   cz.prompt([

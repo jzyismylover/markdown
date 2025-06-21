@@ -1,0 +1,61 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ES6"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "preserve",
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "./*"
+      ],
+      "@vuepress/*": [
+        "./node_modules/@vuepress/*"
+      ],
+      "vuepress/*": [
+        "./node_modules/vuepress/*"
+      ]
+    },
+    "types": [
+      "node",
+      "@types/node"
+    ]
+  },
+  "include": [
+    ".vuepress/**/*",
+    "*.ts",
+    "*.vue",
+    "**/*.ts",
+    "**/*.vue",
+    "**/*.md"
+  ],
+  "exclude": [
+    "node_modules",
+    ".vuepress/.temp",
+    ".vuepress/.cache",
+    ".vuepress/dist",
+    "dist"
+  ],
+  "ts-node": {
+    "esm": true,
+    "experimentalSpecifierResolution": "node"
+  }
+}
