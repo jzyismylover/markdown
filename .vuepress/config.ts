@@ -113,7 +113,7 @@ export default defineUserConfig({
           },
 
           render: (tokens, idx) => {
-            console.log(tokens, idx);
+            // console.log(tokens, idx);
             const token = tokens[idx];
             const info = token.info.trim().slice(6).trim();
 

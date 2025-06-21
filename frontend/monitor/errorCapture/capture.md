@@ -373,7 +373,7 @@ export class Queue {
 - 第五位，表示这个位置属于 names 属性中的哪一个变量。
 
 
-<img src="capture.assets/image.png
+<img src="./capture.assets/image.png
 " style="display: block; margin: auto;"/>
 
 

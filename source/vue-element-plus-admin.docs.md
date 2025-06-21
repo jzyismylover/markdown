@@ -11,11 +11,11 @@
 - 内容区：展示每个菜单对应的内容 ( `<router-view />` )
 - footer：copyright 显示
 
-<img src="/home/jzy/Documents/markdown/source-code/vue-element-plus-admin.docs.assets/image-20231030223944167.png" style="display: block; margin: auto;"/>
+<img src="./vue-element-plus-admin.docs.assets/image-20231030223944167.png" style="display: block; margin: auto;"/>
 
 布局不难实现，主要是能够实现布局可配置化
 
-<img src="/home/jzy/Documents/markdown/source-code/vue-element-plus-admin.docs.assets/image-20231030224418441.png" style="display: block; margin: auto;"/>
+<img src="./vue-element-plus-admin.docs.assets/image-20231030224418441.png" style="display: block; margin: auto;"/>
 
 布局可配置化指的是用户能够通过自定义设置来展示 UI，如上，用户可配置菜单显隐、系统主题、头部主题……，因此就必须代码组织必须灵活。
 
@@ -246,7 +246,7 @@ export const colorIsDark = (color: string) => {
 
 ### 菜单
 
-<img src="/home/jzy/Documents/markdown/source-code/vue-element-plus-admin.docs.assets/image-20231105101542241.png" style="display: block; margin: auto;"/>
+<img src="./vue-element-plus-admin.docs.assets/image-20231105101542241.png" style="display: block; margin: auto;"/>
 
 > 菜单主题怎么去配置？总体有以下一些配置选项
 
@@ -597,7 +597,7 @@ function treeToList(treeLists) {
 
 > 路由标签页：提供一个可以让用户切换到之前已经访问过的页面的快捷方式
 
-<img src="/home/jzy/Documents/markdown/source-code/vue-element-plus-admin.docs.assets/image-20231105155644009.png" style="display: block; margin: auto;"/>
+<img src="./vue-element-plus-admin.docs.assets/image-20231105155644009.png" style="display: block; margin: auto;"/>
 
 功能设计：
 
@@ -923,7 +923,7 @@ export interface InputComponentProps extends Partial<InputProps> {
 
 使用 `@iconify/vue` —— 包含若干 [图标集](https://icon-sets.iconify.design/)
 
-<img src="/home/jzy/Documents/markdown/source-code/vue-element-plus-admin.docs.assets/image-20231115231518237.png" style="display: block; margin: auto;"/>
+<img src="./vue-element-plus-admin.docs.assets/image-20231115231518237.png" style="display: block; margin: auto;"/>
 
 ​ 一般来说 `api-provider` 可忽略，`icon-prefix` 代表是哪个图标集合，`icon-name` 表示具体的图标
 
@@ -946,9 +946,9 @@ export interface InputComponentProps extends Partial<InputProps> {
    highlightColor: string
    ```
 
-2. 传入需要高亮的内容列表，建立正则匹配内容并替换为 {{ index }}，index 代表索引
+2. 传入需要高亮的内容列表，建立正则匹配内容并替换为 `{{ index }}`，index 代表索引
 
-3. 按 {{|}}切割文本，得到文段分组。
+3. 按 `{{|}}` 切割文本，得到文段分组。
 
 4. 遍历文段分组，如果单一分组类型为数字说明为需要高亮的短语（`hightlightPhrase[index]`）
 

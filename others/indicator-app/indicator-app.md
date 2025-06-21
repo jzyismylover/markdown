@@ -1,14 +1,12 @@
 > 计量指标提取工具后端应用设计的一些记录
 
-![无标题-2023-06-17-1439](/home/jzy/Documents/markdown/indicator-app/indicator-app.assets/01.png)
+![无标题-2023-06-17-1439](./indicator-app.assets/01.png)
 
 ## 用户信息
 
 从用户信息来看总体其实也没有用到什么新鲜点，鉴权依旧是使用 `jwt`，可能之前没有接触的是 `邮箱认证`，具体的逻辑就是当用户注册的时候发送一个 `六位数`验证码。
 
 ### jwt
-
-<img src="/home/jzy/Documents/markdown/indicator-app/indicator-app.assets/02.png" style="display: block; margin: auto;"/>
 
 对于业务内需要保护的 `api` 基本都需遵循这套流程，即使用前都需要校验 `token`。当然如何去鉴定的问题就是 `jwt` 包所处理的事情。
 

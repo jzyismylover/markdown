@@ -47,7 +47,7 @@ single-spa 的思路是监听 window.location.url 变化，然后走应用切换
 - unload：卸载主应用
 
 
-![Alt text]([README.assets/image-2.png](https://common-1306887959.cos.ap-guangzhou.myqcloud.com/vscode/markdown/1745071971204_7c43c833-89bd-40bc-ad58-004d83dd93bf.png))
+![Alt text](https://common-1306887959.cos.ap-guangzhou.myqcloud.com/vscode/markdown/1745071971204_7c43c833-89bd-40bc-ad58-004d83dd93bf.png)
 
 
 而对于这种切换子应用的方案也会存在一定性能上的问题：
