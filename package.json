@@ -13,10 +13,11 @@
   },
   "config": {
     "commitizen": {
-      "path": "./commit-msg.cjs"
+      "path": "./node_modules/@bestzy/commitizen-adapter"
     }
   },
   "devDependencies": {
+    "@bestzy/commitizen-adapter": "^2.2.0",
     "@types/node": "^24.0.3",
     "@vuepress/bundler-vite": "next",
     "@vuepress/client": "next",

@@ -149,6 +149,33 @@ git stash drop stash@{n} // 删除第 n 个堆栈的信息
   $ git config --[level] --list
   ```
 
+## log
+
+`git log` 命令可以获取分支的提交历史
+
+1. 获取最新提交的完整信息
+```bash
+git log -1
+```
+2. 只获取最新提交的 commit message
+```bash
+git log -1 --pretty=%B
+```
+3. 获取最新提交的 commit message（不包含换行）
+```bash
+git log -1 --pretty=format:"%s"
+```
+
+常用的格式化选项：
+%H - 完整的 commit hash
+%h - 简短的 commit hash
+%s - commit message 标题
+%B - 完整的 commit message
+%an - 作者名字
+%ae - 作者邮箱
+%ad - 作者日期
+%ar - 作者相对日期
+
 ## 多人协作
 
 <img src="./git.assets/image-20230715095458915.png" style="display: block; margin: auto;"/>
