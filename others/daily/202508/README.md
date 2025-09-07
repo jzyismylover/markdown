@@ -1,0 +1,4 @@
+- [pnpm v10 版本更新](https://www.51cto.com/article/805947.html)
+- [pnpm catalogs](https://www.pnpm.cn/next/catalogs)：将依赖项版本定义为可复用常量，定义后的变量可在 `package.json` 文件中引用
+- [vscode 工作区概念](https://vscode.github.net.cn/docs/editor/workspaces)
+- [动手实现 H5 仿原生 app 前进后退切换效果](https://juejin.cn/post/7290926038233890855)

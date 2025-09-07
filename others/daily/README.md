@@ -194,6 +194,26 @@ animation =
   [ none | <keyframes-name> ]   
 ```
 
+## Android 版本与 Chrome 版本之间的关系
+
+- Android 系统版本 (如 Android 4.4, 5.0, 10.0)
+- WebView 版本 (基于 Chromium，如 537.36)
+- Chrome 浏览器版本 (如 Chrome 88, 90)
+
+
+实际在 MDN 网站看到某个 API 浏览器兼容性的时候会遇到 “WebView Android - 51”，但是这块好像和手机系统的版本又没啥关系，所以会有点疑惑。其实 51 就是 chrome 版本（android 4.4+ 以上其实就把渲染引擎从 Webkit 替换成 Chromium），而 138 版本的发布时间是 2016 年，而 android 的迭代版本是：
+- 2016 - android6
+- 2017 - android7
+- 2018 - android8
+- 2019 - android9
+- 2020 - android10
+- 2021 - android11
+- 2022 - android12
+- 2023 - android13
+- 2024 - android14
+- 2025 - android15
+
+基本遵循每年一更，所对应支持广泛支持的版本就是 android 6，以下的版本可能就有兼容性问题需要注意
 
 ## 链接记录
 

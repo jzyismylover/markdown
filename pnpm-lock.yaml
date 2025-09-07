@@ -9,8 +9,8 @@ importers:
   .:
     devDependencies:
       '@bestzy/commitizen-adapter':
-        specifier: ^2.2.0
-        version: 2.2.0(commitizen@4.3.1(@types/node@24.0.3)(typescript@5.8.3))
+        specifier: ^2.2.2
+        version: 2.2.2(commitizen@4.3.1(@types/node@24.0.3)(typescript@5.8.3))
       '@types/node':
         specifier: ^24.0.3
         version: 24.0.3
@@ -71,8 +71,8 @@ packages:
     resolution: {integrity: sha512-ETyHEk2VHHvl9b9jZP5IHPavHYk57EhanlRRuae9XCpb/j5bDCbPPMOBfCWhnl/7EDJz0jEMCi/RhccCE8r1+Q==}
     engines: {node: '>=6.9.0'}
 
-  '@bestzy/commitizen-adapter@2.2.0':
-    resolution: {integrity: sha512-OgZCkfJrttUDNEV8I645EHeybk8Y92mugrBOoYbJQdD4c1xLkOz5aZQSuszcDku+SQm/QwqNhAX41XxzBrko1A==}
+  '@bestzy/commitizen-adapter@2.2.2':
+    resolution: {integrity: sha512-gzUqVOjr7GnZd9A1tNNEosiwPrgC8ZN4gDHgUAqw/JmvAgHfD6ayLTQHQqX+3rUqvGliuHbBQF2u9Y4APMwF/g==}
     hasBin: true
     peerDependencies:
       commitizen: '>=4.0.0'
@@ -2029,7 +2029,7 @@ snapshots:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.27.1
 
-  '@bestzy/commitizen-adapter@2.2.0(commitizen@4.3.1(@types/node@24.0.3)(typescript@5.8.3))':
+  '@bestzy/commitizen-adapter@2.2.2(commitizen@4.3.1(@types/node@24.0.3)(typescript@5.8.3))':
     dependencies:
       chalk: 4.1.2
       commitizen: 4.3.1(@types/node@24.0.3)(typescript@5.8.3)

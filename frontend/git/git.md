@@ -176,6 +176,96 @@ git log -1 --pretty=format:"%s"
 %ad - 作者日期
 %ar - 作者相对日期
 
+## tag
+
+Git Tag 是 Git 版本控制系统中用于标记特定提交点的功能，主要作用包括：
+
+1. 版本标记
+为重要的提交点打上标签，通常用于标记软件版本发布
+例如：v1.0.0、v2.1.3、release-2023.12 等
+2. 快速定位
+通过标签名快速找到特定的提交，而不需要记住复杂的 commit hash
+方便回滚到特定版本
+3. 发布管理
+配合 CI/CD 流程，自动化版本发布
+在 GitHub、GitLab 等平台上自动生成 Release 页面
+
+> Tag 类型
+
+1. 轻量标签
+
+```ts
+// 创建轻量标签
+git tag v1.0.0
+
+// 查看标签
+git tag
+```
+
+2. 附注标签
+
+```ts
+// 创建附注标签（推荐）
+git tag -a v1.0.0 -m "版本 1.0.0 发布"
+
+// 查看标签详细信息
+git show v1.0.0
+```
+
+### 常见 Git Tag 命令
+
+- 查看标签
+
+```ts
+// 为当前 commit 创建标签
+git tag v1.0.0
+
+// 为指定 commit 创建标签
+git tag v1.0.0 <commit-hash>
+
+// 创建带注释的标签
+git tag -a v1.0.0 -m "发布版本 1.0.0"
+
+// 列出所有标签
+git tag
+
+// 查看特定标签模式
+git tag -l "v1.*"
+
+// 查看标签详细信息
+git show v1.0.0
+
+```
+
+- 推送标签
+
+```ts
+// 推送单个标签到远程
+git push origin v1.0.0
+
+// 推送所有标签到远程
+git push origin --tags
+```
+
+- 删除标签
+```ts
+// 删除本地标签
+git tag -d v1.0.0
+
+// 删除远程标签
+git push origin --delete v1.0.0
+```
+
+- 输出标签
+```ts
+// 检出到特定标签（会进入 detached HEAD 状态）
+git checkout v1.0.0
+
+// 基于标签创建新分支
+git checkout -b hotfix-v1.0.0 v1.0.0
+```
+
+
 ## 多人协作
 
 <img src="./git.assets/image-20230715095458915.png" style="display: block; margin: auto;"/>

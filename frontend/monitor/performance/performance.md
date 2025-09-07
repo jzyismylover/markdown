@@ -569,4 +569,46 @@ var observer = new MutationObserver(callback);
 
 ## IntersectionObserver API
 
+- 构造函数
+
+```ts
+new IntersectionObserver(
+  callback: IntersectionObserverCallback, 
+  options?: IntersectionObserverInit
+): IntersectionObserver
+```
+
+- 回调函数
+
+```ts
+type IntersectionObserverCallback = (
+  entries: IntersectionObserverEntry[],
+  observer: IntersectionObserver
+) => void
+```
+
+- 配置选项类型
+
+```ts
+interface IntersectionObserverInit {
+  root?: Element | null;           // 根元素，默认为视口
+  rootMargin?: string;             // 根的外边距，默认为 "0px"
+  threshold?: number | number[];   // 触发阈值，默认为 0
+}
+```
+
+- 交集元素的属性
+
+```ts
+interface IntersectionObserverEntry {
+  boundingClientRect: DOMRectReadOnly;    // 目标元素的边界框
+  intersectionRatio: number;              // 相交比例 (0.0 - 1.0)
+  intersectionRect: DOMRectReadOnly;      // 相交区域的边界框
+  isIntersecting: boolean;                // 是否正在相交
+  rootBounds: DOMRectReadOnly | null;     // 根元素的边界框
+  target: Element;                        // 被观察的目标元素
+  time: number;                           // 相对于时间原点的时间戳
+}
+```
+
 ## ResizeObserver API

@@ -39,3 +39,8 @@ SPA 页面开发框架
 ## Pnpm
 
 新一代 npm 包管理工作. 
+
+> 一些参考文档
+
+- [csswg](https://html.spec.whatwg.org/multipage/)：CSS 官方规范说明
+- [whatwg](https://html.spec.whatwg.org/multipage/)：HTML 官方规范说明
