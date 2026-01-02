@@ -53,10 +53,10 @@ $ rustup doc
 - `rust-analyzer`：rust 代码补全以及格式化
 - `even better toml`：支持 `.toml` 文件完整特性
 
-🔐 `rustrc`、`rustup`、`cargo` 概念区分
+🔐 `rustc`、`rustup`、`cargo` 概念区分
 
-- `rustrc`：编译器，编译项目代码
-- `rustup`：工具链管理，用于安装 `rustrc` 版本以及常用组件
+- `rustc`：编译器，编译项目代码
+- `rustup`：工具链管理，用于安装 `rustc` 版本以及常用组件
 - `cargo`：包管理工具
 
 ## 编译过程

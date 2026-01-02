@@ -5,6 +5,7 @@
   "scripts": {
     "docs:dev": "vuepress dev",
     "docs:build": "vuepress build",
+    "docs:build:vercel": "VERCEL=1 vuepress build",
     "commit": "cz"
   },
   "license": "MIT",

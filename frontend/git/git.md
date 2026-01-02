@@ -90,6 +90,201 @@ git branch -r  // 查看远程分支
 git branch -a  // 查看所有分支（包括本地和远程）
 ```
 
+### 创建远程分支
+
+创建远程分支有多种方式，以下是常用的方法：
+
+#### 方法一：创建本地分支并推送到远程
+
+```bash
+# 1. 创建并切换到新分支
+git checkout -b feature/new-feature
+
+# 或者使用新语法（Git 2.23+）
+git switch -c feature/new-feature
+
+# 2. 在新分支上进行开发和提交
+git add .
+git commit -m "feat: 添加新功能"
+
+# 3. 将本地分支推送到远程仓库（首次推送）
+git push -u origin feature/new-feature
+```
+
+#### 方法二：基于远程分支创建本地分支
+
+```bash
+# 1. 获取远程分支信息
+git fetch origin
+
+# 2. 基于远程分支创建本地分支
+git checkout -b feature/new-feature origin/main
+
+# 3. 推送到远程（创建新的远程分支）
+git push -u origin feature/new-feature
+```
+
+#### 方法三：直接推送本地分支到远程
+
+```bash
+# 在当前分支直接推送到远程新分支
+git push origin HEAD:feature/new-feature
+
+# 或者指定本地分支名和远程分支名
+git push origin local-branch:remote-branch
+```
+
+#### 方法四：使用 GitHub CLI（如果使用 GitHub）
+
+```bash
+# 创建分支并推送
+gh repo create-branch feature/new-feature
+
+# 或者
+git checkout -b feature/new-feature
+git push -u origin feature/new-feature
+gh pr create --title "新功能" --body "功能描述"
+```
+
+### 分支管理最佳实践
+
+#### 分支命名规范
+
+```bash
+# 功能分支
+feature/user-authentication
+feature/payment-integration
+
+# 修复分支
+fix/login-bug
+hotfix/critical-security-issue
+
+# 发布分支
+release/v1.2.0
+release/2024-01-15
+
+# 开发分支
+develop
+dev/experimental-feature
+```
+
+#### 常用分支操作
+
+```bash
+# 删除本地分支
+git branch -d feature/old-feature
+
+# 强制删除本地分支（未合并的分支）
+git branch -D feature/old-feature
+
+# 删除远程分支
+git push origin --delete feature/old-feature
+
+# 重命名本地分支
+git branch -m old-name new-name
+
+# 重命名当前分支
+git branch -m new-name
+
+# 设置本地分支跟踪远程分支
+git branch --set-upstream-to=origin/feature/new-feature
+
+# 或者在推送时设置跟踪
+git push -u origin feature/new-feature
+```
+
+#### 分支同步操作
+
+```bash
+# 同步远程分支信息
+git fetch origin
+
+# 拉取远程分支的最新更改
+git pull origin feature/new-feature
+
+# 将远程分支合并到当前分支
+git merge origin/feature/new-feature
+
+# 使用 rebase 同步远程更改（保持线性历史）
+git rebase origin/main
+```
+
+### 团队协作中的分支策略
+
+#### Git Flow 分支模型
+
+```bash
+# 主分支
+main/master    # 生产环境代码
+develop        # 开发环境代码
+
+# 支持分支
+feature/*      # 功能开发分支
+release/*      # 发布准备分支
+hotfix/*       # 紧急修复分支
+
+# 示例工作流程
+git checkout develop
+git checkout -b feature/user-profile
+# ... 开发功能 ...
+git push -u origin feature/user-profile
+# ... 创建 PR/MR ...
+# ... 代码审查和合并 ...
+```
+
+#### GitHub Flow 分支模型
+
+```bash
+# 简化的分支模型
+main           # 主分支，始终可部署
+feature/*      # 功能分支，从 main 创建
+
+# 工作流程
+git checkout main
+git pull origin main
+git checkout -b feature/new-feature
+# ... 开发和提交 ...
+git push -u origin feature/new-feature
+# ... 创建 Pull Request ...
+# ... 合并到 main ...
+```
+
+### 远程分支的高级操作
+
+#### 批量操作远程分支
+
+```bash
+# 查看所有远程分支的最后提交
+git for-each-ref --format='%(refname:short) %(committerdate)' refs/remotes
+
+# 删除已经合并的远程分支（谨慎使用）
+git branch -r --merged main | grep -v main | sed 's/origin\///' | xargs -n 1 git push --delete origin
+
+# 清理本地的远程跟踪分支
+git remote prune origin
+```
+
+#### 分支保护和权限
+
+```bash
+# 在 GitHub/GitLab 等平台上设置分支保护规则
+# - 禁止直接推送到主分支
+# - 要求 PR/MR 审查
+# - 要求状态检查通过
+# - 要求分支是最新的
+
+# 本地可以设置 pre-push hook 来防止误操作
+# .git/hooks/pre-push
+#!/bin/bash
+protected_branch='main'
+current_branch=$(git symbolic-ref HEAD | sed -e 's,.*/\(.*\),\1,')
+
+if [ $protected_branch = $current_branch ]; then
+    echo "Direct push to main branch is not allowed"
+    exit 1
+fi
+```
+
 ## fetch
 
 - 首先先理解清楚 fetch 命令的使用场景和使用背景

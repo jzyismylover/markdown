@@ -40,8 +40,12 @@ export default {
       children: [
         {
           text: "TypeScript 指南",
-          link: "/frontend/typescript/typescript",
+          link: "/frontend/typescript/index",
         },
+        {
+          text: 'Typescript 案例',
+          link: '/frontend/typescript/example',
+        }
       ],
     },
     {
@@ -384,7 +388,7 @@ export default {
     },
     {
       text: "日常记录",
-      link: "/others/daily/",
+      link: "/others/daily/阅读链接记忆.md",
     },
     {
       text: "应用开发",

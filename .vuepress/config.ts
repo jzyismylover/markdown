@@ -13,15 +13,25 @@ const __dirname = fileURLToPath(new URL(".", import.meta.url));
 // 导入侧边栏配置
 import sidebar from "./sidebar.js";
 
+// 判断是否是 Vercel 环境
+const isVercel = process.env.VERCEL === "1" || !!process.env.VERCEL_ENV;
+// 根据环境动态设置 base
+const base = isVercel ? "/" : "/markdown/";
+// logo 路径：主题会自动添加 base，所以只需要相对路径
+const logoPath = "logo.png";
+// favicon 路径：head 中需要完整路径
+const faviconPath = "logo.png";
+
 export default defineUserConfig({
   // 基本配置
+  base,
   lang: "zh-CN",
   title: "Mr.J 技术博客",
   description: "学习&工作-技术积累",
 
   // 头部配置
   head: [
-    ["link", { rel: "icon", href: "/logo.png" }],
+    ["link", { rel: "icon", href: faviconPath }],
     ["meta", { name: "theme-color", content: "#3eaf7c" }],
     ["meta", { name: "apple-mobile-web-app-capable", content: "yes" }],
     [
@@ -52,7 +62,7 @@ export default defineUserConfig({
 
   // 主题配置
   theme: defaultTheme({
-    logo: "/logo.png",
+    logo: logoPath,
 
     // 导航栏
     navbar: [],
