@@ -27,32 +27,17 @@ Chrome 扩展程序可以实现以下功能：
 - **桌面通知**：显示系统通知
 - **下载管理**：控制文件下载
 
-## 扩展程序文件结构
 
-```
-my-extension/
-├── manifest.json          # 配置清单文件
-├── background.js          # 后台脚本（Service Worker）
-├── content.js            # 内容脚本
-├── popup.html            # 弹窗页面
-├── popup.js              # 弹窗脚本
-├── options.html          # 选项页面
-├── options.js            # 选项页面脚本
-├── icons/                # 图标文件夹
-│   ├── icon16.png
-│   ├── icon48.png
-│   └── icon128.png
-└── assets/               # 其他资源
-    ├── styles.css
-    └── images/
-```
 
 ## Manifest V3 配置
+
+插件最核心的是 manifest 配置，决定了应该在前台注入什么样式/脚本、后台执行什么脚本
 
 ### 基础配置
 
 ```json
 {
+  // 标识
   "manifest_version": 3,
   "name": "My Extension",
   "version": "1.0",

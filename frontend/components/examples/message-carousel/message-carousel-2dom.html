@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>message-carousel-2dom</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      .wrapper {
+        position: relative;
+        width: 200px;
+        height: 32px;
+        border: 1px solid green;
+        overflow: hidden;
+      }
+      .list {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        left: 0;
+        top: 0;
+      }
+      .list-item {
+        position: absolute;
+        left: 0;
+        width: 100%;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        will-change: transform;
+        backface-visibility: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="list">
+        <div class="list-item item-a"></div>
+        <div class="list-item item-b"></div>
+      </div>
+    </div>
+    <script>
+      /**
+       * 只用两个 DOM 节点的无缝轮播
+       */
+      const messages = [
+        { value: "轮播消息一" },
+        { value: "轮播消息二" },
+        { value: "轮播消息三" },
+        { value: "轮播消息四" },
+      ];
+      const interval = 2000;
+      const transition = 500;
+      const nodeHeight = 32;
+
+      const itemA = document.querySelector('.item-a');
+      const itemB = document.querySelector('.item-b');
+      const items = [itemA, itemB];
+
+      let curr = 0; // 当前在展示的消息序号
+      // 初始状态：A可见于顶部，B定位在下方等待
+      itemA.style.transform = 'translateY(0px)';
+      itemB.style.transform = `translateY(${nodeHeight}px)`;
+      itemA.textContent = messages[0].value;
+      itemB.textContent = messages[1 % messages.length].value;
+      let showIdx = 0;
+      let nextIdx = 1;
+      let flag = true; // 轮流用两个元素
+
+      function slideNext() {
+        // flag=true: 用A出现在顶部，B移上来，动画B向上
+        // flag=false: 用B在顶部，A移上来，动画A向上
+        const outItem = items[flag ? 0 : 1]; // 当前在顶上的item
+        const inItem = items[flag ? 1 : 0];  // 当前待上来的item
+
+        // 准备下一条内容
+        nextIdx = (showIdx + 1) % messages.length;
+        inItem.textContent = messages[nextIdx].value;
+        inItem.style.transition = 'none';
+        inItem.style.transform = `translateY(${nodeHeight}px)`;
+
+        // 触发动画，延迟保确保reflow
+        setTimeout(()=>{
+          outItem.style.transition = `all ${transition}ms`;
+          inItem.style.transition = `all ${transition}ms`;
+          outItem.style.transform = `translateY(-${nodeHeight}px)`;
+          inItem.style.transform = 'translateY(0px)';
+        }, 15);
+      }
+
+      function afterSlide() {
+        // 动画结束后，把出界元素移到底部等待，变成inItem
+        const outItem = items[flag ? 0 : 1];
+        outItem.style.transition = 'none';
+        outItem.style.transform = `translateY(${nodeHeight}px)`;
+        // 交换次序
+        showIdx = (showIdx + 1) % messages.length;
+        flag = !flag;
+      }
+
+      let timer;
+
+      function start() {
+        timer = setInterval(slideNext, interval);
+      }
+      function stop() {
+        clearInterval(timer);
+      }
+
+      // 监听动画完成（两条都监听，只会进一次）
+      itemA.addEventListener('transitionend', function(e){
+        if(e.propertyName==="transform" && itemA.style.transform==`translateY(-${nodeHeight}px)`){
+          afterSlide();
+        }
+      });
+      itemB.addEventListener('transitionend', function(e){
+        if(e.propertyName==="transform" && itemB.style.transform==`translateY(-${nodeHeight}px)`){
+          afterSlide();
+        }
+      });
+
+      // 悬停机制
+      const wrapper = document.querySelector('.wrapper');
+      wrapper.addEventListener('mouseenter', stop);
+      wrapper.addEventListener('mouseleave', start);
+
+      // 首次进入循环
+    //   setTimeout(slideNext, interval);
+      start();
+    </script>
+  </body>
+</html>
+

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>message-carousel-continuous</title>
+    <style>
+      .wrapper {
+        position: relative;
+        width: 200px;
+        height: 32px;
+        border: 1px solid green;
+        overflow: hidden;
+      }
+      .list {
+        transition: all 0.5s;
+      }
+      .list-item {
+        display: flex;
+        height: 32px;
+        align-items: center;
+        justify-content: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="list"></div>
+    </div>
+    <script>
+      /**
+       * 以 TS 写法描述轮播核心逻辑
+       * ---
+       * let index = 0;
+       * setInterval(()=>{
+       *   index++;
+       *   动画到 index;
+       *   if index===messages.length {
+       *     等动画结束，序号重置为0，立即静默还原
+       *   }
+       * })
+       */
+
+      const interval = 2000;
+      const transition = 500; // 动画时长 ms
+      const nodeHeight = 32;
+      const messages = [
+        { value: "轮播消息一" },
+        { value: "轮播消息二" },
+        { value: "轮播消息三" },
+      ];
+
+      window.onload = () => {
+        const list = document.getElementsByClassName("list")[0];
+        // 插入真实数据
+        messages.forEach(msg => {
+          const item = document.createElement("div");
+          item.classList.add("list-item");
+          item.textContent = msg.value;
+          list.appendChild(item);
+        });
+        // 追加首项到末尾，完成无缝（相当于是多创建了一项使得回滚的时候无感）
+        const firstClone = list.firstElementChild.cloneNode(true);
+        list.appendChild(firstClone);
+
+        let index = 0;
+        let timer;
+
+        function move() {
+          index++;
+          list.style.transition = `all ${transition}ms`;
+          list.style.transform = `translateY(-${index * nodeHeight}px)`;
+  
+          if (index === messages.length) {
+            setTimeout(() => {
+              // 立即静默还原到首项
+              list.style.transition = 'none';
+              list.style.transform = `translateY(0px)`;
+              index = 0;
+            }, transition);
+          }
+        }
+
+        timer = setInterval(move, interval);
+
+        // 鼠标悬停暂停
+        list.addEventListener('mouseenter', () => clearInterval(timer));
+        list.addEventListener('mouseleave', () => timer = setInterval(move, interval));
+      };
+    </script>
+  </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

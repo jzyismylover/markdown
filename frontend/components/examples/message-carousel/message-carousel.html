@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>message-carousel</title>
+    <style>
+      .wrapper {
+        position: relative;
+        width: 200px;
+        height: 32px;
+        border: 1px solid green;
+        overflow: hidden;
+      }
+      .list {
+        transition: all 500ms;
+      }
+      .list-item {
+        display: flex;
+        height: 32px;
+        align-items: center;
+        justify-content: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="list"></div>
+    </div>
+    <script>
+      // 核心的逻辑是需要尽可能减少 DOM，理论上是只需要两个 DOM
+
+      // 动画间隔时间(ms)
+      const interval = 2000;
+
+      const nodeHeight = 32;
+
+      // 消息列表
+      const messages = [
+        { value: "轮播消息一" },
+        { value: "轮播消息二" },
+        { value: "轮播消息三" },
+      ];
+
+      window.onload = () => {
+        const list = document.getElementsByClassName("list")[0];
+        // 创建 node
+        for (const message of messages) {
+          const messageDom = document.createElement("div");
+          messageDom.classList.add("list-item");
+          messageDom.innerHTML = message.value;
+          list.appendChild(messageDom);
+        }
+
+        // 实现动画轮播
+        let index = 1;
+        setInterval(() => {
+          const translateY = index * nodeHeight;
+          list.style.transform = `translateY(-${translateY}px)`;
+          if (index === messages.length) {
+            // 比较僵硬，会出现从上边回到下边再向上移动的效果
+            list.style.transform = 'none';
+            list.style.transform = `translateY(0px)`;
+            // 如果实现在末尾能顺序接着重复轮播的情况
+            index = 1;
+            return;
+          }
+          index++;
+        }, interval);
+      };
+    </script>
+  </body>
+</html>
