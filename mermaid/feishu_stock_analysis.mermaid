@@ -1,0 +1,26 @@
+%%{init: {'theme': 'redux'}}%%
+sequenceDiagram
+    autonumber
+    participant User as 用户
+    participant Feishu as 飞书群聊
+    participant Gateway as OpenClaw Gateway
+    participant GH as GitHub CLI
+    participant GHAction as GitHub Action
+    participant Webhook as 飞书机器人Webhook
+
+    User->>Feishu: 输入股票分析消息
+    Feishu->>Gateway: 推送消息事件
+
+    Note over Gateway: 识别需要分析的股票
+
+    Gateway->>GH: gh run trigger
+
+    GH->>GHAction: 触发Workflow
+
+    Note over GHAction: 执行股票分析任务
+
+    GHAction->>Webhook: POST 推送结果
+
+    Webhook->>Feishu: 发送群聊消息
+
+    Feishu-->>User: 展示分析结果
