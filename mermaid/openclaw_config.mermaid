@@ -1,0 +1,51 @@
+
+flowchart TB
+    subgraph 准备工作
+        A[购买Kimi会员套餐] --> B[在Kimi控制台创建API Key]
+    end
+    subgraph OpenClaw安装
+        B --> C["运行安装脚本 curl -fsSL https://openclaw.ai/install.sh"]
+        C --> D[选择Yes进入设置]
+        D --> E[选择QuickStart模式]
+        E --> F[选择Kimi Code API Key]
+        F --> G[粘贴API Key]
+        G --> H[设为默认模型]
+        H --> I[跳过Telegram/Discord配置]
+        I --> J[配置所需Skills]
+        J --> K[配置Hooks]
+        K --> L[选择是否重启网关]
+        L --> M[选择TUI或Web UI]
+    end
+    subgraph 飞书接入准备
+        M --> N["安装飞书插件<br/>openclaw plugins install @m1heng-clawd/feishu"]
+    end
+    subgraph 飞书开放平台配置
+        N --> O[创建企业自建应用]
+        O --> P[添加机器人能力]
+        P --> Q[获取App ID和App Secret]
+    end
+    subgraph OpenClaw飞书配置
+        Q --> R[配置App ID]
+        R --> S[配置App Secret]
+        S --> T[启用飞书]
+        T --> U["重启网关<br/>openclaw gateway restart"]
+    end
+    subgraph 飞书权限配置
+        U --> V[开通权限 im:message]
+        V --> W[开通应用身份权限]
+        W --> X[配置事件和回调-选择长链接]
+    end
+    subgraph 事件订阅
+        X --> Y[添加必需事件]
+        Y --> Z[创建版本并发布]
+    end
+    subgraph 启动使用
+        Z --> AA[在飞书搜索OpenClaw应用]
+        AA --> BB[开始使用AI助手]
+    end
+    R -->|"openclaw config set channels.feishu.appId"| R
+    S -->|"openclaw config set channels.feishu.appSecret"| S
+    T -->|"openclaw config set channels.feishu.enabled true"| T
+    style A fill:#e1f5fe
+    style N fill:#fff3e0
+    style BB fill:#e8f5e9
